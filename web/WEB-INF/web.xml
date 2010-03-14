@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<web-app id="WEBUI"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+  <display-name>webui</display-name>
+  <description>Функциональное тестирование фреймворка</description>
+
+  <context-param>
+    <param-name>webui.mode</param-name>
+    <param-value>debug</param-value>
+  </context-param>
+
+
+  <servlet>
+    <servlet-name>ResourceServlet</servlet-name>
+    <servlet-class>org.echosoft.framework.ui.core.web.ResourceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResourceServlet</servlet-name>
+    <url-pattern>/resource/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AjaxDataServlet</servlet-name>
+    <servlet-class>org.echosoft.framework.ui.core.web.AjaxDataServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AjaxDataServlet</servlet-name>
+    <url-pattern>/ajax/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>FrontControllerServlet</servlet-name>
+    <servlet-class>examples.ui.FrontControllerServlet</servlet-class>
+    <init-param>
+      <param-name>keepalive</param-name>
+      <param-value>xxx</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FrontControllerServlet</servlet-name>
+    <url-pattern>/examples</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>FrontControllerServlet</servlet-name>
+    <url-pattern>/examples/*</url-pattern>
+  </servlet-mapping>
+
+
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+
+  <mime-mapping>
+    <extension>html</extension>
+    <mime-type>text/html</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>css</extension>
+    <mime-type>text/css</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>txt</extension>
+    <mime-type>text/plain</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list>
+    <welcome-file>/examples.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>

@@ -1,0 +1,304 @@
+<?xml version = '1.0' encoding = 'utf-8'?>
+<project name="Web UI" default="compile" basedir=".">
+
+  <target name="clean" depends="init" description="remove all compiled artefacts">
+    <delete dir="build"/>
+  </target>
+
+
+  <target name="compile" depends="init, get-revision-info" description="quick compile modified classes (default target)">
+    <compile-to srcdir="java:test" envsrcdir="java" to="build/classes" />
+  </target>
+
+
+  <target name="build" depends="init, get-revision-info" description="recompile all source code in the project">
+    <delete dir="build"/>
+    <compile-to srcdir="java:test" envsrcdir="java" to="build/classes" />
+  </target>
+
+
+  <target name="jar" depends="init, get-revision-info" description="make webui jars">
+    <delete dir="build" />
+    <pack-core to="build" />
+    <pack-theme to="build" theme="extjs-debug" />
+    <!--generate source distribution...-->
+    <jar jarfile="build/${app.name}-${spec.version}${spec.extraversion}-src.zip">
+      <fileset dir="java" excludes="**/.svn/*.*">
+        <include name="org/echosoft/framework/ui/**/*.*" />
+        <include name="org/echosoft/common/ui/**/*.*" />
+      </fileset>
+      <fileset dir="." excludes="**/.svn/**/*.*">
+        <include name="themes/**/*.*" />
+      </fileset>
+      <metainf file="web/WEB-INF/*.tld"/>
+      <manifest>
+        <attribute name="Built-By" value="${built.by}"/>
+        <attribute name="Built-Date" value="${built.date}"/>
+        <attribute name="Specification-Vendor" value="${spec.vendor}"/>
+        <attribute name="Specification-Version" value="${spec.version}"/>
+        <attribute name="Implementation-Version" value="${built.revision}"/>
+      </manifest>
+    </jar>
+    <delete dir="build/classes"/>
+  </target>
+
+
+  <target name="distr" depends="init, clean, jar, docs" description="make full distribution">
+    <jar jarfile="build/${app.name}-${spec.version}${spec.extraversion}-doc.zip">
+      <fileset dir="build/doc" includes="**/*.*" />
+      <manifest>
+        <attribute name="Built-By" value="${built.by}"/>
+        <attribute name="Built-Date" value="${built.date}"/>
+        <attribute name="Specification-Vendor" value="${spec.vendor}"/>
+        <attribute name="Specification-Version" value="${spec.version}"/>
+        <attribute name="Implementation-Version" value="${built.revision}"/>
+      </manifest>
+    </jar>
+    <delete dir="build/doc" />
+  </target>
+
+
+  <target name="war" depends="jar" description="makes test war file">
+    <!--compile tests -->
+    <path id="build.classpath">
+      <fileset dir="lib" includes="**/*.jar"/>
+      <fileset dir="build" includes="*.jar"/>
+    </path>
+    <compile-to srcdir="test" to="build/classes" />
+    <copy todir="build">
+      <fileset dir="lib/jar-src" includes="*-src.*" />
+    </copy>
+    <!--generate documentation-->
+    <antcall target="docs" />
+    <!--build war file-->
+    <war destfile="build/${app.name}-contrib-${spec.version}${spec.extraversion}.war" webxml="web/WEB-INF/web.xml">
+      <lib file="build/*.jar" excludes="*-src.jar"/>
+      <lib file="lib/*.jar"/>
+      <classes dir="build/classes" includes="**/*.class,**/*.properties"/>
+      <classes dir="test">
+        <patternset refid="all.config.files"/>
+      </classes>
+      <fileset dir="web">
+        <include name="test/**/*.*"/>
+        <include name="doc/**/*.*"/>
+        <include name="WEB-INF/*.tld"/>
+      </fileset>
+      <fileset dir="build">
+        <include name="doc/**/*.*"/>
+        <include name="*-src.zip"/>
+        <include name="*-src.jar"/>
+      </fileset>
+      <manifest>
+        <attribute name="Built-By" value="${built.by}"/>
+        <attribute name="Built-Date" value="${built.date}"/>
+        <attribute name="Specification-Vendor" value="${spec.vendor}"/>
+        <attribute name="Specification-Version" value="${spec.version}"/>
+        <attribute name="Implementation-Version" value="${built.revision}"/>
+      </manifest>
+    </war>
+    <delete dir="build/classes"/>
+    <delete dir="build/doc"/>
+    <delete dir="build" includes="*.jar"/>
+    <delete dir="build" includes="*.zip"/>
+  </target>
+
+
+  <target name="undeploy" depends="init" description="fast undeploy from local server">
+    <antcall target="${deploy.server}.undeploy"/>
+  </target>
+
+
+  <target name="deploy" depends="init" description="deploy to local server">
+    <antcall target="${deploy.server}.deploy"/>
+  </target>
+
+
+  <target name="redeploy" depends="undeploy, deploy" description="redeploy project on the local server"/>
+
+
+  <target name="docs" depends="init" description="compile entire documentation set">
+    <delete dir="build/doc"/>
+    <mkdir dir="build/doc/javadoc"/>
+    <javadoc sourcepath="java" destdir="build/doc/javadoc"
+             encoding="${build.encoding}" charset="${build.encoding}"
+             packagenames="org.echosoft.**.*"
+             classpathref="build.classpath"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="${app.name} ${spec.version} Java API">
+    </javadoc>
+  </target>
+
+
+  <target name="test" depends="compile" description="run all unit tests">
+    <junit printsummary="withOutAndErr">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain"/>
+      <batchtest todir="build">
+        <fileset dir="test">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+
+
+
+
+  <!-- any supplementary declarations -->
+
+  <target name="init">
+    <tstamp>
+      <format property="built.date" pattern="dd.MM.yyyy HH:mm:ss" />
+    </tstamp>
+    <property file="build.properties"/>
+    <path id="build.classpath">
+      <fileset dir="lib" includes="**/*.jar"/>
+    </path>
+    <path id="run.classpath">
+      <pathelement location="build/classes"/>
+      <path refid="build.classpath"/>
+    </path>
+    <patternset id="all.config.files">
+      <include name="**/*.xml"/>
+      <include name="**/*.sql"/>
+    </patternset>
+
+    <!--<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit" classpathref="build.classpath" />-->
+  </target>
+
+
+  <target name="get-revision-info">
+    <property name="built.revision" value="0"/>
+    <!--
+    <exec executable="svn" dir="."  output="revision.info">
+      <arg value="info"/>
+    </exec>
+    <replaceregexp file="revision.info" match="(?s)(.*Revision:\ )(\d+)(.*)" replace="\2"/>
+    <loadfile property="built.revision" srcfile="revision.info"/>
+    <delete file="revision.info" />
+    -->
+    <echo message="revision: ${built.revision}" />
+  </target>
+
+
+  <macrodef name="compile-to">
+    <attribute name="to" />
+    <attribute name="srcdir" />
+    <attribute name="envsrcdir" default="@{srcdir}" />
+    <attribute name="build.classpath" default="build.classpath" />
+    <sequential >
+      <echo message="to=@{to}  srcdir=@{srcdir}  envsrcdir=@{envsrcdir}" />
+      <mkdir dir="@{to}"/>
+      <mkdir dir="@{to}/META-INF" />
+      <echo file="@{to}/META-INF/MANIFEST.MF">Built-By: ${built.by}
+Built-Date: ${built.date}
+Specification-Vendor: ${spec.vendor}
+Specification-Version: ${spec.version}
+Implementation-Version: ${built.revision}
+</echo>
+      <depend srcdir="@{srcdir}" destdir="@{to}" closure="yes">
+        <include name="**/*.java"/>
+      </depend>
+      <javac srcdir="@{srcdir}" destdir="@{to}" classpathref="@{build.classpath}"
+             deprecation="${build.deprecation}" optimize="${build.optimized}" nowarn="${build.nowarn}"
+             debug="${build.debug}" debugLevel="${build.debug.level}" encoding="${build.encoding}"
+             executable="${jdk.home}/bin/javac" fork="true" includeAntRuntime="false">
+      </javac>
+      <copy todir="@{to}">
+        <fileset dir="@{envsrcdir}">
+          <exclude name="**/*.java"/>
+          <exclude name="**/*.properties"/>
+        </fileset>
+      </copy>
+      <native2ascii encoding="${build.encoding}" src="@{envsrcdir}" dest="@{to}" includes="**/*.properties"/>
+    </sequential>
+  </macrodef>
+
+
+  <macrodef name="pack-core">
+    <attribute name="to" />
+    <sequential>
+      <echo message="pack core jars to @{to} ..." />
+      <compile-to to="build/classes" srcdir="java" />
+      <jar jarfile="@{to}/${app.name}-${spec.version}${spec.extraversion}.jar">
+        <fileset dir="build/classes">
+          <include name="org/echosoft/framework/ui/**/*.*"/>
+          <include name="org/echosoft/common/ui/**/*.*"/>
+        </fileset>
+        <metainf file="web/WEB-INF/webui-*.tld"/>
+        <manifest>
+          <attribute name="Built-By" value="${built.by}"/>
+          <attribute name="Built-Date" value="${built.date}"/>
+          <attribute name="Specification-Vendor" value="${spec.vendor}"/>
+          <attribute name="Specification-Version" value="${spec.version}"/>
+          <attribute name="Implementation-Version" value="${built.revision}"/>
+        </manifest>
+      </jar>
+      <delete dir="build/classes" />
+    </sequential>
+  </macrodef>
+
+
+  <macrodef name="pack-theme">
+    <attribute name="theme" />
+    <attribute name="theme.version" default="${@{theme}.theme.version}" />
+    <attribute name="to" />
+    <sequential>
+      <echo message="pack theme @{theme} to @{to} ..." />
+      <mkdir dir="build/themes/@{theme}" />
+      <copy todir="build/themes/@{theme}">
+        <fileset dir="themes/@{theme}" includes="**/*.*" excludes="**/*.properties"/>
+      </copy>
+      <native2ascii encoding="${build.encoding}" src="themes/@{theme}" dest="build/themes/@{theme}" includes="**/*.properties"/>
+      <jar jarfile="@{to}/${app.name}-themes-@{theme}-${spec.version}${spec.extraversion}.jar">
+        <fileset dir="build/themes/" includes="@{theme}/**/*.*"/>
+        <manifest>
+          <attribute name="Built-By" value="${built.by}"/>
+          <attribute name="Built-Date" value="${built.date}"/>
+          <attribute name="Specification-Vendor" value="${spec.vendor}"/>
+          <attribute name="Specification-Version" value="${spec.version}"/>
+          <attribute name="Implementation-Version" value="${built.revision}"/>
+          <section name="ru/topsbi/framework/ui/theme">
+            <attribute name="X-TWUI-Theme-Name" value="@{theme}" />
+            <attribute name="X-TWUI-Theme-Version" value="@{theme.version}" />
+          </section>
+        </manifest>
+      </jar>
+      <delete dir="build/themes" />
+    </sequential>
+  </macrodef>
+
+
+
+
+  <target name="tomcat.redeploy" depends="tomcat.undeploy, tomcat.deploy"  description="redeploy project on the local tomcat server"/>
+
+
+  <target name="tomcat.undeploy" depends="init" description="fast undeploy from local tomcat server">
+    <delete file="${tomcat.home}/webapps/${app.name}.war"/>
+    <delete dir="${tomcat.home}/webapps/${app.name}"/>
+  </target>
+
+
+  <target name="tomcat.deploy" depends="init, get-revision-info" description="fast deploy to local tomcat server">
+    <echo message="deploing into ${tomcat.home}/webapps/${app.name}/ ..."/>
+    <echo message=""/>
+    <copy todir="${tomcat.home}/webapps/${app.name}">
+      <fileset dir="web" includes="**/*.*" excludes="components/**/*.*"/>
+    </copy>
+    <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
+      <fileset dir="lib" includes="*.jar"/>
+    </copy>
+    <pack-core  to="${tomcat.home}/webapps/${app.name}/WEB-INF/lib" />
+    <pack-theme to="${tomcat.home}/webapps/${app.name}/WEB-INF/lib" theme="extjs-debug" />
+    <path id="build.classpath">
+      <fileset dir="lib" includes="**/*.jar" />
+      <fileset dir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib" includes="${app.name}*.jar"/>
+    </path>
+    <compile-to srcdir="test" to="${tomcat.home}/webapps/${app.name}/WEB-INF/classes" />
+  </target>
+
+</project>

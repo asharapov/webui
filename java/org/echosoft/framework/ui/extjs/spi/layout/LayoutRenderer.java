@@ -12,7 +12,7 @@ import org.echosoft.framework.ui.extjs.layout.LayoutItem;
  * различных классов менеджеров компоновки ExtJS компонент в контейнерах.
  * @author Anton Sharapov
  */
-public interface LayoutRenderer {
+public interface LayoutRenderer<L extends Layout, I extends LayoutItem> {
 
     /**
      * Сериализует в JSON конфигурацию указанного менеджера компоновки компонент.
@@ -22,7 +22,7 @@ public interface LayoutRenderer {
      * @throws InvocationTargetException  в случае проблем с сериализацией данных в JSON.
      * @throws IllegalAccessException  в случае проблем с сериализацией данных в JSON.
      */
-    public void renderConfig(final Layout layout, final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException;
+    public void renderConfig(final L layout, final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException;
 
     /**
      * Сериализует в JSON конфигурацию указанного менеджера компоновки компонент.
@@ -32,5 +32,5 @@ public interface LayoutRenderer {
      * @throws InvocationTargetException  в случае проблем с сериализацией данных в JSON.
      * @throws IllegalAccessException  в случае проблем с сериализацией данных в JSON.
      */
-    public void renderItem(final LayoutItem item, final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException;
+    public void renderItem(final I item, final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException;
 }

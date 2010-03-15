@@ -171,7 +171,6 @@
 
 
   <target name="get-revision-info">
-    <property name="built.revision" value="0"/>
     <!--
     <exec executable="svn" dir="."  output="revision.info">
       <arg value="info"/>
@@ -180,6 +179,7 @@
     <loadfile property="built.revision" srcfile="revision.info"/>
     <delete file="revision.info" />
     -->
+    <property name="built.revision" value="0" />
     <echo message="revision: ${built.revision}" />
   </target>
 

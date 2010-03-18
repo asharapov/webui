@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.apache.commons.codec.binary.Base64;
+import org.echosoft.common.utils.Base64Util;
 import org.echosoft.framework.ui.core.StateHolder;
 import org.echosoft.framework.ui.core.UIContext;
 import org.echosoft.framework.ui.core.ViewStateDescriptor;
@@ -39,8 +39,7 @@ public class GZIPStateSerializer implements StateSerializer {
             out.close();
             zout.close();
         }
-        final byte[] encodedData = Base64.encodeBase64(bout.toByteArray());
-        return new String(encodedData, "ISO-8859-1");
+        return Base64Util.encode(bout.toByteArray());
     }
 
     /**
@@ -51,7 +50,7 @@ public class GZIPStateSerializer implements StateSerializer {
         if (encodedState==null || encodedState.length()==0)
             return;
         final StateHolder states = uctx.getStates();
-        final byte[] decodedData = Base64.decodeBase64(encodedState.getBytes("ISO-8859-1"));
+        final byte[] decodedData = Base64Util.decode(encodedState);
         final ByteArrayInputStream bis = new ByteArrayInputStream(decodedData);
         final GZIPInputStream zis = new GZIPInputStream(bis);
         final ObjectInputStream ois = new ObjectInputStream(zis);

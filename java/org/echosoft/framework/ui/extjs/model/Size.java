@@ -2,39 +2,49 @@ package org.echosoft.framework.ui.extjs.model;
 
 import java.io.Serializable;
 
+import org.echosoft.common.json.annotate.JsonWriteNulls;
+
 /**
  * Описывает размеры некоторой прямоугольной области.
  * 
  * @author Anton Sharapov
  */
+@JsonWriteNulls(false)
 public class Size implements Serializable, Cloneable {
 
-    private int width;
-    private int height;
+    private Integer width;
+    private Integer height;
 
-    public Size(final int size) {
+    public Size() {
+        this(null, null);
+    }
+
+    public Size(final Integer size) {
         this(size, size);
     }
 
-    public Size(final int width, final int height) {
+    public Size(final Integer width, final Integer height) {
         this.width = width;
         this.height = height;
     }
 
-    public int getWidth() {
+    public Integer getWidth() {
         return width;
     }
-    public void setWidth(final int width) {
+    public void setWidth(final Integer width) {
         this.width = width;
     }
 
-    public int getHeight() {
+    public Integer getHeight() {
         return height;
     }
-    public void setHeight(final int height) {
+    public void setHeight(final Integer height) {
         this.height = height;
     }
 
+    public boolean isEmpty() {
+        return width==null && height==null;
+    }
 
     @Override
     public int hashCode() {
@@ -46,7 +56,8 @@ public class Size implements Serializable, Cloneable {
         if (obj==null || !getClass().equals(obj.getClass()))
             return false;
         final Size other = (Size)obj;
-        return width==other.width && height==other.height;
+        return (width!=null && other.width!=null ? width.intValue()==other.width.intValue() : width==null && other.width==null) &&
+               (height!=null && other.height!=null ? height.intValue()==other.height.intValue() : height==null && other.height==null);
     }
 
     @Override

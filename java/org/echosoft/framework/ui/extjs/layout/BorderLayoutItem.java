@@ -1,5 +1,9 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.extjs.model.Margins;
 
@@ -23,12 +27,12 @@ public class BorderLayoutItem extends LayoutItem {
     private boolean floatable;          // определяет возможность показа региона в "плавающем" виде.
     private Margins cmargins;           // отступы по краям региона когда последний находится в свернутом виде. Никогда не равен null.
     private Margins margins;            // отступы по краям региона. Никогда не равен null.
-    private boolean split;              // включение данной опции дает возможность динамически изменять размеры региона (ширину или высоту).
     private boolean collapsible;        // определяет возможность сворачивания региона.
     private CollapseMode collapseMode;  // определяет способ сворачивания региона.
+    private boolean split;              // включение данной опции дает возможность динамически изменять размеры региона (ширину или высоту).
+    private String splitTip;            // всплывающая подсказка отображаемая над полоской-разделителем между регионами (используется при split=true).
     private int minSize;                // минимальная ширина/высота региона (зависит от региона).
     private int maxSize;                // максимальная ширина/высота региона (зависит от региона).
-    private String splitTip;            // всплывающая подсказка отображаемая над полоской-разделителем между регионами (используется при split=true).
 
     public BorderLayoutItem() {
         super();
@@ -53,12 +57,12 @@ public class BorderLayoutItem extends LayoutItem {
             floatable = other.floatable;
             cmargins = new Margins(other.cmargins);
             margins = new Margins(other.margins);
-            split = other.split;
             collapsible = other.collapsible;
             collapseMode = other.collapseMode;
+            split = other.split;
+            splitTip = other.splitTip;
             minSize = other.minSize;
             maxSize = other.maxSize;
-            splitTip = other.splitTip;
         } else {
             region = Region.CENTER;
             animFloat = true;
@@ -172,23 +176,6 @@ public class BorderLayoutItem extends LayoutItem {
     }
 
     /**
-     * Возвращает <code>true</code> если пользовать может изменять размер данного региона в процессе работы. Свойство не поддерживается для центрального региона.<br/>
-     * Значение свойства по умолчанию: <code>false</code>.
-     * @return  <code>true</code>  если размер данного региона можно динамически изменять.
-     */
-    public boolean isSplit() {
-        return split;
-    }
-    /**
-     * Определяет возможно ли изменение пользователем размеров данного региона в процессе работы.
-     * Значение свойства по умолчанию: <code>false</code>.
-     * @param split  <code>true</code>  если размер данного региона можно динамически изменять.
-     */
-    public void setSplit(final boolean split) {
-        this.split = split;
-    }
-
-    /**
      * Возвращает <code>true</code> если регион поддерживает возможность сворачивания.<br/>
      * Значение свойства по умолчанию: <code>false</code>.
      * @return <code>true</code> если регион поддерживает возможность сворачивания.
@@ -220,6 +207,38 @@ public class BorderLayoutItem extends LayoutItem {
      */
     public void setCollapseMode(final CollapseMode collapseMode) {
         this.collapseMode = collapseMode!=null ? collapseMode : CollapseMode.STANDARD;
+    }
+
+    /**
+     * Возвращает <code>true</code> если пользовать может изменять размер данного региона в процессе работы. Свойство не поддерживается для центрального региона.<br/>
+     * Значение свойства по умолчанию: <code>false</code>.
+     * @return  <code>true</code>  если размер данного региона можно динамически изменять.
+     */
+    public boolean isSplit() {
+        return split;
+    }
+    /**
+     * Определяет возможно ли изменение пользователем размеров данного региона в процессе работы.
+     * Значение свойства по умолчанию: <code>false</code>.
+     * @param split  <code>true</code>  если размер данного региона можно динамически изменять.
+     */
+    public void setSplit(final boolean split) {
+        this.split = split;
+    }
+
+    /**
+     * Возвращает всплывающую подсказку, отображаемую над полоской-разделителем между регионами. Используется только при split=true.
+     * @return  всплывающая подсказка или <code>null</code>.
+     */
+    public String getSplitTip() {
+        return splitTip;
+    }
+    /**
+     * Указывает всплывающую подсказку, отображаемую над полоской-разделителем между регионами. Используется только при split=true.
+     * @param splitTip  всплывающая подсказка или <code>null</code>.
+     */
+    public void setSplitTip(final String splitTip) {
+        this.splitTip = StringUtil.trim(splitTip);
     }
 
     /**
@@ -256,20 +275,34 @@ public class BorderLayoutItem extends LayoutItem {
         this.maxSize = maxSize;
     }
 
-    /**
-     * Возвращает всплывающую подсказку, отображаемую над полоской-разделителем между регионами. Используется только при split=true.
-     * @return  всплывающая подсказка или <code>null</code>.
-     */
-    public String getSplitTip() {
-        return splitTip;
+    @Override
+    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        super.serialize(out);
+        out.writeProperty("region", region.name().toLowerCase());
+        if (!animFloat)
+            out.writeProperty("animFloat", false);
+        if (!autoHide)
+            out.writeProperty("autoHide", false);
+        if (!floatable)
+            out.writeProperty("floatable", false);
+        if (!cmargins.isEmpty())
+            out.writeProperty("cmargins", cmargins.encode());
+        if (!margins.isEmpty())
+            out.writeProperty("margins", margins.encode());
+        if (collapsible)
+            out.writeProperty("collapsible", true);
+        if (collapseMode!=CollapseMode.STANDARD)
+            out.writeProperty("collapseMode", collapseMode.name().toLowerCase());
+        if (split)
+            out.writeProperty("split", true);
+        if (splitTip!=null)
+            out.writeProperty("splitTip", splitTip);
+        if (minSize!=50 && minSize>=0)
+            out.writeProperty("minSize", minSize);
+        if (maxSize!=500 && maxSize>=0)
+            out.writeProperty("maxSize", maxSize);
     }
-    /**
-     * Указывает всплывающую подсказку, отображаемую над полоской-разделителем между регионами. Используется только при split=true.
-     * @param splitTip  всплывающая подсказка или <code>null</code>.
-     */
-    public void setSplitTip(final String splitTip) {
-        this.splitTip = StringUtil.trim(splitTip);
-    }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {

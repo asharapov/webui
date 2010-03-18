@@ -1,5 +1,9 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.extjs.model.Margins;
 
 /**
@@ -47,5 +51,15 @@ public class BoxLayoutItem extends LayoutItem {
      */
     public void setMargins(final Margins margins) {
         this.margins = margins!=null ? margins : new Margins();
+    }
+
+
+    @Override
+    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        super.serialize(out);
+        if (flex!=0)
+            out.writeProperty("flex", flex);
+        if (!margins.isEmpty())
+            out.writeProperty("margins", margins.encode());
     }
 }

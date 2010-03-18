@@ -1,5 +1,9 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 
 /**
@@ -35,4 +39,12 @@ public class AnchorLayoutItem extends LayoutItem {
     public void setAnchor(final String anchor) {
         this.anchor = StringUtil.trim(anchor);
     }
+
+    @Override
+    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        super.serialize(out);
+        if (anchor!=null)
+            out.writeProperty("anchor", anchor);
+    }
+
 }

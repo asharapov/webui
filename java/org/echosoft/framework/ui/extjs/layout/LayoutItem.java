@@ -1,7 +1,10 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
+import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 
 /**
@@ -71,6 +74,22 @@ public abstract class LayoutItem implements Serializable, Cloneable {
         this.hideParent = hideParent;
     }
 
+
+    /**
+     * Сериализует свойства компонента, специфичные для конкретного менеджера компоновки.
+     * @param out  выходной поток.
+     * @throws java.io.IOException  в случае каких-либо ошибок связанных с помещением данных в поток.
+     * @throws java.lang.reflect.InvocationTargetException  в случае ошибок в процессе сериализации данных в JSON формат.
+     * @throws IllegalAccessException  в случае ошибок в процессе сериализации данных в JSON формат.
+     */
+    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        if (ctCls!=null)
+            out.writeProperty("ctCls", ctCls);
+        if (itemId!=null)
+            out.writeProperty("itemId", itemId);
+        if (hideParent)
+            out.writeProperty("hideParent", true);
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {

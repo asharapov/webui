@@ -15,7 +15,6 @@ import org.echosoft.framework.ui.core.AbstractUIComponent;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.layout.LayoutItem;
 import org.echosoft.framework.ui.extjs.model.ComponentPlugin;
-import org.echosoft.framework.ui.extjs.spi.layout.LayoutRegistry;
 
 /**
  * Базовый класс, от которого наследуются все компоненты ExtJS.
@@ -207,7 +206,7 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
         if (hidden)
             out.writeProperty("hidden", true);
         if (layoutItem!=null) {
-            LayoutRegistry.getRenderer(layoutItem).renderItem(layoutItem, out);
+            layoutItem.serialize(out);
         }
         if (!listeners.isEmpty()) {
             out.writeComplexProperty("listeners");

@@ -47,7 +47,7 @@ public class ExtJSPage extends Page implements Serializable {
         out.getOutputWriter().write("WUI.viewport = new Ext.Viewport(");
         out.beginObject();
         out.writeProperty("id", getContext().getClientId());
-        out.writeProperty("layout", "auto");
+        out.writeProperty("layout", "fit");
         out.writeComplexProperty("items");
         if (container!=null) {
             container.invoke(out);

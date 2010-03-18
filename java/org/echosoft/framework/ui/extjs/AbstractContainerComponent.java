@@ -14,7 +14,6 @@ import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.layout.AutoLayout;
 import org.echosoft.framework.ui.extjs.layout.Layout;
 import org.echosoft.framework.ui.extjs.layout.LayoutItem;
-import org.echosoft.framework.ui.extjs.spi.layout.LayoutRegistry;
 
 /**
  * Базовый класс для всех компонент, которые служат контейнерами для других компонент.
@@ -230,9 +229,22 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent im
             out.writeProperty("forceLayout", true);
         if (hideBorders)
             out.writeProperty("hideBorders", true);
-        if (layout!=null) {
-            LayoutRegistry.getRenderer(layout).renderConfig(layout, out);
+        if (layout!=null)
+            layout.serialize(out);
+        if (defaults!=null) {
+            out.writeComplexProperty("defaults");
+            out.beginObject();
+            defaults.serialize(out);
+            out.endObject();
         }
+
+//        TODO: определиться с тем кто и как будет инициировать рендеринг элементов контейнера ...
+//        out.writeComplexProperty("items");
+//        out.beginArray();
+//        for (AbstractExtJSComponent item : items) {
+//
+//        }
+//        out.endArray();
     }
 
 }

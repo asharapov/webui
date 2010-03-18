@@ -1,5 +1,9 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.extjs.model.Margins;
 
 /**
@@ -17,18 +21,6 @@ public class BoxLayout extends Layout {
         padding = new Margins();
     }
     
-    public LayoutItem makeItem() {
-        return new BoxLayoutItem();
-    }
-
-    public LayoutItem makeItem(final LayoutItem item) {
-        return new BoxLayoutItem(item);
-    }
-
-    public String getLayout() {
-        return "box";
-    }
-
     /**
      * Возвращает величину отступов которые будут применяться к каждому компоненту в контейнере у которого не было явно указан соответствующий параметр.
      * @return величина отступов по умолчанию для всех компонент в контейнере. Метод никогда не возвращает <code>null</code>.
@@ -58,6 +50,36 @@ public class BoxLayout extends Layout {
     public void setPadding(final Margins padding) {
         this.padding = padding;
     }
+
+    @Override
+    public LayoutItem makeItem() {
+        return new BoxLayoutItem();
+    }
+
+    @Override
+    public LayoutItem makeItem(final LayoutItem item) {
+        return new BoxLayoutItem(item);
+    }
+
+    @Override
+    public String getLayout() {
+        return "box";
+    }
+
+    @Override
+    protected boolean isCustomized() {
+        return super.isCustomized() || !padding.isEmpty() || !defaultMargins.isEmpty();
+    }
+
+    @Override
+    protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        super.serializeConfigAttrs(out);
+        if (!padding.isEmpty())
+            out.writeProperty("padding", padding.encode());
+        if (!defaultMargins.isEmpty())
+            out.writeProperty("defaultMargins", defaultMargins.encode());
+    }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {

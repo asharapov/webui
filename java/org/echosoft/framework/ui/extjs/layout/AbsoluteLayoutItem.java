@@ -1,5 +1,10 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.echosoft.common.json.JsonWriter;
+
 /**
  * Данный бин описывает характеристики компонент специфичных при работе в контейнере вида <code>Ext.layout.AbsoluteLayout</code>.
  * @author Anton Sharapov
@@ -73,4 +78,17 @@ public class AbsoluteLayoutItem extends AnchorLayoutItem {
     public void setRelated(final boolean related) {
         this.related = related;
     }
+
+    @Override
+    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        super.serialize(out);
+        if (related) {
+            out.writeProperty("x", x);
+            out.writeProperty("y", y);
+        } else {
+            out.writeProperty("pageX", x);
+            out.writeProperty("pageY", y);
+        }
+    }
+
 }

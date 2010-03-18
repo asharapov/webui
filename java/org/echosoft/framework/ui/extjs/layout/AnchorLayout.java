@@ -1,5 +1,9 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.extjs.model.Size;
 
 /**
@@ -8,8 +12,11 @@ import org.echosoft.framework.ui.extjs.model.Size;
  */
 public class AnchorLayout extends Layout {
 
-    private Size anchorSize;        // виртуальный размер контейнера или null.  //TODO ExtJS: свойство должно быть в контексте контейнера, не упаковщика!!!
+    private Size anchorSize;        // виртуальный размер контейнера.
 
+    public AnchorLayout() {
+        anchorSize = new Size();
+    }
     public LayoutItem makeItem() {
         return new AnchorLayoutItem();
     }
@@ -23,28 +30,26 @@ public class AnchorLayout extends Layout {
     }
 
     /**
-     * Использование данного свойства дает возможность переопределить виртуальный размер контейнера компонент,
-     * то есть все размеры компонент в этом контейнере расчитываются исходя не из реальных размеров контейнера а исходя из указанных в этом свойстве.
-     * @return  виртуальные размеры контейнера или <code>null</code> если расчет размеров компонент должен вестись основываясь на реальных размерах контейнера.
+     * Использование данного свойства дает возможность переопределить виртуальный размер контейнера компонент.
+     * Если в возвращаемом объекте будет явно задана ширина или высота то все размеры компонент в этом контейнере
+     * будут расчитываться исходя не из реальных размеров контейнера а исходя из указанных.
+     * @return  виртуальные размеры контейнера.
      */
     public Size getAnchorSize() {
         return anchorSize;
     }
-    /**
-     * Дает возможность переопределить виртуальный размер контейнера компонент,
-     * то есть все размеры компонент в этом контейнере расчитываются исходя не из реальных размеров контейнера а исходя из указанных в этом свойстве.
-     * @param anchorSize  виртуальные размеры контейнера или <code>null</code> если расчет размеров компонент должен вестись основываясь на реальных размерах контейнера.
-     */
-    public void setAnchorSize(final Size anchorSize) {
-        this.anchorSize = anchorSize;
-    }
 
+    @Override
+    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+        super.serialize(out);
+        if (!anchorSize.isEmpty())
+            out.writeProperty("anchorSize", anchorSize);
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         final AnchorLayout result = (AnchorLayout)super.clone();
-        if (anchorSize!=null)
-            result.anchorSize = (Size)anchorSize.clone();
+        result.anchorSize = (Size)anchorSize.clone();
         return result;
     }
 }

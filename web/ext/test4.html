@@ -1,0 +1,46 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.1.1/resources/css/ext-all.css" />
+<script src="http://localhost:8000/ext-3.1.1/adapter/ext/ext-base.js"></script>
+<script src="http://localhost:8000/ext-3.1.1/ext-all-debug.js"></script>
+</head>
+<body>
+<div id="templates" style="display:none">
+  <div id="my-div" style="border: 1px solid green;width:300px; height:100px">this is a content for <b>my</b> div</div>
+</div>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.1.1/resources/images/s.gif";
+Ext.onReady( function() {
+    var root = new Ext.Viewport({
+      layout: "auto",
+      items: [{
+        xtype: "form",
+        title: "test",
+        frame: true,  
+        width: 400,
+        layout: "form",
+        items: [{
+          style: "border:1px solid green",
+          width: 300,
+          xtype: "textfield",
+          fieldLabel: "t1",
+        },{
+          width: 300,
+          xtype: "textfield",
+          fieldLabel: "t2",
+          disabled: true
+        }],
+        buttons: [{
+          text: "test",
+          handler: function(button) {
+            console.log(button);
+          }
+          //contentEl: "my-div"
+        }]
+      }]
+    });
+});
+</script>
+</body>
+</html>

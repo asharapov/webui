@@ -1,0 +1,45 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.1.1/resources/css/ext-all.css" />
+<script src="http://localhost:8000/ext-3.1.1/adapter/ext/ext-base.js"></script>
+<script src="http://localhost:8000/ext-3.1.1/ext-all-debug.js"></script>
+</head>
+<body>
+  <table id="my-table" border="1">
+    <tr>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+    </tr>
+     <tr>
+      <td>7</td>
+      <td>8</td>
+      <td>9</td>
+    </tr>
+   </table>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.1.1/resources/images/s.gif";
+Ext.onReady( function() {
+    Ext.namespace("webui");
+
+    Ext.Msg.prompt("Anton", "Can I do it ?", function(btn,response) {
+        var element = Ext.get("my-table");
+        console.debug(btn, response, element, "  >  ", element.dom.rows[1]);
+        element.dom.rows[1].cells[1].innerHTML = response;
+        Ext.DomHelper.applyStyles(element.dom.rows[1].cells[1], {
+            backgroundColor: "#EFEFEF",
+            cursor: "pointer",
+            color:"magenta"
+        });
+        Ext.Element.get(element.dom.rows[1].cells[1]).highlight();
+    });
+});
+</script>
+</body>
+</html>

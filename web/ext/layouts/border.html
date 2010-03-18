@@ -1,0 +1,57 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.1.1/resources/css/ext-all.css" />
+<script src="http://localhost:8000/ext-3.1.1/adapter/ext/ext-base.js"></script>
+<script src="http://localhost:8000/ext-3.1.1/ext-all-debug.js"></script>
+</head>
+<body>
+<div id="templates" style="display:none">
+  <div id="my-div" style="border: 1px solid green;width:300px; height:100px">this is a content for <b>my</b> div</div>
+</div>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.1.1/resources/images/s.gif";
+Ext.onReady( function() {
+    var viewport = new Ext.Viewport({
+      layout: "fit",
+      items: {
+        layout: "border",
+        items: [{
+          region: "north",
+          height: 50,
+          split: true,
+          collapseMode: "mini",
+          items: [{
+            xtype: "button",
+            text: "north"
+          }]
+        }, {
+          region: "center",
+          items: [{
+            xtype: "button",
+            text: "center"
+          }]
+        }, {
+          region: "west",
+          width: 100,
+          //minSize: 60,
+          //maxSize:200,
+          margins: "30",
+          split: false,
+          collapsible: true,
+          collapseMode: "mini",
+          useSplitTips: true,
+          splitTip: "my tip",
+          collapsibleSplitTip: "my collapsible tip",
+          //cmargins: "2",
+          items: [ {
+            xtype: "button",
+            text: "west"
+          }]
+        }]
+      }
+    });
+});
+</script>
+</body>
+</html>

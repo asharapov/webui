@@ -37,7 +37,14 @@ Ext.onReady( function() {
             ctCls: "XXX",
             xtype: "box",
             style: "border: 1px solid blue",
-            autoEl: "p",
+            autoEl: {
+              tag: "span",
+              html: "tag content",
+              children: [
+                {tag:"div", cls:"aaa", html:"aaa"},
+                {tag:"div", class:"bbb", html:"bbb"}
+              ]
+            },
             //html: "test",
             tpl: new Ext.Template("<span>Hello, <b>{name}</b>! I'm glad to see you at <b>{date}</b> for a <b>{cnt}</b> times.</span>"),
             data: {name: "Anton", cnt: 3.5, date: new Date()}

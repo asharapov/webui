@@ -22,9 +22,9 @@ public class AccordionLayout extends FitLayout {
 
     public AccordionLayout() {
         super();
-        setAutoWidth(true);
-        setFill(true);
-        setTitleCollapse(true);
+        autoWidth = true;
+        fill = true;
+        titleCollapse = true;
     }
 
     public LayoutItem makeItem() {
@@ -112,16 +112,34 @@ public class AccordionLayout extends FitLayout {
         this.fill = fill;
     }
 
+    /**
+     * Опция определяет положение кнопки "скрыть/раскрыть" на панели инструментов.
+     * @return <code>true</code> если эта кнопка будет крайней слева, <code>false</code> если она будет крайней справа.
+     *      По умолчанию возвращает <code>false</code>.
+     */
     public boolean isCollapseFirst() {
         return collapseFirst;
     }
+    /**
+     * Устанавливает опцию определяещую положение кнопки "скрыть/раскрыть" на панели инструментов.
+     * @param collapseFirst <code>true</code> если эта кнопка должна быть крайней слева, <code>false</code> если она должна быть крайней справа.
+     *      По умолчанию возвращает <code>false</code>.
+     */
     public void setCollapseFirst(final boolean collapseFirst) {
         this.collapseFirst = collapseFirst;
     }
 
+    /**
+     * Опция определяет наличие кнопки "скрыть/раскрыть" на панели инструментов.
+     * @return <code>true</code> если эта кнопка будет скрыта от пользователя; если <code>false</code> (по умолчанию) то кнопка будет отображаться пользователю.
+     */
     public boolean isHideCollapseTool() {
         return hideCollapseTool;
     }
+    /**
+     * Устанавливает опцию определяещую доступность кнопки "скрыть/раскрыть" на панели инструментов для пользователя.
+     * @param hideCollapseTool  <code>true</code> если эта кнопка должна быть скрыта от пользователя.
+     */
     public void setHideCollapseTool(final boolean hideCollapseTool) {
         this.hideCollapseTool = hideCollapseTool;
         if (hideCollapseTool) {
@@ -129,9 +147,19 @@ public class AccordionLayout extends FitLayout {
         }
     }
 
+    /**
+     * Опция определяет возможность сворачивания/разворачивания панели по клику на ее строку заголовка.
+     * @return <code>true</code> если по клику на заголовке панели она будет сворачиваться или разворачиваться.
+     *      По умолчанию метод возвращает <code>true</code>.
+     */
     public boolean isTitleCollapse() {
         return titleCollapse;
     }
+    /**
+     * Устанавливает опцию определяющую возможность сворачивания/разворачивания панели по клику на ее строку заголовка.
+     * @param titleCollapse <code>true</code> если по клику на заголовке панели она будет сворачиваться или разворачиваться.
+     *      По умолчанию метод возвращает <code>true</code>.
+     */
     public void setTitleCollapse(final boolean titleCollapse) {
         this.titleCollapse = titleCollapse;
         if (!titleCollapse && hideCollapseTool) {

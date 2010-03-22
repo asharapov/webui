@@ -26,6 +26,16 @@ public class Box extends AbstractBoxComponent {
         this.element = element;
     }
 
+    public String getHtml() {
+        return element!=null ? element.getHtml() : null;
+    }
+    public void setHtml(final String html) {
+        if (element==null) {
+            element = new DomElement();
+        }
+        element.setHtml(html);
+    }
+
     public Template getTemplate() {
         return template;
     }

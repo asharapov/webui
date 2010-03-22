@@ -19,11 +19,14 @@ public class DomElement implements Serializable {
     private Map<String,String> attrs;
     private String html;
 
-    public DomElement(final String tag) {
+    public DomElement() {
+        this.tag = "div";
+    }
+    public DomElement(String tag) {
         this.tag = StringUtil.getNonEmpty(tag, "div");
     }
 
-    public DomElement(final String tag, final String html) {
+    public DomElement(String tag, String html) {
         this.tag = StringUtil.getNonEmpty(tag, "div");
         this.html = StringUtil.trim(html);
     }

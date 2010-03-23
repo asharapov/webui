@@ -1,17 +1,19 @@
 package org.echosoft.framework.ui.extjs.layout;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
+import org.echosoft.framework.ui.core.ComponentContext;
+import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.extjs.model.Margins;
 
 /**
- * Данный бин описывает характеристики компонент специфичных при работе в контейнере вида <code>Ext.layout.BorderLayout</code>.
+ * Данный является частью менеджера упаковки {@link BorderLayout}.
  * @author Anton Sharapov
  */
-public class BorderLayoutItem extends LayoutItem {
+public class BorderLayoutRegion implements UIComponent {
 
     public static enum Region {
         NORTH, EAST, SOUTH, WEST, CENTER
@@ -21,7 +23,8 @@ public class BorderLayoutItem extends LayoutItem {
         STANDARD, MINI
     }
 
-    private Region region;              // к какому региону относится данный компонент.
+    private final List<UIComponent> items;
+    private final Region region;        // к какому региону относится данный компонент.
     private boolean animFloat;          // использовать или нет анимацию при открытии и закрытии "плавающей" панели.
     private boolean autoHide;           // следует ли автоматически закрывать "плавающую" панель при потере фокуса.
     private boolean floatable;          // определяет возможность показа региона в "плавающем" виде.
@@ -33,49 +36,32 @@ public class BorderLayoutItem extends LayoutItem {
     private String splitTip;            // всплывающая подсказка отображаемая над полоской-разделителем между регионами (используется при split=true).
     private int minSize;                // минимальная ширина/высота региона (зависит от региона).
     private int maxSize;                // максимальная ширина/высота региона (зависит от региона).
+    private int width;                  // ширина региона по умолчанию (обязательно к использованию в регионах WEST и EAST).
+    private int height;                 // высота региона по умолчанию (обязательно к использованию в регионах NORTH и SOUTH).
 
-    public BorderLayoutItem() {
-        super();
-        region = Region.CENTER;
+    public BorderLayoutRegion(final Region region) {
+        if (region==null)
+            throw new IllegalArgumentException("No valid region specified");
+        this.region = region;
+        items = new ArrayList<UIComponent>();
         animFloat = true;
         autoHide = true;
         floatable = true;
-        cmargins = new Margins();
-        margins = new Margins();
         collapseMode = CollapseMode.STANDARD;
         minSize = 50;
         maxSize = 500;
+        width = 50;
+        height = 50;
     }
 
-    public BorderLayoutItem(final LayoutItem item) {
-        super(item);
-        if (item instanceof BorderLayoutItem) {
-            final BorderLayoutItem other = (BorderLayoutItem)item;
-            region = other.region;
-            animFloat = other.animFloat;
-            autoHide = other.autoHide;
-            floatable = other.floatable;
-            cmargins = new Margins(other.cmargins);
-            margins = new Margins(other.margins);
-            collapsible = other.collapsible;
-            collapseMode = other.collapseMode;
-            split = other.split;
-            splitTip = other.splitTip;
-            minSize = other.minSize;
-            maxSize = other.maxSize;
-        } else {
-            region = Region.CENTER;
-            animFloat = true;
-            autoHide = true;
-            floatable = true;
-            cmargins = new Margins();
-            margins = new Margins();
-            collapseMode = CollapseMode.STANDARD;
-            minSize = 50;
-            maxSize = 500;
-        }
+    /**
+     * {@inheritDoc}
+     * <p><strong>Важно!</strong> Данный тип компонент не требует никакого взаимодействия с внешним миром и поэтому данный метод всегда возвращает <code>null</code>.</p>
+     * @return  Всегда возвращает <code>null</code>.
+     */
+    public ComponentContext getContext() {
+        return null;
     }
-
 
     /**
      * Возвращает регион в котором данный компонент будет размещен. <br/>
@@ -84,14 +70,6 @@ public class BorderLayoutItem extends LayoutItem {
      */
     public Region getRegion() {
         return region;
-    }
-    /**
-     * Определяет регион в котором данный компонент будет размещен. <br/>
-     * В контейнере не может находиться более одного компонента с одинаковым значением данного свойства.
-     * @param region  регион в котором будет расположен данный компонент. Не может быть <code>null</code>.
-     */
-    public void setRegion(final Region region) {
-        this.region = region!=null ? region : Region.CENTER;
     }
 
     /**
@@ -157,7 +135,7 @@ public class BorderLayoutItem extends LayoutItem {
      * @param cmargins величина отступов вокруг региона когда компонент находится в свернутом состоянии. Не может быть <code>null</code>.
      */
     public void setCmargins(final Margins cmargins) {
-        this.cmargins = cmargins!=null ? cmargins : new Margins();
+        this.cmargins = cmargins;
     }
 
     /**
@@ -172,7 +150,7 @@ public class BorderLayoutItem extends LayoutItem {
      * @param margins величина отступов вокруг региона в контейнере. Метод никогда не возвращает <code>null</code>.
      */
     public void setMargins(final Margins margins) {
-        this.margins = margins!=null ? margins : new Margins();
+        this.margins = margins;
     }
 
     /**
@@ -269,15 +247,76 @@ public class BorderLayoutItem extends LayoutItem {
     /**
      * Указывает максимально допустимый размер (ширина или высота) региона, используется при динамическом изменении пользователем размера региона<br/>
      * Значение свойства по умолчанию: <code>50</code> пикселей.
-     * @param maxSize  максисмально допустимый размер региона в пикселях.
+     * @param maxSize  максимально допустимый размер региона в пикселях.
      */
     public void setMaxSize(final int maxSize) {
         this.maxSize = maxSize;
     }
 
+    /**
+     * Возвращает используемую по умолчанию ширину регионов EAST и WEST.
+     * @return  ширина регионов EAST и WEST по умолчанию. 
+     */
+    public int getWidth() {
+        return width;
+    }
+    /**
+     * Устанавливает используемую по умолчанию ширину регионов EAST и WEST.
+     * @param width  ширина регионов EAST и WEST по умолчанию. 
+     */
+    public void setWidth(final int width) {
+        this.width = width;
+    }
+
+    /**
+     * Возвращает используемую по умолчанию высоту регионов NORTH и AOUTH.
+     * @return  высота регионов NORTH и SOUTH по умолчанию.
+     */
+    public int getHeight() {
+        return height;
+    }
+    /**
+     * Устанавливает используемую по умолчанию высоту регионов NORTH и SOUTH.
+     * @param height высота регионов NORTH и SOUTH по умолчанию.
+     */
+    public void setHeight(final int height) {
+        this.height = height;
+    }
+
+    /**
+     * Возвращает количество компонент размещенных в данном регионе.
+     * @return  количество компонент размещенных в данном регионе.
+     */
+    public int getItemsCount() {
+        return items.size();
+    }
+
+    /**
+     * Возвращает итератор по всем компонентам размещенным в данном регионе.
+     * @return  все компонента размещенные в данном регионе.
+     */
+    public Iterable<UIComponent> getItems() {
+        return items;
+    }
+
+    /**
+     * Регистрирует новый компонент в данном регионе.
+     * @param  item  новый компонент который должен быть добавлен в данный регион.
+     * @return  Добавленный в регион компонент.
+     */
+    public <T extends UIComponent> T append(final T item) {
+        if (item==null)
+            throw new IllegalArgumentException("Component must be specified");
+        items.add(item);
+        return item;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
-        super.serialize(out);
+    public void invoke(final JsonWriter out) throws Exception {
+        out.beginObject();
         out.writeProperty("region", region.name().toLowerCase());
         if (!animFloat)
             out.writeProperty("animFloat", false);
@@ -285,9 +324,9 @@ public class BorderLayoutItem extends LayoutItem {
             out.writeProperty("autoHide", false);
         if (!floatable)
             out.writeProperty("floatable", false);
-        if (!cmargins.isEmpty())
+        if (cmargins!=null && !cmargins.isEmpty())
             out.writeProperty("cmargins", cmargins.encode());
-        if (!margins.isEmpty())
+        if (margins!=null && !margins.isEmpty())
             out.writeProperty("margins", margins.encode());
         if (collapsible)
             out.writeProperty("collapsible", true);
@@ -301,14 +340,20 @@ public class BorderLayoutItem extends LayoutItem {
             out.writeProperty("minSize", minSize);
         if (maxSize!=500 && maxSize>=0)
             out.writeProperty("maxSize", maxSize);
+        if (region==Region.NORTH || region==Region.SOUTH) {
+            out.writeProperty("height", height);
+        } else {
+            out.writeProperty("width", width);
+        }
+        if (items.size()>0) {
+            out.writeComplexProperty("items");
+            out.beginArray();
+            for (UIComponent component : items) {
+                component.invoke(out);
+            }
+            out.endArray();
+        }
+        out.endObject();
     }
 
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final BorderLayoutItem result = (BorderLayoutItem)super.clone();
-        result.cmargins = (Margins)cmargins.clone();
-        result.margins = (Margins)margins.clone();
-        return result;
-    }
 }

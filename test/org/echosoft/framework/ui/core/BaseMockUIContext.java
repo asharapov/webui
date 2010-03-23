@@ -20,6 +20,8 @@ public class BaseMockUIContext implements UIContext {
     private Theme theme;
     private Agent agent;
     private FastStringWriter out;
+    private String paramsPrefix;
+
     public BaseMockUIContext() {
         this.resources = new Resources();
         this.messages = new Messages();
@@ -27,6 +29,7 @@ public class BaseMockUIContext implements UIContext {
         this.states.setCurrentDescriptor( new ViewStateDescriptor("/", "", 0) );
         this.theme = null; //Application.THEMES_MANAGER.getTheme(Application.DEFAULT_LOCALE);
         this.agent = new Agent(Agent.Type.GECKO, Agent.OS.WINDOWS, 1, 9, "");
+        this.paramsPrefix = "";
         this.out = new FastStringWriter(100);
     }
     public BaseMockUIContext(final StateHolder states) {
@@ -76,6 +79,8 @@ public class BaseMockUIContext implements UIContext {
     public String encodeThemeURL(String path, boolean persistent) {return null;}
     public void invalidateSession() {}
     public void include(String url, Writer out) throws IOException {}
-    public String getParamsPrefix() {return "";}
+    public String getParamsPrefix() {return paramsPrefix;}
     public Writer getResponseWriter() {return out;}
+
+    public void setParamsPrefix(String prefix) {this.paramsPrefix = prefix;}
 }

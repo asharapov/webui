@@ -7,22 +7,34 @@ import java.util.Set;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
+import org.echosoft.framework.ui.extjs.model.Margins;
+import org.echosoft.framework.ui.extjs.model.Point;
 
 /**
  * Абстрактный класс от которого наследуются все компоненты ExtJS имеющие определенные размеры как по ширине так и по высоте.
  * @author Anton Sharapov
  */
-public abstract class AbstractBoxComponent extends AbstractExtJSComponent {
+public abstract class AbstractBoxComponent extends AbstractComponent {
 
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractExtJSComponent.EVENTS, "move", "resize");
+    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractComponent.EVENTS, "move", "resize");
 
     private boolean autoScroll; // дает возможность скроллировать содержимое компонента если оно не влезает в установленные рамки.
-    private Integer width;      // ширина компонента (в пикселях). Если null то ширина будет полностью контролироваться браузером (autoWidth=true).
-    private Integer height;     // высота компонента (в пикселях). Если null то высота будет полностью контролироваться браузером (autoHeight=true).
+    private boolean autoWidth;  // Если true то ширина будет полностью контролироваться браузером (путем установки стиля width:'auto'), в противном случае ширина будет контролироваться ExtJS
+    private boolean autoHeight; // Если true то высота будет полностью контролироваться браузером (путем установки стиля height:'auto'), в противном случае высота будет контролироваться ExtJS
+    private Integer width;      // ширина компонента (в пикселях). 
+    private Integer height;     // высота компонента (в пикселях).
     private Integer maxWidth;   // максимально допустимая ширина (в пикселях).
     private Integer minWidth;   // минимально допустимая ширина (в пикселях).
     private Integer maxHeight;  // максимально допустимая высота (в пикселях).
     private Integer minHeight;  // минимально допустимая высота (в пикселях).
+    // свойства, определяющие положение данного компонента в родительском контейнере
+    //   под управлением <code>Ext.layout.AbsoluteLayout</code>:
+    private Point point;        // координаты левого верхнего угла компонента.
+    //   под управлением <code>Ext.layout.AnchorLayout</code>:
+    private String anchor;      // строка определяющая ширину и (опционально) высоту  относительно размеров контейнера в целом.
+    //   под управлением <code>Ext.layout.BoxLayout</code>:
+    private Margins margins;    // отступы от границ контейнера.
+    private int flex;           // TODO: хз что это такое...
 
     public AbstractBoxComponent(final ComponentContext ctx) {
         super(ctx);
@@ -53,6 +65,44 @@ public abstract class AbstractBoxComponent extends AbstractExtJSComponent {
      */
     public void setAutoScroll(final boolean autoScroll) {
         this.autoScroll = autoScroll;
+    }
+
+    /**
+     * <p>Определяет способ расчета ширины компонента.</p>
+     * <p>Если свойство установлено в <code>true</code> то ширина будет расчитываться полностью браузером (путем установки стиля width:'auto').
+     * В противном случае ширина задается либо путем непосредственного ее задания либо вычисляется по тем или иным правилам менеджером компоновки родительского контейнера.
+     * @return <code>true</code> если ширина должна вычисляться браузером, <code>false</code> если ширина должна вычисляться средствами ExtJS.
+     */
+    public boolean isAutoWidth() {
+        return autoWidth;
+    }
+    /**
+     * <p>Определяет способ расчета ширины компонента.</p>
+     * <p>Если свойство установлено в <code>true</code> то ширина будет расчитываться полностью браузером (путем установки стиля width:'auto').
+     * В противном случае ширина задается либо путем непосредственного ее задания либо вычисляется по тем или иным правилам менеджером компоновки родительского контейнера.
+     * @param autoWidth <code>true</code> если ширина должна вычисляться браузером, <code>false</code> если ширина должна вычисляться средствами ExtJS.
+     */
+    public void setAutoWidth(final boolean autoWidth) {
+        this.autoWidth = autoWidth;
+    }
+
+    /**
+     * <p>Определяет способ расчета высоты компонента.</p>
+     * <p>Если свойство установлено в <code>true</code> то высота будет расчитываться полностью браузером (путем установки стиля height:'auto').
+     * В противном случае высота задается либо путем непосредственного ее задания либо вычисляется по тем или иным правилам менеджером компоновки родительского контейнера.
+     * @return <code>true</code> если высота должна вычисляться браузером, <code>false</code> если высота должна вычисляться средствами ExtJS.
+     */
+    public boolean isAutoHeight() {
+        return autoHeight;
+    }
+    /**
+     * <p>Определяет способ расчета высоты компонента.</p>
+     * <p>Если свойство установлено в <code>true</code> то высота будет расчитываться полностью браузером (путем установки стиля height:'auto').
+     * В противном случае высота задается либо путем непосредственного ее задания либо вычисляется по тем или иным правилам менеджером компоновки родительского контейнера.
+     * @param autoHeight <code>true</code> если высота должна вычисляться браузером, <code>false</code> если высота должна вычисляться средствами ExtJS.
+     */
+    public void setAutoHeight(final boolean autoHeight) {
+        this.autoHeight = autoHeight;
     }
 
     /**
@@ -154,20 +204,97 @@ public abstract class AbstractBoxComponent extends AbstractExtJSComponent {
     }
 
 
+    //
+    // Группа свойств, определяющих положение компонента в родительском контйнере ...
+    //
+
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих абсолютное позициронирование компонент.</p>
+     * Возвращает координаты по которым будет располагаться верхний левый угол компонента.
+     * Координаты могут быть указаны как относительно родительского контейнера так и относительно страницы в целом.
+     * @return координаты по которым будет располагаться верхний левый угол компонента или <code>null</code>.
+     * @see <code> <code>Ext.layout.AbsoluteLayout</code>
+     */
+    public Point getPoint() {
+        return point;
+    }
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих абсолютное позициронирование компонент.</p>
+     * Указывает координаты по которым будет располагаться верхний левый угол компонента.
+     * Координаты могут быть указаны как относительно родительского контейнера так и относительно страницы в целом.
+     * @param point координаты по которым будет располагаться верхний левый угол компонента.
+     * @see <code> <code>Ext.layout.AbsoluteLayout</code>
+     */
+    public void setPoint(final Point point) {
+        this.point = point;
+    }
+
+
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих указание размеров компонент относительно размеров контейенера в целом.</p>
+     * Определяет ширину и высоту компонента относительно размеров контейнера в целом.
+     * @return  строка вида "30% 50%" или "-100 -50" или <code>null</code>.
+     * @see <code> <code>Ext.layout.AnchorLayout</code>
+     */
+    public String getAnchor() {
+        return anchor;
+    }
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих указание размеров компонент относительно размеров контейенера в целом.</p>
+     * Определяет ширину и высоту компонента относительно размеров контейнера в целом.
+     * @param anchor  строка вида "30% 50%" или "-100 -50".
+     * @see <code> <code>Ext.layout.AnchorLayout</code>
+     */
+    public void setAnchor(final String anchor) {
+        this.anchor = StringUtil.trim(anchor);
+    }
+
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
+     * Определяет отступы данного компонента относительно границ контейнера.
+     * @return  отступы относительно границ контейнера или <code>null</code>.
+     * @see <code>Ext.layout.BoxLayout</code>
+     */
+    public Margins getMargins() {
+        return margins;
+    }
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
+     * Определяет отступы данного компонента относительно границ контейнера.
+     * @param margins отступы относительно границ контейнера.
+     * @see <code>Ext.layout.BoxLayout</code>
+     */
+    public void setMargins(final Margins margins) {
+        this.margins = margins;
+    }
+
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
+     * @see <code>Ext.layout.BoxLayout</code>
+     */
+    public int getFlex() {
+        return flex;
+    }
+    /**
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
+     * @see <code>Ext.layout.BoxLayout</code>
+     */
+    public void setFlex(int flex) {
+        this.flex = flex;
+    }
+
 
     @Override
     protected void renderAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.renderAttrs(out);
-        if (width==null) {
+        if (autoWidth)
             out.writeProperty("autoWidth", true);
-        } else {
-            out.writeProperty("width", width);
-        }
-        if (height==null) {
+        if (autoHeight)
             out.writeProperty("autoHeight", true);
-        } else {
+        if (width!=null)
+            out.writeProperty("width", width);
+        if (height!=null)
             out.writeProperty("height", height);
-        }
         if (maxWidth!=null)
             out.writeProperty("boxMaxWidth", maxWidth);
         if (minWidth!=null)
@@ -178,6 +305,22 @@ public abstract class AbstractBoxComponent extends AbstractExtJSComponent {
             out.writeProperty("boxMinHeight", minHeight);
         if (autoScroll)
             out.writeProperty("autoScroll", true);
+
+        if (point!=null) {
+            if (point.isAbsolute()) {
+                out.writeProperty("pageX", point.getX());
+                out.writeProperty("pageY", point.getY());
+            } else {
+                out.writeProperty("x", point.getX());
+                out.writeProperty("y", point.getY());
+            }
+        }
+        if (anchor!=null)
+            out.writeProperty("anchor", anchor);
+        if (margins!=null && !margins.isEmpty())
+            out.writeProperty("margins", margins.encode());
+        if (flex!=0)
+            out.writeProperty("flex", flex);
     }
 
 }

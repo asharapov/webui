@@ -2,16 +2,21 @@ package org.echosoft.framework.ui.extjs.layout;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.framework.ui.core.UIComponent;
+import org.echosoft.framework.ui.extjs.widgets.Panel;
 
 /**
- * Описывает характеристики менеджера раскладки <code>Ext.layout.AccordionLayout</code>.<br/>
- * <strong>Работает только с панелями!</strong>
+ * <p>Описывает характеристики менеджера компоновки <code>Ext.layout.AccordionLayout</code>.</p>
+ * <p><strong>Важно!</strong> Данный тип менеджера компоновки работает только с экземплярами {@link Panel} и его потомками.</p>
  * @author Anton Sharapov
  */
-public class AccordionLayout extends FitLayout {
+public class AccordionLayout extends Layout {
 
+    private final List<Panel> items;
     private boolean activeOnTop;            // каждый раз перемещает активную панель в вверх списка.
     private boolean animate;                // использует или нет анимацию при открытии/закрытии панелей.
     private boolean autoWidth;              // если опция включена, то всем элементам контейнера будет установлено width:'auto'
@@ -22,23 +27,11 @@ public class AccordionLayout extends FitLayout {
 
     public AccordionLayout() {
         super();
+        items = new ArrayList<Panel>();
         autoWidth = true;
         fill = true;
         titleCollapse = true;
     }
-
-    public LayoutItem makeItem() {
-        return new AccordionLayoutItem();
-    }
-
-    public LayoutItem makeItem(final LayoutItem item) {
-        return new AccordionLayoutItem(item);
-    }
-
-    public String getLayout() {
-        return "accordion";
-    }
-
 
     /**
      * Если опция включена, то при активации элемента контейнера, он будет перемещаться на первую позицию списка.
@@ -167,12 +160,67 @@ public class AccordionLayout extends FitLayout {
         }
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getItemsCount() {
+        return items.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Iterable<UIComponent> getItems() {
+        return (Iterable)items;
+    }
+
+    /**
+     * Возвращает итератор по всем компонентам управляемым данным менеджером компоновки.
+     * Так как данный менеджер компоновки
+     * @return итератор по всем компонентам управляемым данным менеджером компоновки.
+     */
+    public Iterable<Panel> getPanels() {
+        return items;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends UIComponent> T append(final T item) {
+        if (item==null)
+            throw new IllegalArgumentException("Component must be specified");
+        if (!(item instanceof Panel))
+            throw new IllegalArgumentException("This layout manager can manage only Panel instances");
+        items.add( (Panel)item );
+        return item;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getLayout() {
+        return "accordion";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isCustomized() {
         return super.isCustomized() ||
                 activeOnTop || animate || !autoWidth || collapseFirst || !fill || hideCollapseTool || !titleCollapse;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);
@@ -191,6 +239,5 @@ public class AccordionLayout extends FitLayout {
         if (!titleCollapse)
             out.writeProperty("titleCollapse", false);
     }
-
 
 }

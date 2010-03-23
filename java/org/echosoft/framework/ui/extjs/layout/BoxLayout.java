@@ -2,38 +2,43 @@ package org.echosoft.framework.ui.extjs.layout;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.extjs.model.Margins;
 
 /**
- * Описывает характеристики менеджера раскладки <code>Ext.layout.BoxLayout</code>.
+ * Описывает характеристики менеджера компоновки <code>Ext.layout.BoxLayout</code>.
  * @author Anton Sharapov
  */
 public class BoxLayout extends Layout {
 
-    private Margins defaultMargins;     // применяется к каждому компоненту в контейнере у которого не указано соответствующее свойство.
-    private Margins padding;            // указывает отступы применяемые ко всем компонетам в контейнере.
+    private final List<UIComponent> items;
+    private Margins defaultMargins;             // применяется к каждому компоненту в контейнере у которого не указано соответствующее свойство.
+    private Margins padding;                    // указывает отступы применяемые ко всем компонетам в контейнере.
 
     public BoxLayout() {
         super();
-        defaultMargins = new Margins();
-        padding = new Margins();
+        items = new ArrayList<UIComponent>();
     }
     
     /**
-     * Возвращает величину отступов которые будут применяться к каждому компоненту в контейнере у которого не было явно указан соответствующий параметр.
-     * @return величина отступов по умолчанию для всех компонент в контейнере. Метод никогда не возвращает <code>null</code>.
+     * Возвращает величину отступов которые будут применяться к каждому компоненту в контейнере
+     * у которого не было явно указан соответствующий параметр.
+     * @return величина отступов по умолчанию для всех компонент в контейнере или <code>null</code>.
      */
     public Margins getDefaultMargins() {
         return defaultMargins;
     }
     /**
-     * Указывает величину отступов которые будут применяться к каждому компоненту в контейнере у которого не было явно указан соответствующий параметр.
-     * @param defaultMargins величина отступов по умолчанию для всех компонент в контейнере.
+     * Указывает величину отступов которые будут применяться к каждому компоненту в контейнере
+     * у которого не было явно указан соответствующий параметр.
+     * @param margins величина отступов по умолчанию для всех компонент в контейнере.
      */
-    public void setDefaultMargins(final Margins defaultMargins) {
-        this.defaultMargins = defaultMargins!=null ? defaultMargins : new Margins();
+    public void setDefaultMargins(final Margins margins) {
+        this.defaultMargins = margins;
     }
 
     /**
@@ -51,41 +56,63 @@ public class BoxLayout extends Layout {
         this.padding = padding;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public LayoutItem makeItem() {
-        return new BoxLayoutItem();
+    public int getItemsCount() {
+        return items.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public LayoutItem makeItem(final LayoutItem item) {
-        return new BoxLayoutItem(item);
+    public Iterable<UIComponent> getItems() {
+        return items;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getLayout() {
+    public <T extends UIComponent> T append(final T item) {
+        if (item==null)
+            throw new IllegalArgumentException("Component must be specified");
+        items.add(item);
+        return item;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getLayout() {
         return "box";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isCustomized() {
-        return super.isCustomized() || !padding.isEmpty() || !defaultMargins.isEmpty();
+        return super.isCustomized() ||
+                (padding!=null && !padding.isEmpty()) ||
+                (defaultMargins!=null && !defaultMargins.isEmpty());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);
-        if (!padding.isEmpty())
+        if (padding!=null && !padding.isEmpty())
             out.writeProperty("padding", padding.encode());
-        if (!defaultMargins.isEmpty())
+        if (defaultMargins!=null && !defaultMargins.isEmpty())
             out.writeProperty("defaultMargins", defaultMargins.encode());
     }
 
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final BoxLayout result = (BoxLayout)super.clone();
-        result.defaultMargins = (Margins)defaultMargins.clone();
-        result.padding = (Margins)padding.clone();
-        return result;
-    }
 }

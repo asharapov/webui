@@ -1,0 +1,24 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.1.1/resources/css/ext-all.css" />
+<script src="http://localhost:8000/ext-3.1.1/adapter/ext/ext-base.js"></script>
+<script src="http://localhost:8000/ext-3.1.1/ext-all-debug.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.1.1/resources/images/s.gif";
+Ext.onReady( function() {
+  var viewport = new Ext.Viewport({
+    layout: "fit",
+    items: [{
+      xtype: "panel",
+      frame: true,
+      title: "my panel",
+      margins: "30",
+      html: "test"
+    }]
+  });
+});
+</script>
+</body>
+</html>

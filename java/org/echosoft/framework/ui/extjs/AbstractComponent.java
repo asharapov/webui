@@ -11,21 +11,37 @@ import java.util.Set;
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
-import org.echosoft.framework.ui.core.AbstractUIComponent;
 import org.echosoft.framework.ui.core.ComponentContext;
-import org.echosoft.framework.ui.extjs.layout.LayoutItem;
+import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.extjs.model.ComponentPlugin;
 
 /**
  * Базовый класс, от которого наследуются все компоненты ExtJS.
  * @author Anton Sharapov
  */
-public abstract class AbstractExtJSComponent extends AbstractUIComponent implements Serializable {
+public abstract class AbstractComponent implements UIComponent, Serializable {
 
     public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(
-            "added", "afterrender", "beforedestroy", "beforehide", "beforerender", "beforeshow", "beforestaterestore", "beforestatesave",
-            "destroy", "disable", "enable", "hide", "removed", "render", "show", "staterestore", "statesave"
+            "added", "afterrender", "beforedestroy", "beforehide", "beforerender",
+            "beforeshow", "beforestaterestore", "beforestatesave","destroy", "disable",
+            "enable", "hide", "removed", "render", "show",
+            "staterestore", "statesave"
     );
+
+    /**
+     * Контекст компонента. Рекомендуется устанавливать непосредственно при создании экземпляра компонента,
+     * хотя допускается отложенная установка контекста. Главное правило - контекст должен быть гарантированно установлен
+     * перед вызовом метода {@link #invoke(org.echosoft.common.json.JsonWriter)} компонента.
+     */
+    private ComponentContext ctx;
+    /**
+     * Зарегистрированные в компоненте обработчики событий.
+     */
+    private Map<String,JSFunction> listeners;
+    /**
+     * Перечень плагинов, сопряженных с данным компонентом.
+     */
+    private Set<ComponentPlugin> plugins;
 
     private String cssClass;        // CSS класс, дополнительно применяемый к корневому элементу компонента.
     private String overCssClass;    // CSS класс, дополнительно применяемый к корневому элементу компонента в момент когда над ним находится курсор мышки.
@@ -33,22 +49,32 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
     private boolean disabled;       // признак неактивности компонента (false по умолчанию).
     private boolean hidden;         // признак невидимости компонента (false по умолчанию).
     private String ref;             // позволяет определить ссылку на данный компонент в одном из иных компонентов иерархии.
-    private LayoutItem layoutItem;  // содержит дополнительные характеристики описывающие как данный компонент отображается в родительском контейнере. Каждый тип контейнера имеет свой набор допустимых характеристик. 
+    // свойства, определяющие положение данного компонента в родительском контейнере
+    //   под управлением любого менеджера компоновки:
+    private String ctCls;           // CSS класс который будет дополнительно добавлен к контейнеру в котором данный компонент расположен.
+    private String itemId;          // идентификатор компонента в контейнере. Должен быть уникальным в рамках всех компонентов лежащих в данном контейнере.
+    private boolean hideParent;     // признак, определяющий поведение контейнера в момент когда входящий в него компонент становится невидимым.
 
-    /**
-     * Зарегистрированные в компоненте обработчики событий.
-     */
-    protected final Map<String, JSFunction> listeners;
-    /**
-     * Перечень плагинов, сопряженных с данным компонентом.
-     */
-    protected Set<ComponentPlugin> plugins;
-
-    public AbstractExtJSComponent(final ComponentContext ctx) {
-        super(ctx);
-        listeners = new HashMap<String,JSFunction>();
+    public AbstractComponent(final ComponentContext ctx) {
+        this.ctx = ctx;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public ComponentContext getContext() {
+        return ctx;
+    }
+    /**
+     * Позволяет установить контекст компонента в том случае если он еще не был установлен ранее.
+     * @param ctx  идентификатор данного компонента.
+     * @throws IllegalStateException  в случае если у данного компонента уже установлен контекст.
+     */
+    public void setContext(final ComponentContext ctx) {
+        if (this.ctx!=null)
+            throw new IllegalStateException("Context already specified for component");
+        this.ctx = ctx;
+    }
 
     /**
      * Возвращает CSS класс, который должен быть дополнительно применен к корневому DOM элементу компонента.
@@ -132,20 +158,65 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
         this.ref = ref;
     }
 
+    //
+    // Группа свойств, определяющих положение компонента в родительском контйнере ...
+    //
+
     /**
-     * Возвращает бин содержащий опциональные характеристики расположения данного компонента в родительском контейнере. Состав данных характеристик зависит от типа контейнера. 
-     * @return характеристики расположения данного компонента в контейнере. Метод может вернуть <code>null</code>.
+     * Возвращает класс CSS который будет дополнительно добавлен к соответствующему DOM элементу контейнера в котором этот
+     * компонент расположен.
+     * @return имя CSS класса который будет дополнительно добавлен к соответствующему DOM элементу контейнера в котором этот
+     * компонент расположен.
      */
-    public LayoutItem getLayoutItem() {
-        return layoutItem;
+    public String getCtCssClass() {
+        return ctCls;
     }
     /**
-     * Указывает бин содержащий опциональные характеристики расположения данного компонента в родительском контейнере. Состав данных характеристик зависит от типа контейнера.
-     * @param layoutItem характеристики расположения данного компонента в контейнере или <code>null</code>.
+     * Устанавливает класс CSS который будет дополнительно добавлен к соответствующему DOM элементу контейнера в котором этот
+     * компонент расположен.
+     * @param ctCls имя CSS класса который будет дополнительно добавлен к соответствующему DOM элементу контейнера в котором этот
+     * компонент расположен.
      */
-    public void setLayoutItem(final LayoutItem layoutItem) {
-        this.layoutItem = layoutItem;
+    public void setCtCssClass(final String ctCls) {
+        this.ctCls = ctCls;
     }
+
+    /**
+     * Возвращает альтернативный идентификатор компонента в контейнере, который позволяет однозначно идентифицировать компонент среди всех прочих дочерних компонент лежащих
+     * в этом же контейнере компонент.
+     * @return  альтернативный идентификатор дочернего компонента в контейнере. Обязан быть уникальным в рамках всех прочих дочерних компонент этого же контейнера. Может быть <code>null</code>.
+     */
+    public String getItemId() {
+        return itemId;
+    }
+    /**
+     * Устанавливает альтернативный идентификатор компонента в контейнере, который позволяет однозначно идентифицировать компонент среди всех прочих дочерних компонент лежащих
+     * в этом же контейнере компонент.
+     * @param itemId  альтернативный идентификатор дочернего компонента в контейнере. Обязан быть уникальным в рамках всех прочих дочерних компонент этого же контейнера. Может быть <code>null</code>.
+     */
+    public void setItemId(final String itemId) {
+        this.itemId = StringUtil.trim(itemId);
+    }
+
+    /**
+     * Определяет поведение контейнера в котором находится данный компонент в момент, когда последний становится видимым/невидимым.<br/>
+     * Если данное свойство равно <code>true</code> то переключение компонента в невидимый режим автоматически переключает в невидимый режим
+     * и весь контейнер в котором этот компонент расположен.
+     * @return  <code>true</code> в случае когда при скрытии компонента должен быть скрыт и весь контейнер в котором этот компонент находится. По умолчанию возвращает <code>false</code>.
+     */
+    public boolean isHideParent() {
+        return hideParent;
+    }
+    /**
+     * Определяет поведение контейнера в котором находится данный компонент в момент, когда последний становится видимым/невидимым.<br/>
+     * Если данное свойство равно <code>true</code> то переключение компонента в невидимый режим автоматически переключает в невидимый режим
+     * и весь контейнер в котором этот компонент расположен.
+     * @param hideParent  <code>true</code> в случае когда требуется при скрытии компонента автоматически скрывать и весь контейнер в котором этот компонент находится.
+     */
+    public void setHideParent(final boolean hideParent) {
+        this.hideParent = hideParent;
+    }
+
 
     /**
      * Подключает новый плагин к данному компоненту
@@ -163,6 +234,7 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
      * Подключает новый обработчик определенного события.
      * @param eventName  имя события. Не может быть <code>null</code>.
      * @param handler  обработчик события.
+     * @see #getSupportedEvents()
      */
     public void addListener(final String eventName, final JSFunction handler) {
         if (eventName==null || handler==null)
@@ -170,6 +242,8 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
         final String event = eventName.trim().toLowerCase();
         if (!getSupportedEvents().contains(event))
             throw new IllegalArgumentException("Unsupported event: "+ eventName);
+        if (listeners==null)
+            listeners = new HashMap<String,JSFunction>();
         listeners.put(event, handler);
     }
 
@@ -192,7 +266,8 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
      * @throws IllegalAccessException  в случае ошибок в процессе сериализации данных в JSON формат.
      */
     protected void renderAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
-        out.writeProperty("id", getContext().getClientId());
+        if (ctx!=null)
+            out.writeProperty("id", ctx.getClientId());
         if (ref!=null)
             out.writeProperty("ref", ref);
         if (cssClass!=null)
@@ -205,10 +280,15 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
             out.writeProperty("disabled", true);
         if (hidden)
             out.writeProperty("hidden", true);
-        if (layoutItem!=null) {
-            layoutItem.serialize(out);
-        }
-        if (!listeners.isEmpty()) {
+
+        if (ctCls!=null)
+            out.writeProperty("ctCls", ctCls);
+        if (itemId!=null)
+            out.writeProperty("itemId", itemId);
+        if (hideParent)
+            out.writeProperty("hideParent", true);
+
+        if (listeners!=null && !listeners.isEmpty()) {
             out.writeComplexProperty("listeners");
             out.beginObject();
             for (Map.Entry<String,JSFunction> entry : listeners.entrySet()) {
@@ -216,7 +296,7 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
             }
             out.endObject();
         }
-        if (!plugins.isEmpty()) {
+        if (plugins!=null && !plugins.isEmpty()) {
             out.writeComplexProperty("plugins");
             out.beginArray();
             for (ComponentPlugin plugin : plugins) {
@@ -228,6 +308,6 @@ public abstract class AbstractExtJSComponent extends AbstractUIComponent impleme
 
     @Override
     public String toString() {
-        return "[" + StringUtil.extractClass(getClass().getName()) + "{id:" + getContext().getClientId() + "}]";
+        return "[" + StringUtil.extractClass(getClass().getName()) + "{id:" + (ctx!=null?ctx.getClientId():"null") + "}]";
     }
 }

@@ -15,6 +15,9 @@ public class Box extends AbstractBoxComponent {
     private Template template;
     private Object data;
 
+    public Box() {
+        this(null);
+    }
     public Box(final ComponentContext ctx) {
         super(ctx);
     }
@@ -55,13 +58,13 @@ public class Box extends AbstractBoxComponent {
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "box");
+        renderAttrs(out);
         if (element!=null)
             out.writeProperty("autoEl", element);
         if (template!=null)
             out.writeProperty("tpl", template);
         if (data!=null)
             out.writeProperty("data", data);
-        renderAttrs(out);
         out.endObject();
     }
 

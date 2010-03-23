@@ -1,20 +1,55 @@
 package org.echosoft.framework.ui.extjs.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.echosoft.framework.ui.core.UIComponent;
+
 /**
- * Описывает характеристики менеджера раскладки <code>Ext.layout.AutoLayout</code>.
+ * Описывает характеристики менеджера компоновки <code>Ext.layout.AutoLayout</code>.
  * @author Anton Sharapov
  */
 public class AutoLayout extends Layout {
 
-    public LayoutItem makeItem() {
-        return new AutoLayoutItem();
+    private final List<UIComponent> items;
+
+    public AutoLayout() {
+        super();
+        items = new ArrayList<UIComponent>();
     }
 
-    public LayoutItem makeItem(final LayoutItem item) {
-        return new AutoLayoutItem(item);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getItemsCount() {
+        return items.size();
     }
 
-    public String getLayout() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<UIComponent> getItems() {
+        return items;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends UIComponent> T append(final T item) {
+        if (item==null)
+            throw new IllegalArgumentException("Component must be specified");
+        items.add(item);
+        return item;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getLayout() {
         return "auto";
     }
 

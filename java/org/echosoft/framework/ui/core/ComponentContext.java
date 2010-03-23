@@ -44,7 +44,7 @@ public final class ComponentContext implements RequestContext {
     private ComponentContext(final ComponentContext owner, final String id) {
         this.root = owner.root;
         this.id = id;
-        this.clientId = owner.clientId + SEPARATOR + id;
+        this.clientId = owner.prefixLength>0 ? owner.prefix + id : id;
         this.prefix = this.clientId + SEPARATOR;
         this.prefixLength = this.prefix.length();
     }

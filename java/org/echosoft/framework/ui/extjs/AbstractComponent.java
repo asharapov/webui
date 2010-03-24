@@ -265,7 +265,7 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      * @throws InvocationTargetException  в случае ошибок в процессе сериализации данных в JSON формат.
      * @throws IllegalAccessException  в случае ошибок в процессе сериализации данных в JSON формат.
      */
-    protected void renderAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+    protected void renderAttrs(final JsonWriter out) throws Exception {
         if (ctx!=null)
             out.writeProperty("id", ctx.getClientId());
         if (ref!=null)

@@ -78,7 +78,6 @@ public class ExtJSPage extends Page implements Serializable {
         jw.writeProperty("theme", uctx.encodeThemeURL("/",true));
         jw.writeProperty("version", Application.VERSION);
         jw.writeProperty("state", Application.getStateSerializer().encodeState(uctx));
-        jw.writeProperty("viewport", null);
         jw.endObject();
         out.write('\n');
     }

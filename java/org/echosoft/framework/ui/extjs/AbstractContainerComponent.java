@@ -1,7 +1,5 @@
 package org.echosoft.framework.ui.extjs;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Set;
 
@@ -57,7 +55,14 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     public void setLayout(final Layout layout) {
         this.layout = layout!=null ? layout : new AutoLayout();
     }
-
+    /**
+     * Устанавливает менеджер упаковки компонент в контейнере и возвращает ссылку на него.<br/>
+     * При смене типа упаковщика метод для каждого компонента в контейнере заменяет информацию о его расположении в контейнере.
+     * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
+     * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
+     * @see #getLayout() 
+     * @see #setLayout(Layout)
+     */
     @SuppressWarnings("unchecked")
     public <T extends Layout> T assignLayout(final T layout) {
         setLayout(layout);
@@ -79,6 +84,15 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
      */
     public Iterable<UIComponent> getItems() {
         return layout!=null ? layout.getItems() : Collections.<UIComponent>emptyList();
+    }
+
+    /**
+     * Регистрирует новый компонент в данном регионе.
+     * @param  item  новый компонент который должен быть добавлен в данный регион.
+     * @return  Добавленный в регион компонент.
+     */
+    public <T extends UIComponent> T append(final T item) {
+        return layout.append(item);
     }
 
     /**
@@ -154,7 +168,7 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
 
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+    protected void renderAttrs(final JsonWriter out) throws Exception {
         super.renderAttrs(out);
         if (activeItem!=null)
             out.writeProperty("activeItem", activeItem);

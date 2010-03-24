@@ -78,20 +78,37 @@ public abstract class Layout implements Serializable {
     public abstract <T extends UIComponent> T append(final T item);
 
     /**
-     * Сериализует свойства данного менеджера компоновки компонент в JSON формат
-     * в соответствии с соглашениями, налагаемыми ExtJS.
+     * Сериализует свойства данного менеджера компоновки компонент в JSON формат согласно нотации принятой в ExtJS.<br/>
+     * Сериализуются как минимум следующие свойства:
+     * <ol>
+     *  <li> <code>layout</code>
+     *  <li> <code>layoutConfig</code>
+     *  <li> <code>items</code>.
+     * </ol>
      * @param out  выходной поток.
-     * @throws IOException  в случае каких-либо ошибок связанных с помещением данных в поток.
-     * @throws InvocationTargetException  в случае ошибок в процессе сериализации данных в JSON формат.
-     * @throws IllegalAccessException  в случае ошибок в процессе сериализации данных в JSON формат.
+     * @throws Exception  в случае каких-либо ошибок в процессе сериализации или отправки данных.
      */
-    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+    public void serialize(final JsonWriter out) throws Exception {
         out.writeProperty("layout", getLayout());
         if (isCustomized()) {
             out.writeComplexProperty("layoutConfig");
             out.beginObject();
             serializeConfigAttrs(out);
             out.endObject();
+        }
+        final int cnt = getItemsCount();
+        if (cnt==1) {
+            final UIComponent item = getItems().iterator().next();
+            out.writeComplexProperty("items");
+            item.invoke( out );
+        } else
+        if (cnt>1) {
+            out.writeComplexProperty("items");
+            out.beginArray();
+            for (UIComponent item : getItems()) {
+                item.invoke( out );
+            }
+            out.endArray();
         }
     }
 

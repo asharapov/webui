@@ -1,7 +1,5 @@
 package org.echosoft.framework.ui.extjs;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import org.echosoft.common.json.JsonWriter;
@@ -285,7 +283,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
 
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
+    protected void renderAttrs(final JsonWriter out) throws Exception {
         super.renderAttrs(out);
         if (autoWidth)
             out.writeProperty("autoWidth", true);

@@ -1,8 +1,5 @@
 package org.echosoft.framework.ui.extjs.layout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
@@ -23,8 +20,8 @@ public class BorderLayoutRegion implements UIComponent {
         STANDARD, MINI
     }
 
-    private final List<UIComponent> items;
     private final Region region;        // к какому региону относится данный компонент.
+    private Layout layout;              // менеджер компоновки компонент в данном контейнере.
     private boolean animFloat;          // использовать или нет анимацию при открытии и закрытии "плавающей" панели.
     private boolean autoHide;           // следует ли автоматически закрывать "плавающую" панель при потере фокуса.
     private boolean floatable;          // определяет возможность показа региона в "плавающем" виде.
@@ -36,14 +33,14 @@ public class BorderLayoutRegion implements UIComponent {
     private String splitTip;            // всплывающая подсказка отображаемая над полоской-разделителем между регионами (используется при split=true).
     private int minSize;                // минимальная ширина/высота региона (зависит от региона).
     private int maxSize;                // максимальная ширина/высота региона (зависит от региона).
-    private int width;                  // ширина региона по умолчанию (обязательно к использованию в регионах WEST и EAST).
+    private int width;                  // ширина региона по умолчанию (обязательно к использованию в регионах EAST и WEST).
     private int height;                 // высота региона по умолчанию (обязательно к использованию в регионах NORTH и SOUTH).
 
     public BorderLayoutRegion(final Region region) {
         if (region==null)
             throw new IllegalArgumentException("No valid region specified");
         this.region = region;
-        items = new ArrayList<UIComponent>();
+        layout = new AutoLayout();
         animFloat = true;
         autoHide = true;
         floatable = true;
@@ -70,6 +67,35 @@ public class BorderLayoutRegion implements UIComponent {
      */
     public Region getRegion() {
         return region;
+    }
+
+    /**
+     * Возвращает менеджер упаковки компонент в контейнере.
+     * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
+     */
+    public Layout getLayout() {
+        return layout;
+    }
+    /**
+     * Устанавливает менеджер упаковки компонент в контейнере.<br/>
+     * При смене типа упаковщика метод для каждого компонента в контейнере заменяет информацию о его расположении в контейнере.
+     * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
+     */
+    public void setLayout(final Layout layout) {
+        this.layout = layout!=null ? layout : new AutoLayout();
+    }
+    /**
+     * Устанавливает менеджер упаковки компонент в контейнере и возвращает ссылку на него.<br/>
+     * При смене типа упаковщика метод для каждого компонента в контейнере заменяет информацию о его расположении в контейнере.
+     * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
+     * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
+     * @see #getLayout()
+     * @see #setLayout(Layout)
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Layout> T assignLayout(final T layout) {
+        setLayout(layout);
+        return (T)this.layout;
     }
 
     /**
@@ -288,7 +314,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @return  количество компонент размещенных в данном регионе.
      */
     public int getItemsCount() {
-        return items.size();
+        return layout.getItemsCount();
     }
 
     /**
@@ -296,7 +322,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @return  все компонента размещенные в данном регионе.
      */
     public Iterable<UIComponent> getItems() {
-        return items;
+        return layout.getItems();
     }
 
     /**
@@ -305,10 +331,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @return  Добавленный в регион компонент.
      */
     public <T extends UIComponent> T append(final T item) {
-        if (item==null)
-            throw new IllegalArgumentException("Component must be specified");
-        items.add(item);
-        return item;
+        return layout.append(item);
     }
 
     /**
@@ -342,17 +365,12 @@ public class BorderLayoutRegion implements UIComponent {
             out.writeProperty("maxSize", maxSize);
         if (region==Region.NORTH || region==Region.SOUTH) {
             out.writeProperty("height", height);
-        } else {
+        } else
+        if (region==Region.EAST || region==Region.WEST) {
             out.writeProperty("width", width);
         }
-        if (items.size()>0) {
-            out.writeComplexProperty("items");
-            out.beginArray();
-            for (UIComponent component : items) {
-                component.invoke(out);
-            }
-            out.endArray();
-        }
+        if (layout!=null)
+            layout.serialize(out);
         out.endObject();
     }
 

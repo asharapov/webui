@@ -2,7 +2,6 @@ package org.echosoft.framework.ui.extjs.widgets;
 
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.ComponentContext;
-import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.extjs.AbstractContainerComponent;
 
 /**
@@ -44,13 +43,6 @@ public class Panel extends AbstractContainerComponent {
             out.writeProperty("animCollapse", animCollapse);
         if (baseCls!=null)
             out.writeProperty("baseCls", baseCls);
-
-        out.writeComplexProperty("items");
-        out.beginArray();
-        for (UIComponent item : getItems()) {
-            item.invoke(out);
-        }
-        out.endArray();
         out.endObject();
     }
 }

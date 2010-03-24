@@ -15,19 +15,21 @@ import org.echosoft.framework.ui.extjs.spi.model.DomElementJSONSerializer;
 @JsonUseSeriazer(DomElementJSONSerializer.class)
 public class DomElement implements Serializable {
 
+    private static final String DEFAULT_TAG = "div";
+
     private String tag;
     private Map<String,String> attrs;
     private String html;
 
     public DomElement() {
-        this.tag = "div";
+        this.tag = DEFAULT_TAG;
     }
     public DomElement(String tag) {
-        this.tag = StringUtil.getNonEmpty(tag, "div");
+        this.tag = StringUtil.getNonEmpty(tag, DEFAULT_TAG);
     }
 
     public DomElement(String tag, String html) {
-        this.tag = StringUtil.getNonEmpty(tag, "div");
+        this.tag = StringUtil.getNonEmpty(tag, DEFAULT_TAG);
         this.html = StringUtil.trim(html);
     }
 
@@ -35,7 +37,7 @@ public class DomElement implements Serializable {
         return tag;
     }
     public void setTag(String tag) {
-        this.tag = StringUtil.getNonEmpty(tag, "div");
+        this.tag = StringUtil.getNonEmpty(tag, DEFAULT_TAG);
     }
 
     public Map<String,String> getAttrs() {
@@ -55,5 +57,22 @@ public class DomElement implements Serializable {
     }
     public void setHtml(String html) {
         this.html = StringUtil.trim(html);
+    }
+
+    /**
+     * Возвращает <code>true</code> только при выполнении следующих условий:
+     * <ol>
+     *  <li> Свойство {@link #getTag()} возвращает  "<code>div</code>" (значение по умолчанию).
+     *  <li> Свойство {@link #getAttrs()} возвращает <code>null</code>, т.е. не указан ни один дополнительный атрибут.
+     *  <li> Свойство {@link #getHtml()} возвращает значение отличное от <code>null</code>.
+     * </ol>
+     * В этом случае возможна более краткая форма записи объекта в  JSON формат согласно нотации, принятой в ExtJS.
+     * @return <code>true</code> только когда:
+     *      имя тега равно <code>div</code> (значение по умолчанию);
+     *      не указан ни один атрибут тега;
+     *      имеется не пустое содержимое тега.
+     */
+    public boolean hasContentOnly() {
+        return DEFAULT_TAG.equals(tag) && attrs==null && html!=null;
     }
 }

@@ -1,7 +1,5 @@
 package org.echosoft.framework.ui.extjs.layout;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,10 +71,10 @@ public class AnchorLayout extends Layout {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
-        super.serialize(out);
+    public void serialize(final JsonWriter out) throws Exception {
         if (anchorSize!=null && !anchorSize.isEmpty())
             out.writeProperty("anchorSize", anchorSize);
+        super.serialize(out);
     }
 
     /**

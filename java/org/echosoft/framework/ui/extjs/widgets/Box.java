@@ -59,8 +59,13 @@ public class Box extends AbstractBoxComponent {
         out.beginObject();
         out.writeProperty("xtype", "box");
         renderAttrs(out);
-        if (element!=null)
-            out.writeProperty("autoEl", element);
+        if (element!=null) {
+            if (element.hasContentOnly()) {
+                out.writeProperty("html", element.getHtml());
+            } else {
+                out.writeProperty("autoEl", element);
+            }
+        }
         if (template!=null)
             out.writeProperty("tpl", template);
         if (data!=null)

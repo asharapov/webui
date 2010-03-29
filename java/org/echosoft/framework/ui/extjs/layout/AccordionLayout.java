@@ -180,7 +180,8 @@ public class AccordionLayout extends Layout {
 
     /**
      * Возвращает итератор по всем компонентам управляемым данным менеджером компоновки.
-     * Так как данный менеджер компоновки
+     * Так как данный менеджер компоновки может управлять только компонентами реализующими {@link Panel}
+     * то данный вызов использовать уместнее чем стандартный {@link #getItems}.
      * @return итератор по всем компонентам управляемым данным менеджером компоновки.
      */
     public Iterable<Panel> getPanels() {
@@ -189,6 +190,7 @@ public class AccordionLayout extends Layout {
 
     /**
      * {@inheritDoc}
+     * @param item  компонент который требуется добавить в контейнер. Должен относиться к классу {@link Panel} или одному из его наследников.
      */
     @Override
     public <T extends UIComponent> T append(final T item) {

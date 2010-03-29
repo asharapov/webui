@@ -35,8 +35,8 @@ public class BlankDispatcher implements Dispatcher {
         south.setHeight(30);
         final Box b2 = south.append( new Box(ctx.getChild("b2")) );
         b2.setHtml("This is a south region");
-        final BorderLayoutRegion central = rtl.getCenter();
 
+        final BorderLayoutRegion central = rtl.getCenter();
         final Panel p1 = central.append( new Panel(ctx.getChild("p1")) );
         final FitLayout p1l = p1.assignLayout( new FitLayout() );
         final Box b3 = p1l.append( new Box(ctx.getChild("b3")) );

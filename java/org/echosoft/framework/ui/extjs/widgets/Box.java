@@ -7,11 +7,12 @@ import org.echosoft.framework.ui.extjs.model.DomElement;
 import org.echosoft.framework.ui.extjs.model.Template;
 
 /**
+ * Простейший компонент описывающий область экрана с некоторым статическим содержимым. 
  * @author Anton Sharapov
  */
 public class Box extends AbstractBoxComponent {
 
-    private DomElement element;
+    private DomElement autoEl;
     private Template template;
     private Object data;
 
@@ -22,21 +23,21 @@ public class Box extends AbstractBoxComponent {
         super(ctx);
     }
 
-    public DomElement getElement() {
-        return element;
+    public DomElement getAutoEl() {
+        return autoEl;
     }
-    public void setElement(final DomElement element) {
-        this.element = element;
+    public void setAutoEl(final DomElement autoEl) {
+        this.autoEl = autoEl;
     }
 
     public String getHtml() {
-        return element!=null ? element.getHtml() : null;
+        return autoEl!=null ? autoEl.getHtml() : null;
     }
     public void setHtml(final String html) {
-        if (element==null) {
-            element = new DomElement();
+        if (autoEl==null) {
+            autoEl = new DomElement();
         }
-        element.setHtml(html);
+        autoEl.setHtml(html);
     }
 
     public Template getTemplate() {
@@ -59,11 +60,11 @@ public class Box extends AbstractBoxComponent {
         out.beginObject();
         out.writeProperty("xtype", "box");
         renderAttrs(out);
-        if (element!=null) {
-            if (element.hasContentOnly()) {
-                out.writeProperty("html", element.getHtml());
+        if (autoEl !=null) {
+            if (autoEl.hasContentOnly()) {
+                out.writeProperty("html", autoEl.getHtml());
             } else {
-                out.writeProperty("autoEl", element);
+                out.writeProperty("autoEl", autoEl);
             }
         }
         if (template!=null)

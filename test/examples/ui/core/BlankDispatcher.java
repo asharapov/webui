@@ -1,5 +1,6 @@
 package examples.ui.core;
 
+import org.echosoft.common.json.JSFunction;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.UIContext;
 import org.echosoft.framework.ui.extjs.ExtJSPage;
@@ -21,9 +22,12 @@ public class BlankDispatcher implements Dispatcher {
         final ExtJSPage page = new ExtJSPage(uctx);
         page.setTitle("My first page");
         page.setIconRef("/img/favicon.ico");
-        final ComponentContext ctx = page.getContext();
 
-        final Panel root = new Panel(null);
+        page.addListener("render", new JSFunction(null, "alert('onrender...');"));
+
+        final ComponentContext ctx = page.getContext();
+        final FitLayout fit = page.assignLayout( new FitLayout() );
+        final Panel root = fit.append( new Panel(null) );
         final BorderLayout rtl = root.assignLayout( new BorderLayout() );
 
         final BorderLayoutRegion north = rtl.getNorth(true);
@@ -42,8 +46,6 @@ public class BlankDispatcher implements Dispatcher {
         final Box b3 = p1l.append( new Box(ctx.getChild("b3")) );
         b3.setTemplate( new Template("Hello, {0}!") );
         b3.setData( new String[]{"Master"} );
-
-        page.setContainer( root );
 
         page.invokePage();
     }

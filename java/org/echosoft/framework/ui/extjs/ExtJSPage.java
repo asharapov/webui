@@ -2,11 +2,17 @@ package org.echosoft.framework.ui.extjs;
 
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.Application;
 import org.echosoft.framework.ui.core.Page;
 import org.echosoft.framework.ui.core.UIContext;
+import org.echosoft.framework.ui.extjs.layout.AutoLayout;
+import org.echosoft.framework.ui.extjs.layout.Layout;
 
 /**
  * Базовый вариант класса, описывающего модель страницы построенной на базе фреймворка ExtJS.
@@ -14,25 +20,70 @@ import org.echosoft.framework.ui.core.UIContext;
  */
 public class ExtJSPage extends Page implements Serializable {
 
-    private AbstractContainerComponent container;
+    /**
+     * Зарегистрированные в компоненте обработчики событий.
+     */
+    private Map<String,JSFunction> listeners;
+    private Layout layout;
 
     public ExtJSPage(final UIContext uctx) {
         super(uctx);
+        layout = new AutoLayout();
     }
 
     /**
-     * Возвращает контейнер в котором (будет) расположен весь видимый контент генерируемой страницы.
-     * @return  корневой контейнер в котором будет размещен прямо или опосредовано весь видимый контент страницы. Может вернуть <code>null</code>.
+     * Подключает новый обработчик определенного события.
+     * @param eventName  имя события. Не может быть <code>null</code>.
+     * @param handler  обработчик события.
      */
-    public AbstractContainerComponent getContainer() {
-        return container;
+    public void addListener(final String eventName, final JSFunction handler) {
+        if (eventName==null || handler==null)
+            throw new IllegalArgumentException("Event name and listener must be specified");
+        final String event = eventName.trim().toLowerCase();
+        if (!getSupportedEvents().contains(event))
+            throw new IllegalArgumentException("Unsupported event: "+ eventName);
+        if (listeners==null)
+            listeners = new HashMap<String,JSFunction>();
+        listeners.put(event, handler);
+    }
+
+    /**
+     * Возвращает перечень всех поддерживаемых компонентом событий.<br/>
+     * Если компонент, являющийся наследником данного класса поддерживает иной перечень событий то он должен переопределить данный метод.
+     * @return  неизменяемый перечень событий, поддерживаемых данным компонентом. Метод никогда не возвращает <code>null</code>.
+     */
+    protected Set<String> getSupportedEvents() {
+        return AbstractContainerComponent.EVENTS;
+    }
+
+    /**
+     * Возвращает менеджер упаковки компонент в контейнере.
+     * По умолчанию используется компоновщик {@link AutoLayout}.
+     * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
+     */
+    public Layout getLayout() {
+        return layout;
     }
     /**
-     * Устанавливает контейнер в котором будет размещен весь видимый контент в странице.
-     * @param container  корневой контейнер в котором будет размещен прямо или опосредовано весь видимый контент страницы.
+     * Устанавливает менеджер упаковки компонент в контейнере.<br/>
+     * При смене типа упаковщика метод для каждого компонента в контейнере заменяет информацию о его расположении в контейнере.
+     * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
      */
-    public void setContainer(final AbstractContainerComponent container) {
-        this.container = container;
+    public void setLayout(final Layout layout) {
+        this.layout = layout!=null ? layout : new AutoLayout();
+    }
+    /**
+     * Устанавливает менеджер упаковки компонент в контейнере и возвращает ссылку на него.<br/>
+     * При смене типа упаковщика метод для каждого компонента в контейнере заменяет информацию о его расположении в контейнере.
+     * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
+     * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
+     * @see #getLayout()
+     * @see #setLayout(Layout)
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Layout> T assignLayout(final T layout) {
+        setLayout(layout);
+        return (T)this.layout;
     }
 
     /**
@@ -47,13 +98,14 @@ public class ExtJSPage extends Page implements Serializable {
         out.getOutputWriter().write("WUI.viewport = new Ext.Viewport(");
         out.beginObject();
         out.writeProperty("id", getContext().getClientId());
-        out.writeProperty("layout", "fit");
-        out.writeComplexProperty("items");
-        if (container!=null) {
-            container.invoke(out);
-        } else {
-            out.beginArray();
-            out.endArray();
+        layout.serialize(out);
+        if (listeners!=null && !listeners.isEmpty()) {
+            out.writeComplexProperty("listeners");
+            out.beginObject();
+            for (Map.Entry<String,JSFunction> entry : listeners.entrySet()) {
+                out.writeProperty(entry.getKey(), entry.getValue());
+            }
+            out.endObject();
         }
         out.endObject();
         out.getOutputWriter().write(");\n");

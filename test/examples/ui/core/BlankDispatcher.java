@@ -7,6 +7,7 @@ import org.echosoft.framework.ui.extjs.ExtJSPage;
 import org.echosoft.framework.ui.extjs.layout.BorderLayout;
 import org.echosoft.framework.ui.extjs.layout.BorderLayoutRegion;
 import org.echosoft.framework.ui.extjs.layout.FitLayout;
+import org.echosoft.framework.ui.extjs.layout.FormLayout;
 import org.echosoft.framework.ui.extjs.model.Template;
 import org.echosoft.framework.ui.extjs.widgets.Box;
 import org.echosoft.framework.ui.extjs.widgets.Panel;
@@ -42,10 +43,17 @@ public class BlankDispatcher implements Dispatcher {
 
         final BorderLayoutRegion central = rtl.getCenter();
         final Panel p1 = central.append( new Panel(ctx.getChild("p1")) );
-        final FitLayout p1l = p1.assignLayout( new FitLayout() );
-        final Box b3 = p1l.append( new Box(ctx.getChild("b3")) );
+        p1.setTitle("Enter you data");
+        p1.setFrame(true);
+        p1.setWidth(400);
+        final FormLayout fl = p1.assignLayout( new FormLayout() );
+        final Box b3 = fl.append( new Box() );
         b3.setTemplate( new Template("Hello, {0}!") );
         b3.setData( new String[]{"Master"} );
+        b3.setFieldLabel("Greeting");
+        final Box b4 = fl.append( new Box() );
+        b4.setHtml("some text");
+        b4.setFieldLabel("test");
 
         page.invokePage();
     }

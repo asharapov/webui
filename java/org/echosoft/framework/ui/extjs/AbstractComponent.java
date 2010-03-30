@@ -54,6 +54,13 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
     private String ctCls;           // CSS класс который будет дополнительно добавлен к контейнеру в котором данный компонент расположен.
     private String itemId;          // идентификатор компонента в контейнере. Должен быть уникальным в рамках всех компонентов лежащих в данном контейнере.
     private boolean hideParent;     // признак, определяющий поведение контейнера в момент когда входящий в него компонент становится невидимым.
+    //   под управлением <code>Ext.layout.FormLayout</code>:
+    private String clearCls;        // CSS класс, дополнительно применяемый к области-разделителю между данным и нижележашим компонентами на форме.
+    private String itemCls;         // CSS класс, дополнительно применяемый к области включающей в себя и сам компонент и метку к нему.
+    private String labelStyle;      // CSS стиль, дополнительно применяемый к метке компонента.
+    private String labelSeparator;  // текст (допускается html), используемый в разделителя между меткой и самим компонентом.
+    private String fieldLabel;      // метка компонента на форме.
+    private boolean hideLabel;      // позволяет скрыть метку к компоненту на форме.
 
     public AbstractComponent(final ComponentContext ctx) {
         this.ctx = ctx;
@@ -178,7 +185,7 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      * компонент расположен.
      */
     public void setCtCssClass(final String ctCls) {
-        this.ctCls = ctCls;
+        this.ctCls = StringUtil.trim(ctCls);
     }
 
     /**
@@ -215,6 +222,102 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      */
     public void setHideParent(final boolean hideParent) {
         this.hideParent = hideParent;
+    }
+
+
+    /**
+     * Возвращает класс CSS который требуется применить к области экрана, разделяющему данный и последующий компоненты на форме.
+     * @return CSS класс дополнительно применяемый к области экрана между данным и последующим компонентами на форме.
+     */
+    public String getClearCls() {
+        return clearCls;
+    }
+    /**
+     * Задает класс CSS который требуется применить к области экрана, разделяющему данный и последующий компоненты на форме.
+     * @param clearCls  CSS класс дополнительно применяемый к области экрана между данным и последующим компонентами на форме.
+     */
+    public void setClearCls(final String clearCls) {
+        this.clearCls = StringUtil.trim(clearCls);
+    }
+
+    /**
+     * Возвращает класс CSS который будет применен к области экрана включающей в себя и сам компонент и метку к нему.
+     * @return класс CSS который будет применен к области экрана включающей в себя данный компонент и метку к нему.
+     */
+    public String getItemCls() {
+        return itemCls;
+    }
+    /**
+     * Задает класс CSS который требуется применить к области экрана включающей в себя и сам компонент и метку к нему.
+     * @param itemCls класс CSS который будет применен к области экрана включающей в себя данный компонент и метку к нему.
+     */
+    public void setItemCls(final String itemCls) {
+        this.itemCls = StringUtil.trim(itemCls);
+    }
+
+    /**
+     * Возвращает стиль CSS который будет применен к метке для данного компонента.
+     * @return стиль CSS который будет применен к метке для данного компонента.
+     */
+    public String getLabelStyle() {
+        return labelStyle;
+    }
+    /**
+     * Задает стиль CSS который будет применен к метке для данного компонента.
+     * @param labelStyle стиль CSS который будет применен к метке для данного компонента.
+     */
+    public void setLabelStyle(final String labelStyle) {
+        this.labelStyle = StringUtil.trim(labelStyle);
+    }
+
+    /**
+     * Возвращает текст (допускается html) который будет помещен между меткой и компонентом.
+     * Если данное свойство не указано то ExtJS будет использовать символ ':'.
+     * @return текст, используемый в качестве разделителя между меткой и компонентом.
+     *  Если свойство равно <code>null</code> то будет использоваться значение по умолчанию.
+     */
+    public String getLabelSeparator() {
+        return labelSeparator;
+    }
+    /**
+     * Задает текст (допускается html) который будет помещен между меткой и компонентом.
+     * Если данное свойство не указано то ExtJS будет использовать символ ':'.
+     * @param labelSeparator текст, используемый в качестве разделителя между меткой и компонентом.
+     *  Если свойство равно <code>null</code> то будет использоваться значение по умолчанию.
+     */
+    public void setLabelSeparator(final String labelSeparator) {
+        this.labelSeparator = labelSeparator;
+    }
+
+    /**
+     * Возвращает текст (допускается html) используемый в качестве метки к данному компоненту на форме.
+     * @return текст используемый в качестве метки к данному компоненту на форме.
+     */
+    public String getFieldLabel() {
+        return fieldLabel;
+    }
+    /**
+     * Задает текст (допускается html) используемый в качестве метки к данному компоненту на форме.
+     * @param fieldLabel текст используемый в качестве метки к данному компоненту на форме.
+     */
+    public void setFieldLabel(final String fieldLabel) {
+        this.fieldLabel = fieldLabel;
+    }
+
+    /**
+     * Данное свойство определяет будет ли отображаться для данного компонента метка на форме.
+     * @return <code>true</code> если метка должна отсутствовать.
+     *      По умолчанию возвращает <code>false</code>.
+     */
+    public boolean isHideLabel() {
+        return hideLabel;
+    }
+    /**
+     * Определяет будет ли отображаться для данного компонента метка на форме.
+     * @param hideLabel <code>true</code> если метка должна отсутствовать.
+     */
+    public void setHideLabel(final boolean hideLabel) {
+        this.hideLabel = hideLabel;
     }
 
 
@@ -287,6 +390,18 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
             out.writeProperty("itemId", itemId);
         if (hideParent)
             out.writeProperty("hideParent", true);
+        if (clearCls!=null)
+            out.writeProperty("clearCls", clearCls);
+        if (itemCls!=null)
+            out.writeProperty("itemCls", itemCls);
+        if (labelStyle!=null)
+            out.writeProperty("labelStyle", labelStyle);
+        if (labelSeparator!=null)
+            out.writeProperty("labelSeparator", labelSeparator);
+        if (fieldLabel!=null)
+            out.writeProperty("fieldLabel", fieldLabel);
+        if (hideLabel)
+            out.writeProperty("hideLabel", true);
 
         if (listeners!=null && !listeners.isEmpty()) {
             out.writeComplexProperty("listeners");

@@ -10,6 +10,7 @@ import org.echosoft.framework.ui.extjs.layout.FitLayout;
 import org.echosoft.framework.ui.extjs.layout.FormLayout;
 import org.echosoft.framework.ui.extjs.model.Template;
 import org.echosoft.framework.ui.extjs.widgets.Box;
+import org.echosoft.framework.ui.extjs.widgets.Button;
 import org.echosoft.framework.ui.extjs.widgets.Panel;
 
 import examples.ui.Dispatcher;
@@ -22,7 +23,7 @@ public class BlankDispatcher implements Dispatcher {
     public void dispatch(final UIContext uctx) throws Exception {
         final ExtJSPage page = new ExtJSPage(uctx);
         page.setTitle("My first page");
-        page.setIconRef("/img/favicon.ico");
+        page.setIcon("/img/favicon.ico");
 
         page.addListener("render", new JSFunction(null, "alert('onrender...');"));
 
@@ -54,6 +55,10 @@ public class BlankDispatcher implements Dispatcher {
         final Box b4 = fl.append( new Box() );
         b4.setHtml("some text");
         b4.setFieldLabel("test");
+        final Button b5 = fl.append( new Button(ctx.getChild("b5")) );
+        b5.setText("click me");
+        b5.setFieldLabel("simple button");
+        b5.setHandler( new JSFunction(new String[]{"b", "e"}, "console.log(b,e);") );
 
         page.invokePage();
     }

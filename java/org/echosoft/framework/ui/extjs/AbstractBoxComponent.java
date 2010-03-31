@@ -32,7 +32,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
     private String anchor;      // строка определяющая ширину и (опционально) высоту  относительно размеров контейнера в целом.
     //   под управлением <code>Ext.layout.BoxLayout</code>:
     private Margins margins;    // отступы от границ контейнера.
-    private int flex;           // TODO: хз что это такое...
+    private int flex;           // к-т, определяющий ширину или высоту компонента относительно размеров других компонент в контейнере.
 
     public AbstractBoxComponent(final ComponentContext ctx) {
         super(ctx);
@@ -269,6 +269,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
     /**
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
      * @see <code>Ext.layout.BoxLayout</code>
+     * @return коэффициент исходя из значений которого расчитывается ширина или высота компонента.
      */
     public int getFlex() {
         return flex;
@@ -276,6 +277,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
     /**
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
      * @see <code>Ext.layout.BoxLayout</code>
+     * @param flex коэффициент исходя из значений которого расчитывается ширина или высота компонента.
      */
     public void setFlex(int flex) {
         this.flex = flex;

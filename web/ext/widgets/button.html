@@ -1,0 +1,62 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.1.1/resources/css/ext-all.css" />
+<script type="text/javascript" src="http://localhost:8000/ext-3.1.1/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="http://localhost:8000/ext-3.1.1/ext-all-debug.js"></script>
+</head>
+<body>
+<div id="templates" style="display:none">
+  <div id="my-div" style="border: 1px solid green;width:300px; height:100px">this is a content for <strong>my</strong> div</div>
+</div>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.1.1/resources/images/default/s.gif";
+Ext.onReady( function() {
+    Ext.QuickTips.init();
+    var root = new Ext.Viewport({
+      layout: "fit",
+      items: [{
+        xtype: "container",
+        layout: "auto",
+        items: [{
+            id: "b1",
+            xtype: "button",
+            text: "container <strong>1</strong>",
+            tooltip: {
+              title: "quick title",
+              text: "quick tip"
+            },
+            handler: function() {alert("clicked 1");}
+          },{
+            id: "b2",
+            xtype: "button",
+            style: "color:red",
+            text: "xxx",
+            icon: "http://localhost:8000/ext-3.1.1/resources/images/default/shared/warning.gif",
+            iconCls: "icls",
+            iconAlign: "top",
+            tooltip: "my tooltip",
+            handler: function(b,e) {console.log("handle: ",b);},
+            toggleHandler: function(b,e) {console.log("toggle: ",b);},
+            enableToggle: true
+          }, {
+            id: "b3",
+            xtype: "button",
+            text: "yyy",
+            handler: function(b,e) {console.log("handle: ",b);},
+            toggleHandler: function(b,e) {console.log("toggle: ",b);},
+            //menuAlign: "c",
+            menu: {
+              xtype: "menu",
+              items: [
+                {text: "choice one", checked:true},
+                {text: "choice two"}
+              ]
+            }
+        }]
+        }]
+      });
+});
+</script>
+</body>
+</html>

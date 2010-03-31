@@ -18,7 +18,7 @@ public abstract class Page implements UIComponent {
 
     private final UIContext uctx;
     private String title;
-    private String iconRef;
+    private String icon;
     private String viewId;
     private int viewRank;
     private CleanStrategy cleanStrategy;
@@ -74,16 +74,16 @@ public abstract class Page implements UIComponent {
      * Возвращает используемую на странице иконку, отображаемую рядом с навигационной строкой браузера.
      * @return  ссылку на используемую на данной странице иконку.
      */
-    public String getIconRef() {
-        return iconRef;
+    public String getIcon() {
+        return icon;
     }
     /**
      * Устанавливает ссылку на иконку, которая будет отображаться на странице рядом с навигационной строкой браузера.
-     * @param iconRef  ссылка заданная либо в абсолютной форме (вида href://host:port/app/path/icon.gif) либо в относительной форме (вида /aaa/bbb/icon.gif).
+     * @param icon  ссылка заданная либо в абсолютной форме (вида href://host:port/app/path/icon.gif) либо в относительной форме (вида /aaa/bbb/icon.gif).
      *                 В последнем случае ссылка будет преобразована к виду /app/aaa/bbb/icon.gif, где app - путь к корневой странице приложения на сервере.
      */
-    public void setIconRef(final String iconRef) {
-        this.iconRef = iconRef;
+    public void setIcon(final String icon) {
+        this.icon = icon;
     }
 
     /**
@@ -236,9 +236,9 @@ public abstract class Page implements UIComponent {
         out.write("  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
         out.write("  <meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\">\n");
         out.write("  <meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n");
-        if (getIconRef()!=null) {
+        if (getIcon()!=null) {
             out.write("  <link type=\"image/x-icon\" href=\"");
-            out.write( uctx.encodeURL(getIconRef()) );
+            out.write( uctx.encodeURL(getIcon()) );
             out.write("\" rel=\"shortcut icon\">\n");
         }
         for (Resources.StyleSheet resource : resources.getExternalStyleSheets()) {

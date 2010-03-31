@@ -15,6 +15,10 @@ import org.echosoft.framework.ui.extjs.model.Margins;
  */
 public class BoxLayout extends Layout {
 
+    public static enum Pack {
+        START, CENTER, END
+    }
+
     private final List<UIComponent> items;
     private Margins defaultMargins;             // применяется к каждому компоненту в контейнере у которого не указано соответствующее свойство.
     private Margins padding;                    // указывает отступы применяемые ко всем компонетам в контейнере.

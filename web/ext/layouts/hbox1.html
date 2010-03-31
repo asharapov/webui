@@ -1,0 +1,41 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.1.1/resources/css/ext-all.css" />
+<script type="text/javascript" src="http://localhost:8000/ext-3.1.1/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="http://localhost:8000/ext-3.1.1/ext-all-debug.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.1.1/resources/images/default/s.gif";
+Ext.onReady( function() {
+  var viewport = new Ext.Viewport({
+    layout: "hbox",
+    layoutConfig: {
+        padding: 10,
+        defaultMargins: {top:5,left:5,bottom:5,right:5},
+        //pack: "center",
+        flex: 3,
+        align: "stretch"
+    },
+    items: [{
+        flex: 2,
+        xtype: "box",
+        html: "box 1",
+        style: "border:1px dotted green"
+      },{
+        flex: 1,
+        xtype: "box",
+        html: "box 2",
+        style: "border:1px dotted red"
+      },{
+        flex: 1,
+        xtype: "box",
+        html: "box 3",
+        style: "border:1px dotted blue"
+      }
+    ]
+  });
+});
+</script>
+</body>
+</html>

@@ -4,17 +4,15 @@ import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.AbstractContainerComponent;
 import org.echosoft.framework.ui.extjs.model.DomElement;
-import org.echosoft.framework.ui.extjs.model.Template;
 
 /**
- * Простейший контейнер компонент. 
+ * Простейший контейнер компонент.
+ * Используется исключительно в целях отображения дочерних компонент в определенной раскладке.
  * @author Anton Sharapov
  */
 public class Container extends AbstractContainerComponent {
 
     private DomElement autoEl;
-    private Template template;
-    private Object data;
 
     public Container() {
         this(null);
@@ -23,54 +21,31 @@ public class Container extends AbstractContainerComponent {
         super(ctx);
     }
 
+    /**
+     * Возвращает тег используемый в качестве корневого элемента компонента и его свойства (опционально).
+     * Если значение свойства не указано то ExtJS будет использовать по умолчанию тег <code>div</code>.
+     * @return тег используемый в качестве корневого элемента компонента.
+     */
     public DomElement getAutoEl() {
         return autoEl;
     }
+    /**
+     * Задает тег используемый в качестве корневого элемента компонента и его свойства (опционально).
+     * Если значение свойства не указано то ExtJS будет использовать по умолчанию тег <code>div</code>.
+     * @param autoEl тег используемый в качестве корневого элемента компонента.
+     */
     public void setAutoEl(final DomElement autoEl) {
         this.autoEl = autoEl;
     }
-
-    public String getHtml() {
-        return autoEl!=null ? autoEl.getHtml() : null;
-    }
-    public void setHtml(final String html) {
-        if (autoEl==null) {
-            autoEl = new DomElement();
-        }
-        autoEl.setHtml(html);
-    }
-
-    public Template getTemplate() {
-        return template;
-    }
-    public void setTemplate(final Template template) {
-        this.template = template;
-    }
-
-    public Object getData() {
-        return data;
-    }
-    public void setData(final Object data) {
-        this.data = data;
-    }
-
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "container");
         renderAttrs(out);
-        if (autoEl !=null) {
-            if (autoEl.hasContentOnly()) {
-                out.writeProperty("html", autoEl.getHtml());
-            } else {
-                out.writeProperty("autoEl", autoEl);
-            }
+        if (autoEl!=null) {
+            out.writeProperty("autoEl", autoEl);
         }
-        if (template!=null)
-            out.writeProperty("tpl", template);
-        if (data!=null)
-            out.writeProperty("data", data);
         out.endObject();
     }
 

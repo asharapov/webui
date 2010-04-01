@@ -1,0 +1,39 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css"/>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
+Ext.onReady( function() {
+    var root = new Ext.Viewport({
+      layout: "fit",
+      items: [{
+          xtype: "panel",
+          title: "panel",
+          layout: "hbox",
+          tbar: {
+            xtype: "toolbar",
+            frame: false,
+            items: [
+              {xtype:"button", text:"b1"},
+              {xtype:"button", text:"b2"},
+              "-",
+              {xtype:"button", text:"b3"},
+              "->",
+              {xtype:"button", text:"b4"}
+            ]
+          },
+          frame: true,
+          //border: true,
+          html: "text on the panel"
+        }]
+      });
+});
+</script>
+
+</body>
+</html>

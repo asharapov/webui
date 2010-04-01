@@ -31,16 +31,6 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     }
 
     /**
-     * Возвращает перечень всех поддерживаемых компонентом событий.<br/>
-     * Если компонент, являющийся наследником данного класса поддерживает иной перечень событий то он должен переопределить данный метод.
-     * @return  неизменяемый перечень событий, поддерживаемых данным компонентом. Метод никогда не возвращает <code>null</code>.
-     */
-    @Override
-    protected Set<String> getSupportedEvents() {
-        return EVENTS;
-    }
-
-    /**
      * Возвращает менеджер упаковки компонент в контейнере.
      * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
      */
@@ -180,6 +170,11 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
             out.writeProperty("hideBorders", true);
         if (layout!=null)
             layout.serialize(out);
+    }
+
+    @Override
+    protected Set<String> getSupportedEvents() {
+        return EVENTS;
     }
 
 }

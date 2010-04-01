@@ -14,9 +14,12 @@ public class Panel extends AbstractContainerComponent {
     private boolean animCollapse;       // Следует ли использовать анимацию при сворачивании/разворачивании панели.
     private String baseCls;             // Составная часть имени CSS класса, применяемая к различным элементам панели.
     private String title;
-    private boolean frame;
     private boolean collapsible;
+    private boolean frame;
     private boolean border;
+    private Toolbar tbar;
+    private Toolbar bbar;
+    private Toolbar fbar;
 
     private DomElement autoEl;
     private Template template;
@@ -52,11 +55,11 @@ public class Panel extends AbstractContainerComponent {
         this.title = title;
     }
 
-    public boolean getBorder() {
-        return border;
+    public boolean isCollapsible() {
+        return collapsible;
     }
-    public void setBorder(final boolean border) {
-        this.border = border;
+    public void setCollapsible(final boolean collapsible) {
+        this.collapsible = collapsible;
     }
 
     public boolean getFrame() {
@@ -66,13 +69,33 @@ public class Panel extends AbstractContainerComponent {
         this.frame = frame;
     }
 
-    public boolean isCollapsible() {
-        return collapsible;
+    public boolean getBorder() {
+        return border;
     }
-    public void setCollapsible(final boolean collapsible) {
-        this.collapsible = collapsible;
+    public void setBorder(final boolean border) {
+        this.border = border;
     }
 
+    public Toolbar getTopToolBar() {
+        return tbar;
+    }
+    public void setTobToolbar(final Toolbar tbar) {
+        this.tbar = tbar;
+    }
+
+    public Toolbar getBottomToolbar(final Toolbar bbar) {
+        return bbar;
+    }
+    public void setBottomToolbar(final Toolbar bbar) {
+        this.bbar = bbar;
+    }
+
+    public Toolbar getFooter() {
+        return fbar;
+    }
+    public void setFooter(final Toolbar fbar) {
+        this.fbar = fbar;
+    }
 
     public DomElement getAutoEl() {
         return autoEl;
@@ -111,18 +134,36 @@ public class Panel extends AbstractContainerComponent {
         out.beginObject();
         out.writeProperty("xtype", "panel");
         renderAttrs(out);
+        out.endObject();
+    }
+
+    @Override
+    public void renderAttrs(final JsonWriter out) throws Exception {
+        super.renderAttrs(out);
         if (!animCollapse)
             out.writeProperty("animCollapse", false);
         if (baseCls!=null)
             out.writeProperty("baseCls", baseCls);
         if (title!=null)
             out.writeProperty("title", title);
-        if (!border)
-            out.writeProperty("border", false);
-        if (frame)
-            out.writeProperty("frame", true);
         if (collapsible)
             out.writeProperty("collapsible", true);
+        if (frame)
+            out.writeProperty("frame", true);
+        if (!border)
+            out.writeProperty("border", false);
+        if (tbar!=null) {
+            out.writeComplexProperty("tbar");
+            tbar.invoke(out);
+        }
+        if (bbar!=null) {
+            out.writeComplexProperty("bbar");
+            bbar.invoke(out);
+        }
+        if (fbar!=null) {
+            out.writeComplexProperty("fbar");
+            fbar.invoke(out);
+        }
 
         if (autoEl !=null) {
             if (autoEl.hasContentOnly()) {
@@ -135,7 +176,5 @@ public class Panel extends AbstractContainerComponent {
             out.writeProperty("tpl", template);
         if (data!=null)
             out.writeProperty("data", data);
-
-        out.endObject();
     }
 }

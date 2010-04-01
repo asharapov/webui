@@ -12,6 +12,7 @@ import org.echosoft.framework.ui.extjs.model.Template;
 import org.echosoft.framework.ui.extjs.widgets.Box;
 import org.echosoft.framework.ui.extjs.widgets.Button;
 import org.echosoft.framework.ui.extjs.widgets.Panel;
+import org.echosoft.framework.ui.extjs.widgets.Toolbar;
 
 import examples.ui.Dispatcher;
 
@@ -59,6 +60,10 @@ public class BlankDispatcher implements Dispatcher {
         b5.setText("click me");
         b5.setFieldLabel("simple button");
         b5.setHandler( new JSFunction(new String[]{"b", "e"}, "console.log(b,e);") );
+        final Toolbar footer = new Toolbar(ctx.getChild("fbar"));
+        p1.setFooter(footer);
+        final Button b6 = footer.getLayout().append( new Button(ctx.getChild("b6")) );
+        b6.setText("save");
 
         page.invokePage();
     }

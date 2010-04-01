@@ -40,16 +40,6 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         super(ctx);
     }
 
-    /**
-     * Возвращает перечень всех поддерживаемых компонентом событий.<br/>
-     * Если компонент, являющийся наследником данного класса поддерживает иной перечень событий то он должен переопределить данный метод.
-     * @return  неизменяемый перечень событий, поддерживаемых данным компонентом. Метод никогда не возвращает <code>null</code>.
-     */
-    @Override
-    protected Set<String> getSupportedEvents() {
-        return EVENTS;
-    }
-
 
     /**
      * Возвращает <code>true</code> если требуется возможность скроллировать содержимое компонента в случае когда оно не помещается в установленные границы.
@@ -349,6 +339,11 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
             out.writeProperty("flex", flex);
         if (columnWidth!=null)
             out.writeProperty("columnWidth", columnWidth);
+    }
+
+    @Override
+    protected Set<String> getSupportedEvents() {
+        return EVENTS;
     }
 
 }

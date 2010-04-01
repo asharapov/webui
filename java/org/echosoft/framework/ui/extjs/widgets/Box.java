@@ -102,6 +102,12 @@ public class Box extends AbstractBoxComponent {
         out.beginObject();
         out.writeProperty("xtype", "box");
         renderAttrs(out);
+        out.endObject();
+    }
+
+    @Override
+    protected void renderAttrs(final JsonWriter out) throws Exception {
+        super.renderAttrs(out);
         if (autoEl !=null) {
             if (autoEl.hasContentOnly()) {
                 out.writeProperty("html", autoEl.getHtml());
@@ -113,7 +119,5 @@ public class Box extends AbstractBoxComponent {
             out.writeProperty("tpl", template);
         if (data!=null)
             out.writeProperty("data", data);
-        out.endObject();
     }
-
 }

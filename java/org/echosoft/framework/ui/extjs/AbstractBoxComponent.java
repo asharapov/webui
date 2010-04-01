@@ -33,6 +33,8 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
     //   под управлением <code>Ext.layout.BoxLayout</code>:
     private Margins margins;    // отступы от границ контейнера.
     private int flex;           // к-т, определяющий ширину или высоту компонента относительно размеров других компонент в контейнере.
+    //   под управлением <code>Ext.layout.ColumnLayout</code>:
+    private Double columnWidth;    // ширина компонента в процентах. Число в диапазоне 0.0 (соответствует 0%) - 1.0 ( соответствует 100%)
 
     public AbstractBoxComponent(final ComponentContext ctx) {
         super(ctx);
@@ -279,8 +281,32 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
      * @see <code>Ext.layout.BoxLayout</code>
      * @param flex коэффициент исходя из значений которого расчитывается ширина или высота компонента.
      */
-    public void setFlex(int flex) {
+    public void setFlex(final int flex) {
         this.flex = flex;
+    }
+
+    /**
+     * Возвращает число в диапазоне 0..1 соответствующее ширине компонента в процентах (здесь 1.0 соответствует 100%).
+     * @see <code>Ext.layout.ColumnLayout</code>
+     * @return  ширина компонента в процентах.
+     */
+    public Double getColumnWidth() {
+        return columnWidth;
+    }
+    /**
+     * Устанавливает ширину компонента в процентах.
+     * @see <code>Ext.layout.ColumnLayout</code>
+     * @param columnWidth  число в диапазоне 0..1 соответствующее ширине компонента в процентах (здесь 1.0 соответствует 100%).
+     */
+    public void setColumnWidth(final Double columnWidth) {
+        if (columnWidth==null || columnWidth<0) {
+            this.columnWidth = null;
+        } else
+        if (columnWidth>1) {
+            this.columnWidth = 1.0;
+        } else {
+            this.columnWidth = columnWidth;
+        }
     }
 
 
@@ -321,6 +347,8 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
             out.writeProperty("margins", margins.encode());
         if (flex!=0)
             out.writeProperty("flex", flex);
+        if (columnWidth!=null)
+            out.writeProperty("columnWidth", columnWidth);
     }
 
 }

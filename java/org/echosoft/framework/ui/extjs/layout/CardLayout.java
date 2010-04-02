@@ -60,17 +60,12 @@ public class CardLayout extends Layout {
         this.layoutOnCardChange = layoutOnCardChange;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public int getItemsCount() {
         return items.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     @Override
     public Iterable<UIComponent> getItems() {
@@ -101,27 +96,16 @@ public class CardLayout extends Layout {
         return item;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "card";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isCustomized() {
-        return super.isCustomized() ||
-                deferredRender || layoutOnCardChange;
+        return super.isCustomized() || deferredRender || layoutOnCardChange;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);

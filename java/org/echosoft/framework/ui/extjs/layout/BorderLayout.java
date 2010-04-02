@@ -18,26 +18,17 @@ public class BorderLayout extends Layout {
         this.regions = new EnumMap<BorderLayoutRegion.Region,BorderLayoutRegion>(BorderLayoutRegion.Region.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getItemsCount() {
         return regions.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     @Override
     public Iterable<UIComponent> getItems() {
         return (Iterable)regions.values();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends UIComponent> T append(final T item) {
         if (item==null)
@@ -76,9 +67,6 @@ public class BorderLayout extends Layout {
         return getRegion(BorderLayoutRegion.Region.CENTER, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "border";

@@ -161,17 +161,11 @@ public class AccordionLayout extends Layout {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getItemsCount() {
         return items.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     @Override
     public Iterable<UIComponent> getItems() {
@@ -203,26 +197,17 @@ public class AccordionLayout extends Layout {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "accordion";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isCustomized() {
         return super.isCustomized() ||
                 activeOnTop || animate || !autoWidth || collapseFirst || !fill || hideCollapseTool || !titleCollapse;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);

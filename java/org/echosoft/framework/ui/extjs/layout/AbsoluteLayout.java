@@ -6,9 +6,6 @@ package org.echosoft.framework.ui.extjs.layout;
  */
 public class AbsoluteLayout extends AnchorLayout {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLayout() {
         return "absolute";

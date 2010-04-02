@@ -17,17 +17,11 @@ public class FitLayout extends Layout {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getItemsCount() {
         return item ==null ? 0 : 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Iterable<UIComponent> getItems() {
         return item ==null
@@ -39,9 +33,9 @@ public class FitLayout extends Layout {
      * {@inheritDoc}
      *
      * <p><strong>ВАЖНО!</strong> Особенностью компоновщика {@link FitLayout} является то, что он может управлять только одним компонентом,
-     * соответственно при попытке добавить более одного компонента метод будет всегда возвращать <code>null</code>.</p>
-     * @return  Зарегистрированный в компоновщике в результате данного вызова компонент или <code>null</code> если в менеджере
-     * уже был зарегистрирован ранее хотя бы один компонент.
+     * соответственно при попытке добавить более одного компонента метод будет всегда поднимать исключительную ситуацию.</p>
+     * @return  Зарегистрированный в компоновщике в результате данного вызова компонент.
+     * @throws IllegalStateException если в контейнере уже есть один компонент.
      * @see #getItem()
      * @see #setItem(UIComponent)
      */
@@ -62,9 +56,6 @@ public class FitLayout extends Layout {
         this.item = item;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "fit";

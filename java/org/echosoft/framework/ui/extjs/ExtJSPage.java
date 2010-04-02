@@ -2,6 +2,7 @@ package org.echosoft.framework.ui.extjs;
 
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.Application;
 import org.echosoft.framework.ui.core.Page;
+import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.core.UIContext;
 import org.echosoft.framework.ui.extjs.layout.AutoLayout;
 import org.echosoft.framework.ui.extjs.layout.Layout;
@@ -85,6 +87,32 @@ public class ExtJSPage extends Page implements Serializable {
         setLayout(layout);
         return (T)this.layout;
     }
+
+    /**
+     * Возвращает количество компонент помещенных в данный контейнер.
+     * @return  кол-во компонент в данном контейнере.
+     */
+    public int getItemsCount() {
+        return layout!=null ? layout.getItemsCount() : 0;
+    }
+
+    /**
+     * Возвращает итератор по всем компонентам помещенным в данный контейнер.
+     * @return итератор по всем компонентам помещенным в данный контейнер.
+     */
+    public Iterable<UIComponent> getItems() {
+        return layout!=null ? layout.getItems() : Collections.<UIComponent>emptyList();
+    }
+
+    /**
+     * Регистрирует новый компонент в данном регионе.
+     * @param  item  новый компонент который должен быть добавлен в данный регион.
+     * @return  Добавленный в регион компонент.
+     */
+    public <T extends UIComponent> T append(final T item) {
+        return layout.append(item);
+    }
+
 
     /**
      * Метод унаследованный от интерфейса {@link org.echosoft.framework.ui.core.UIComponent}.

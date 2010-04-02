@@ -31,16 +31,63 @@ public class Toolbar extends AbstractContainerComponent {
         setLayout( new ToolbarLayout() );
     }
 
+    /**
+     * Регистрирует новый вспомогательный элемент-разделитель на панели инструментов.
+     * @return новый элемент типа {@link ToolbarSpacer}
+     */
+    public ToolbarSpacer addSpacer() {
+        return getLayout().append( new ToolbarSpacer() );
+    }
+
+    /**
+     * Регистрирует новый вспомогательный элемент-разделитель на панели инструментов.
+     * @return новый элемент типа {@link ToolbarSeparator}
+     */
+    public ToolbarSeparator addSeparator() {
+        return getLayout().append( new ToolbarSeparator() );
+    }
+
+    /**
+     * Регистрирует новый вспомогательный элемент-разделитель на панели инструментов.
+     * @return новый элемент типа {@link ToolbarFill}
+     */
+    public ToolbarFill addFill() {
+        return getLayout().append( new ToolbarFill() );
+    }
+
+    /**
+     * Возвращает способ выравнивания элементов панели инструментов.
+     * @return выбранный способ выравнивания для элементов панели инструментов.
+     *  По умолчанию возвращает {@link Align#LEFT}.
+     */
     public Align getButtonAlign() {
         return buttonAlign;
     }
+    /**
+     * Задает способ выравнивания элементов панели инструментов.
+     * @param buttonAlign способ выравнивания для элементов панели инструментов.
+     *  если <code>null</code> то будет установлено значение по умолчанию: {@link Align#LEFT}.
+     */
     public void setButtonAlign(final Align buttonAlign) {
         this.buttonAlign = buttonAlign!=null ? buttonAlign : Align.LEFT;
     }
 
+    /**
+     * Возвращает <code>true</code> если панель инструментов должна обрабатывать ситуацию когда
+     * элементы панели не умещаются в отведенном им пространстве.
+     * По умолчанию возвращает <code>false</code>
+     * @return <code>true</code> если требуется определение и соотв. обработка ситуации когда элементы панели
+     * не умещаются в отведенном им пространстве. По умолчанию возвращает <code>false</code>.
+     */
     public boolean isEnableOverflow() {
         return enableOverflow;
     }
+    /**
+     * Указывает требуется или нет определение и специальная обработка ситуации когда
+     * элементы панели не умещаются в отведенном им пространстве. По умолчанию свойство возвращает <code>false</code>.
+     * @param enableOverflow <code>true</code> если требуется определение и соотв. обработка ситуации когда элементы панели
+     * не умещаются в отведенном им пространстве. 
+     */
     public void setEnableOverflow(final boolean enableOverflow) {
         this.enableOverflow = enableOverflow;
     }

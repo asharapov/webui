@@ -168,9 +168,6 @@ public class FormLayout extends AnchorLayout {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void serialize(final JsonWriter out) throws Exception {
         if (hideLabels)
@@ -184,25 +181,16 @@ public class FormLayout extends AnchorLayout {
         super.serialize(out);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "form";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isCustomized() {
         return super.isCustomized() || fieldTpl!=null || labelSeparator!=null || trackLabels;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         if (fieldTpl!=null)

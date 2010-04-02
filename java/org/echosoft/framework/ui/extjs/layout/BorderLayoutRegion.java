@@ -334,9 +334,6 @@ public class BorderLayoutRegion implements UIComponent {
         return layout.append(item);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();

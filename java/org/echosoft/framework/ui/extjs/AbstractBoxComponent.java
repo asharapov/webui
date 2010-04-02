@@ -16,25 +16,37 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
 
     public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractComponent.EVENTS, "move", "resize");
 
-    private boolean autoScroll; // дает возможность скроллировать содержимое компонента если оно не влезает в установленные рамки.
-    private boolean autoWidth;  // Если true то ширина будет полностью контролироваться браузером (путем установки стиля width:'auto'), в противном случае ширина будет контролироваться ExtJS
-    private boolean autoHeight; // Если true то высота будет полностью контролироваться браузером (путем установки стиля height:'auto'), в противном случае высота будет контролироваться ExtJS
-    private Integer width;      // ширина компонента (в пикселях). 
-    private Integer height;     // высота компонента (в пикселях).
-    private Integer maxWidth;   // максимально допустимая ширина (в пикселях).
-    private Integer minWidth;   // минимально допустимая ширина (в пикселях).
-    private Integer maxHeight;  // максимально допустимая высота (в пикселях).
-    private Integer minHeight;  // минимально допустимая высота (в пикселях).
+    private boolean autoScroll;     // дает возможность скроллировать содержимое компонента если оно не влезает в установленные рамки.
+    private boolean autoWidth;      // Если true то ширина будет полностью контролироваться браузером (путем установки стиля width:'auto'), в противном случае ширина будет контролироваться ExtJS
+    private boolean autoHeight;     // Если true то высота будет полностью контролироваться браузером (путем установки стиля height:'auto'), в противном случае высота будет контролироваться ExtJS
+    private Integer width;          // ширина компонента (в пикселях).
+    private Integer height;         // высота компонента (в пикселях).
+    private Integer maxWidth;       // максимально допустимая ширина (в пикселях).
+    private Integer minWidth;       // минимально допустимая ширина (в пикселях).
+    private Integer maxHeight;      // максимально допустимая высота (в пикселях).
+    private Integer minHeight;      // минимально допустимая высота (в пикселях).
     // свойства, определяющие положение данного компонента в родительском контейнере
     //   под управлением <code>Ext.layout.AbsoluteLayout</code>:
-    private Point point;        // координаты левого верхнего угла компонента.
+    private Point point;            // координаты левого верхнего угла компонента.
     //   под управлением <code>Ext.layout.AnchorLayout</code>:
-    private String anchor;      // строка определяющая ширину и (опционально) высоту  относительно размеров контейнера в целом.
+    private String anchor;          // строка определяющая ширину и (опционально) высоту  относительно размеров контейнера в целом.
     //   под управлением <code>Ext.layout.BoxLayout</code>:
-    private Margins margins;    // отступы от границ контейнера.
-    private int flex;           // к-т, определяющий ширину или высоту компонента относительно размеров других компонент в контейнере.
+    private Margins margins;        // отступы от границ контейнера.
+    private int flex;               // к-т, определяющий ширину или высоту компонента относительно размеров других компонент в контейнере.
+    //   под управлением <code>Ext.layout.FormLayout</code>:
+    private String clearCls;        // CSS класс, дополнительно применяемый к области-разделителю между данным и нижележашим компонентами на форме.
+    private String itemCls;         // CSS класс, дополнительно применяемый к области включающей в себя и сам компонент и метку к нему.
+    private String labelStyle;      // CSS стиль, дополнительно применяемый к метке компонента.
+    private String labelSeparator;  // текст (допускается html), используемый в разделителя между меткой и самим компонентом.
+    private String fieldLabel;      // метка компонента на форме.
+    private boolean hideLabel;      // позволяет скрыть метку к компоненту на форме.
     //   под управлением <code>Ext.layout.ColumnLayout</code>:
-    private Double columnWidth;    // ширина компонента в процентах. Число в диапазоне 0.0 (соответствует 0%) - 1.0 ( соответствует 100%)
+    private Double columnWidth;     // ширина компонента в процентах. Число в диапазоне 0.0 (соответствует 0%) - 1.0 ( соответствует 100%)
+    //   под управлением <code>Ext.layout.TableLayout</code>:
+    private Integer rowspan;        // сколько строк в таблице занимает компонент.
+    private Integer colspan;        // сколько колонок в таблице занимает компонент.
+    private String cellId;          // идентификатор ячейки таблицы которую занимает компонент.
+    private String cellCls;         // CSS класс, применяемый к ячейке таблицы которую занимает данный компонент.
 
     public AbstractBoxComponent(final ComponentContext ctx) {
         super(ctx);
@@ -199,9 +211,9 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
     //
 
     /**
-     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих абсолютное позициронирование компонент.</p>
-     * Возвращает координаты по которым будет располагаться верхний левый угол компонента.
+     * <strong>[AbsoluteLayout]: </strong> Возвращает координаты по которым будет располагаться верхний левый угол компонента.
      * Координаты могут быть указаны как относительно родительского контейнера так и относительно страницы в целом.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих абсолютное позициронирование компонент.</p>
      * @return координаты по которым будет располагаться верхний левый угол компонента или <code>null</code>.
      * @see <code> <code>Ext.layout.AbsoluteLayout</code>
      */
@@ -209,9 +221,9 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         return point;
     }
     /**
-     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих абсолютное позициронирование компонент.</p>
-     * Указывает координаты по которым будет располагаться верхний левый угол компонента.
+     * <strong>[AbsoluteLayout]: </strong> Указывает координаты по которым будет располагаться верхний левый угол компонента.
      * Координаты могут быть указаны как относительно родительского контейнера так и относительно страницы в целом.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих абсолютное позициронирование компонент.</p>
      * @param point координаты по которым будет располагаться верхний левый угол компонента.
      * @see <code> <code>Ext.layout.AbsoluteLayout</code>
      */
@@ -221,8 +233,8 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
 
 
     /**
+     * <strong>[AnchorLayout]: </strong> Определяет ширину и высоту компонента относительно размеров контейнера в целом.
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих указание размеров компонент относительно размеров контейенера в целом.</p>
-     * Определяет ширину и высоту компонента относительно размеров контейнера в целом.
      * @return  строка вида "30% 50%" или "-100 -50" или <code>null</code>.
      * @see <code> <code>Ext.layout.AnchorLayout</code>
      */
@@ -230,8 +242,8 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         return anchor;
     }
     /**
+     * <strong>[AnchorLayout]: </strong> Определяет ширину и высоту компонента относительно размеров контейнера в целом.
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки допускающих указание размеров компонент относительно размеров контейенера в целом.</p>
-     * Определяет ширину и высоту компонента относительно размеров контейнера в целом.
      * @param anchor  строка вида "30% 50%" или "-100 -50".
      * @see <code> <code>Ext.layout.AnchorLayout</code>
      */
@@ -239,9 +251,10 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         this.anchor = StringUtil.trim(anchor);
     }
 
+
     /**
+     * <strong>[BoxLayout]: </strong> Определяет отступы данного компонента относительно границ контейнера.
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
-     * Определяет отступы данного компонента относительно границ контейнера.
      * @return  отступы относительно границ контейнера или <code>null</code>.
      * @see <code>Ext.layout.BoxLayout</code>
      */
@@ -249,8 +262,8 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         return margins;
     }
     /**
+     * <strong>[BoxLayout]: </strong> Определяет отступы данного компонента относительно границ контейнера.
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
-     * Определяет отступы данного компонента относительно границ контейнера.
      * @param margins отступы относительно границ контейнера.
      * @see <code>Ext.layout.BoxLayout</code>
      */
@@ -259,6 +272,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
     }
 
     /**
+     * <strong>[BoxLayout]: </strong>
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
      * @see <code>Ext.layout.BoxLayout</code>
      * @return коэффициент исходя из значений которого расчитывается ширина или высота компонента.
@@ -267,6 +281,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         return flex;
     }
     /**
+     * <strong>[BoxLayout]: </strong>
      * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.BoxLayout</code> или его потомков.</p>
      * @see <code>Ext.layout.BoxLayout</code>
      * @param flex коэффициент исходя из значений которого расчитывается ширина или высота компонента.
@@ -275,18 +290,141 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         this.flex = flex;
     }
 
+
     /**
-     * Возвращает число в диапазоне 0..1 соответствующее ширине компонента в процентах (здесь 1.0 соответствует 100%).
+     * <strong>[FormLayout]: </strong> Возвращает класс CSS который требуется применить к области экрана, разделяющему данный и последующий компоненты на форме.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @return CSS класс дополнительно применяемый к области экрана между данным и последующим компонентами на форме.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public String getClearCls() {
+        return clearCls;
+    }
+    /**
+     * <strong>[FormLayout]: </strong> Задает класс CSS который требуется применить к области экрана, разделяющему данный и последующий компоненты на форме.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @param clearCls  CSS класс дополнительно применяемый к области экрана между данным и последующим компонентами на форме.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public void setClearCls(final String clearCls) {
+        this.clearCls = StringUtil.trim(clearCls);
+    }
+
+    /**
+     * <strong>[FormLayout]: </strong> Возвращает класс CSS который будет применен к области экрана включающей в себя и сам компонент и метку к нему.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @return класс CSS который будет применен к области экрана включающей в себя данный компонент и метку к нему.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public String getItemCls() {
+        return itemCls;
+    }
+    /**
+     * <strong>[FormLayout]: </strong> Задает класс CSS который требуется применить к области экрана включающей в себя и сам компонент и метку к нему.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @param itemCls класс CSS который будет применен к области экрана включающей в себя данный компонент и метку к нему.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public void setItemCls(final String itemCls) {
+        this.itemCls = StringUtil.trim(itemCls);
+    }
+
+    /**
+     * <strong>[FormLayout]: </strong> Возвращает стиль CSS который будет применен к метке для данного компонента.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @return стиль CSS который будет применен к метке для данного компонента.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public String getLabelStyle() {
+        return labelStyle;
+    }
+    /**
+     * <strong>[FormLayout]: </strong> Задает стиль CSS который будет применен к метке для данного компонента.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @param labelStyle стиль CSS который будет применен к метке для данного компонента.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public void setLabelStyle(final String labelStyle) {
+        this.labelStyle = StringUtil.trim(labelStyle);
+    }
+
+    /**
+     * <strong>[FormLayout]: </strong> Возвращает текст (допускается html) который будет помещен между меткой и компонентом.
+     * Если данное свойство не указано то ExtJS будет использовать символ ':'.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @return текст, используемый в качестве разделителя между меткой и компонентом.
+     *  Если свойство равно <code>null</code> то будет использоваться значение по умолчанию.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public String getLabelSeparator() {
+        return labelSeparator;
+    }
+    /**
+     * <strong>[FormLayout]: </strong> Задает текст (допускается html) который будет помещен между меткой и компонентом.
+     * Если данное свойство не указано то ExtJS будет использовать символ ':'.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @param labelSeparator текст, используемый в качестве разделителя между меткой и компонентом.
+     *  Если свойство равно <code>null</code> то будет использоваться значение по умолчанию.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public void setLabelSeparator(final String labelSeparator) {
+        this.labelSeparator = labelSeparator;
+    }
+
+    /**
+     * <strong>[FormLayout]: </strong> Возвращает текст (допускается html) используемый в качестве метки к данному компоненту на форме.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @return текст используемый в качестве метки к данному компоненту на форме.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public String getFieldLabel() {
+        return fieldLabel;
+    }
+    /**
+     * <strong>[FormLayout]: </strong> Задает текст (допускается html) используемый в качестве метки к данному компоненту на форме.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @param fieldLabel текст используемый в качестве метки к данному компоненту на форме.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public void setFieldLabel(final String fieldLabel) {
+        this.fieldLabel = fieldLabel;
+    }
+
+    /**
+     * <strong>[FormLayout]: </strong> Данное свойство определяет будет ли отображаться для данного компонента метка на форме.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @return <code>true</code> если метка должна отсутствовать.
+     *      По умолчанию возвращает <code>false</code>.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public boolean isHideLabel() {
+        return hideLabel;
+    }
+    /**
+     * <strong>[FormLayout]: </strong> Определяет будет ли отображаться для данного компонента метка на форме.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.FormLayout</code></p>
+     * @param hideLabel <code>true</code> если метка должна отсутствовать.
+     * @see <code>Ext.layout.FormLayout</code>
+     */
+    public void setHideLabel(final boolean hideLabel) {
+        this.hideLabel = hideLabel;
+    }
+
+
+    /**
+     * <strong>[ColumnLayout]: </strong> Возвращает число в диапазоне 0..1 соответствующее ширине компонента в процентах (здесь 1.0 соответствует 100%).
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.ColumnLayout</code></p>
+     * @return  Ширина компонента в процентах.
      * @see <code>Ext.layout.ColumnLayout</code>
-     * @return  ширина компонента в процентах.
      */
     public Double getColumnWidth() {
         return columnWidth;
     }
     /**
-     * Устанавливает ширину компонента в процентах.
+     * <strong>[ColumnLayout]: </strong> Устанавливает ширину компонента в процентах.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.ColumnLayout</code></p>
+     * @param columnWidth  Число в диапазоне 0..1 соответствующее ширине компонента в процентах (здесь 1.0 соответствует 100%).
      * @see <code>Ext.layout.ColumnLayout</code>
-     * @param columnWidth  число в диапазоне 0..1 соответствующее ширине компонента в процентах (здесь 1.0 соответствует 100%).
      */
     public void setColumnWidth(final Double columnWidth) {
         if (columnWidth==null || columnWidth<0) {
@@ -297,6 +435,79 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         } else {
             this.columnWidth = columnWidth;
         }
+    }
+
+
+    /**
+     * <strong>[TableLayout]: </strong> Возвращает количество строк которые будет занимать данный компонент в таблице.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @return  Количество строк которые будет занимать данный компонент в таблице.
+     * @see <code>Ext.layout.TableLayout</code>
+     */
+    public Integer getRowspan() {
+        return rowspan;
+    }
+    /**
+     * <strong>[TableLayout]: </strong> Задает количество строк которые будет занимать данный компонент в таблице.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @param rowspan  Количество строк которые будет занимать данный компонент в таблице.
+     * @see <code>Ext.layout.TableLayout</code>
+     */
+    public void setRowspan(final Integer rowspan) {
+        this.rowspan = rowspan;
+    }
+
+    /**
+     * <strong>[TableLayout]: </strong> Возвращает количество колонок которые будет занимать данный компонент в таблице.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @return  Количество колонок которые будет занимать данный компонент в таблице.
+     * @see <code>Ext.layout.TableLayout</code>
+     */
+    public Integer getColspan() {
+        return colspan;
+    }
+    /**
+     * <strong>[TableLayout]: </strong> Задает количество колонок которые будет занимать данный компонент в таблице.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @param colspan  Количество колонок которые будет занимать данный компонент в таблице.
+     * @see <code>Ext.layout.TableLayout</code>
+     */
+    public void setColspan(final Integer colspan) {
+        this.colspan = colspan;
+    }
+
+    /**
+     * <strong>[TableLayout]: </strong> Возвращает идентификатор который будет назначен ячейке таблицы в которой будет размещаться данный компонент.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @return Идентификатор ячейки таблицы которую будет занимать данный компонент.
+     */
+    public String getCellId() {
+        return cellId;
+    }
+    /**
+     * <strong>[TableLayout]: </strong> Задает идентификатор который будет назначен ячейке таблицы в которой будет размещаться данный компонент.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @param cellId Идентификатор ячейки таблицы которую будет занимать данный компонент.
+     */
+    public void setCellId(final String cellId) {
+        this.cellId = StringUtil.trim(cellId);
+    }
+
+    /**
+     * <strong>[TableLayout]: </strong> Возвращает CSS класс который будет назначен ячейке таблицы в которой будет размещен данный компонент.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @return CSS класс для ячейки таблицы в которой будет размещен данный компонент.
+     */
+    public String getCellCls() {
+        return cellCls;
+    }
+    /**
+     * <strong>[TableLayout]: </strong> Задает CSS класс который будет назначен ячейке таблицы в которой будет размещен данный компонент.
+     * <p><strong>Внимание!</strong> Данное свойство используется только в контейнерах работающих под управлением менеджеров компоновки <code>Ext.layout.TableLayout</code></p>
+     * @param cellCls CSS класс для ячейки таблицы в которой будет размещен данный компонент.
+     */
+    public void setCellCls(final String cellCls) {
+        this.cellCls = StringUtil.trim(cellCls);
     }
 
 
@@ -333,12 +544,32 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         }
         if (anchor!=null)
             out.writeProperty("anchor", anchor);
-        if (margins!=null && !margins.isEmpty())
+        if (margins!=null)
             out.writeProperty("margins", margins.encode());
         if (flex!=0)
             out.writeProperty("flex", flex);
+        if (clearCls!=null)
+            out.writeProperty("clearCls", clearCls);
+        if (itemCls!=null)
+            out.writeProperty("itemCls", itemCls);
+        if (labelStyle!=null)
+            out.writeProperty("labelStyle", labelStyle);
+        if (labelSeparator!=null)
+            out.writeProperty("labelSeparator", labelSeparator);
+        if (fieldLabel!=null)
+            out.writeProperty("fieldLabel", fieldLabel);
+        if (hideLabel)
+            out.writeProperty("hideLabel", true);
         if (columnWidth!=null)
             out.writeProperty("columnWidth", columnWidth);
+        if (rowspan!=null)
+            out.writeProperty("rowspan", rowspan);
+        if (colspan!=null)
+            out.writeProperty("colspan", colspan);
+        if (cellId!=null)
+            out.writeProperty("cellId", cellId);
+        if (cellCls!=null)
+            out.writeProperty("cellCls", cellCls);
     }
 
     @Override

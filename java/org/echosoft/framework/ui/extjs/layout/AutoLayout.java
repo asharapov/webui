@@ -18,25 +18,16 @@ public class AutoLayout extends Layout {
         items = new ArrayList<UIComponent>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getItemsCount() {
         return items.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Iterable<UIComponent> getItems() {
         return items;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends UIComponent> T append(final T item) {
         if (item==null)
@@ -45,9 +36,6 @@ public class AutoLayout extends Layout {
         return item;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "auto";

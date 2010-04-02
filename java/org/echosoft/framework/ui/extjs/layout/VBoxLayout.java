@@ -46,7 +46,7 @@ public class VBoxLayout extends BoxLayout {
     /**
      * Возвращает используемый менеджером компоновки способ упаковки компонент в контейнере.
      * @return используемый способ упаковки компонент в контейнере.
-     *  По умолчанию возвращает {@link Pack#START}.
+     *  По умолчанию возвращает {@link BoxLayout.Pack#START}.
      */
     public Pack getPack() {
         return pack;
@@ -54,7 +54,7 @@ public class VBoxLayout extends BoxLayout {
     /**
      * Задает используемый менеджером компоновки способ упаковки компонент в контейнере.
      * @param pack используемый способ упаковки компонент в контейнере. Если <code>null</code> то
-     *  будет использовано значение по умолчанию - {@link Pack#START}.
+     *  будет использовано значение по умолчанию - {@link BoxLayout.Pack#START}.
      */
     public void setPack(final Pack pack) {
         this.pack = pack!=null ? pack : Pack.START;
@@ -68,25 +68,16 @@ public class VBoxLayout extends BoxLayout {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "vbox";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isCustomized() {
         return super.isCustomized() || align!=Align.LEFT || pack!=Pack.START || flex!=null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);

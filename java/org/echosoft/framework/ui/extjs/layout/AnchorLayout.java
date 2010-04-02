@@ -40,25 +40,16 @@ public class AnchorLayout extends Layout {
         this.anchorSize = anchorSize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getItemsCount() {
         return items.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Iterable<UIComponent> getItems() {
         return items;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends UIComponent> T append(final T item) {
         if (item==null)
@@ -67,9 +58,6 @@ public class AnchorLayout extends Layout {
         return item;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void serialize(final JsonWriter out) throws Exception {
         if (anchorSize!=null && !anchorSize.isEmpty())
@@ -77,9 +65,6 @@ public class AnchorLayout extends Layout {
         super.serialize(out);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "anchor";

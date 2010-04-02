@@ -9,22 +9,25 @@
 <script type="text/javascript">
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
+    Ext.QuickTips.init();
     var root = new Ext.Viewport({
       layout: "fit",
       items: [{
           xtype: "panel",
           title: "panel",
           layout: "hbox",
+          tbarCfg: {},  // workaround for a ExtJS bug ?
           tbar: {
             xtype: "toolbar",
             frame: false,
             items: [
               {xtype:"button", text:"b1"},
+              {xtype:"tbspacer", width:100},
               {xtype:"button", text:"b2"},
-              "-",
+              {xtype:"tbseparator", width:30},    // "-",
               {xtype:"button", text:"b3"},
-              "->",
-              {xtype:"button", text:"b4"}
+              "->",                               // {xtype:"tbfill"},
+              {xtype:"button", text:"b4", tooltip:"my tooltip"}
             ]
           },
           frame: true,

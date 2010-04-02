@@ -13,7 +13,7 @@ import org.echosoft.framework.ui.extjs.model.Margins;
  * Описывает характеристики менеджера компоновки <code>Ext.layout.BoxLayout</code>.
  * @author Anton Sharapov
  */
-public class BoxLayout extends Layout {
+public abstract class BoxLayout extends Layout {
 
     public static enum Pack {
         START, CENTER, END
@@ -61,25 +61,16 @@ public class BoxLayout extends Layout {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getItemsCount() {
         return items.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Iterable<UIComponent> getItems() {
         return items;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends UIComponent> T append(final T item) {
         if (item==null)
@@ -89,17 +80,11 @@ public class BoxLayout extends Layout {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getLayout() {
         return "box";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isCustomized() {
         return super.isCustomized() ||
@@ -107,9 +92,6 @@ public class BoxLayout extends Layout {
                 (defaultMargins!=null && !defaultMargins.isEmpty());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);

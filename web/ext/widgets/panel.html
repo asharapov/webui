@@ -1,0 +1,53 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css"/>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
+Ext.onReady( function() {
+    Ext.QuickTips.init();
+    var root = new Ext.Viewport({
+      layout: "auto",
+      items: [{
+          id: "XXX",
+          xtype: "panel",
+          title: "panel",
+          layout: "hbox",
+          width: 500,
+          height: 300,
+          tools: [
+            {id:"gear", qtip:"perform something action", handler:function(){alert("clicked on gear");}},
+            {id:"help", qtip:"show my help", handler:function(evt, toolEl, panel, tool){console.log("help: ", arguments);}}
+          ],
+          xtbarCfg: {},  // workaround for a ExtJS bug ?
+          fbar: {
+            id: "XXX.TBAR",
+            xtype: "toolbar",
+            frame: false,
+            items: [
+              {xtype:"button", text:"b1"},
+              {xtype:"tbseparator"},    // "-",
+              {xtype:"button", text:"b2"},
+              "->",
+              {xtype:"button", text:"b4", tooltip:"my tooltip"}
+            ]
+          },
+          frame: true,
+          border: true,
+          collapsible: true,
+          collapsed: false,
+        titleCollapse: true,
+          bodyStyle: "color:red",
+          preventBodyReset: true,
+          html: "text on the panel"
+        }]
+      });
+});
+</script>
+
+</body>
+</html>

@@ -12,15 +12,19 @@ import org.echosoft.framework.ui.extjs.model.Template;
 public class Panel extends AbstractContainerComponent {
 
     private boolean animCollapse;       // Следует ли использовать анимацию при сворачивании/разворачивании панели.
-    private String baseCls;             // Составная часть имени CSS класса, применяемая к различным элементам панели.
-    private String title;
-    private boolean collapsible;
-    private boolean frame;
-    private boolean border;
-    private Toolbar tbar;
-    private Toolbar bbar;
-    private Toolbar fbar;
-
+    private String bodyCssClass;        // CSS класс применяемый к основному телу панели.
+    private String bodyStyle;           // CSS стиль применяемый к основному телу панели.
+    private String title;               // Заголовок панели.
+    private boolean collapsible;        // Может ли содержимое панели схлопываться.
+    private boolean collapsed;          // По умолчанию содержимое панели схлопнуто ?
+    private boolean titleCollapse;      // Позволять ли схлопывание панели по клику на любое место заголовка ?.
+    private boolean frame;              // Использовать или нет продвинутое оформление панели.
+    private boolean border;             // Выделять или нет границы панели.
+    private boolean preventBodyReset;   // Сброс ExtJS стилей в основном теле панели (имеет смысл если мы там отображаем HTML текст)
+    private Toolbar tbar;               // Панель инструментов сверху панели.
+    private Toolbar bbar;               // Панель инструментов внизу панели.
+    private Toolbar fbar;               // Панель инструментов в самом низу панели.
+    // и еще PanelTool's надо указать.
     private DomElement autoEl;
     private Template template;
     private Object data;
@@ -41,12 +45,6 @@ public class Panel extends AbstractContainerComponent {
         this.animCollapse = animCollapse;
     }
 
-    public String getBaseCssClass() {
-        return baseCls;
-    }
-    public void setBaseCssClass(final String baseCls) {
-        this.baseCls = baseCls;
-    }
 
     public String getTitle() {
         return title;
@@ -142,8 +140,6 @@ public class Panel extends AbstractContainerComponent {
         super.renderAttrs(out);
         if (!animCollapse)
             out.writeProperty("animCollapse", false);
-        if (baseCls!=null)
-            out.writeProperty("baseCls", baseCls);
         if (title!=null)
             out.writeProperty("title", title);
         if (collapsible)

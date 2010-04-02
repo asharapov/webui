@@ -1,0 +1,14 @@
+<core:page viewId="list" viewRank="1" cleanStrategy="rank", title="List of entities">
+  <ext-layout:border region="west" height="30">
+  </ext-layout:border>
+  <layout:border region="center">
+    <ext:panel title="My panel" frame="true">
+      <ext-layout:form labelWidth="70" />
+      <ext-form:textfield id="f1" fieldLabel="Field 1" emptyText="enter you value" />
+    </ext:panel>
+    <core:forEach items="@{request:users}" var="user">
+      <ext:box tpl="Hello, {name}! You are {state}." data="@{page:user}" />
+    </core:forEach>
+  </ext-layout:border>
+</core:page>
+

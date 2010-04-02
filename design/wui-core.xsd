@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://echosoft.org/webui/core"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="0.8">
+  <xs:annotation>
+   <xs:documentation>
+     Определяет основные элементы языка разметки webui.
+  </xs:documentation>
+ </xs:annotation>
+
+  <xs:complexType name="Page">
+    <xs:annotation>
+      <xs:documentation>
+        Описывает свойства страницы в целом.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="title" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Название страницы которое будет отображаться в заголовке страницы.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="icon" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Ссылка на используемую на данной странице иконку</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="viewId" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Идентификатор состояния по для данной страницы</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="viewRank" type="xs:int">
+      <xs:annotation>
+        <xs:documentation>Ранг состояния для данной страницы.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="cleanStrategy" type="CleanStrategy">
+      <xs:annotation>
+        <xs:documentation>Текущая стратегия удаления состояний форм которые уже не нужны нам для дальнейшей работы.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="layout" type="LayoutId">
+      <xs:annotation>
+        <xs:documentation>Идентификатор менеджера компоновки который будет управлять дочерними компонентами.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+
+
+  <xs:simpleType name="CleanStrategy">
+    <xs:annotation>
+      <xs:documentation>Алгоритмы сборки ненужных более состояний форм.</xs:documentation>
+    </xs:annotation>
+    <xs:union memberTypes="CoreCleanStrategy xs:Name" />
+  </xs:simpleType>
+  <xs:simpleType name="CoreCleanStrategy">
+    <xs:annotation>
+      <xs:documentation>Стандартные алгоритмы сборки ненужных более состояний форм.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="all">
+        <xs:annotation>
+          <xs:documentation>Удаляет состояния абсолютно всех форм.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="none">
+        <xs:annotation>
+          <xs:documentation>Оставляет все состояния без изменений.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="package">
+        <xs:annotation>
+          <xs:documentation>Удаляет состояния всех форм, относящихся к другой группе страниц.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="current">
+        <xs:annotation>
+          <xs:documentation>Удаляет состояния всех форм за исключением той, что помечена как текущая.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="rank">
+        <xs:annotation>
+          <xs:documentation>Удаляет состояния всех форм, чей ранг больше чем ранг текущей страницы.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="LayoutId">
+    <xs:annotation>
+      <xs:documentation>Перечень идентификаторов всех поддерживаемых в ExtJS менеджеров компоновки компонент</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="auto" />
+      <xs:enumeration value="absolute" />
+      <xs:enumeration value="accordion" />
+      <xs:enumeration value="anchor" />
+      <xs:enumeration value="border" />
+      <xs:enumeration value="card" />
+      <xs:enumeration value="column" />
+      <xs:enumeration value="fit" />
+      <xs:enumeration value="form" />
+      <xs:enumeration value="hbox" />
+      <xs:enumeration value="menu" />
+      <xs:enumeration value="table" />
+      <xs:enumeration value="toolbare" />
+      <xs:enumeration value="vbox" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

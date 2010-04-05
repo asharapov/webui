@@ -1,4 +1,8 @@
-<core:page viewId="list" viewRank="1" cleanStrategy="rank", title="List of entities">
+<?xml version="1.0" encoding='UTF-8'?>
+<core:page
+    xmlns:core="http://echosoft.org/webui/core"
+    viewId="list" viewRank="1" cleanStrategy="rank" title="List of entities" layout="border">
+  <!--
   <ext-layout:border region="west" height="30">
   </ext-layout:border>
   <layout:border region="center">
@@ -10,5 +14,7 @@
       <ext:box tpl="Hello, {name}! You are {state}." data="@{page:user}" />
     </core:forEach>
   </ext-layout:border>
+  -->
+
 </core:page>
 

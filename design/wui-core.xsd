@@ -8,6 +8,8 @@
   </xs:documentation>
  </xs:annotation>
 
+  <xs:element name="page" type="Page" />
+
   <xs:complexType name="Page">
     <xs:annotation>
       <xs:documentation>
@@ -46,7 +48,11 @@
     </xs:attribute>
   </xs:complexType>
 
+  <xs:complexType name="AbstractComponent">
+  </xs:complexType>
 
+  <xs:complexType name="AbstractBoxComponent">
+  </xs:complexType>
 
   <xs:simpleType name="CleanStrategy">
     <xs:annotation>

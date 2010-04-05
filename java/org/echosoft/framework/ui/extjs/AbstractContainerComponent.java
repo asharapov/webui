@@ -56,7 +56,7 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     @SuppressWarnings("unchecked")
     public <T extends Layout> T assignLayout(final T layout) {
         setLayout(layout);
-        return (T)this.layout;
+        return (T)getLayout();
     }
 
 

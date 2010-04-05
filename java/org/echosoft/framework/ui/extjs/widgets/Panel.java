@@ -429,7 +429,7 @@ public class Panel extends AbstractContainerComponent {
     }
 
     @Override
-    public void renderAttrs(final JsonWriter out) throws Exception {
+    protected void renderAttrs(final JsonWriter out) throws Exception {
         super.renderAttrs(out);
         if (animCollapse!=null)
             out.writeProperty("animCollapse", animCollapse);

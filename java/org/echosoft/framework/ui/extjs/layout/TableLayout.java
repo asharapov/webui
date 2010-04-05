@@ -28,7 +28,7 @@ public class TableLayout extends Layout {
      * @return количество колонок на которые будут биться все компоненты в контейнере.
      *  По умолчанию возвращает <code>null</code>.
      */
-    public int getColumns() {
+    public Integer getColumns() {
         return columns;
     }
     /**

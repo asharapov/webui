@@ -20,8 +20,16 @@ Ext.onReady( function() {
           tbar: {
             xtype: "toolbar",
             frame: false,
-            items: [
-              {xtype:"button", text:"b1"},
+            items: [ {
+                xtype:"buttongroup",
+                title: "common",
+                columns: 3,
+                items: [
+                  {xtype: "button", text: "bg1"},
+                  {xtype: "button", text: "bg2"},
+                  {xtype: "button", text: "bg3"}
+                ]
+              },
               {xtype:"tbspacer", width:100},
               {xtype:"button", text:"b2"},
               {xtype:"tbseparator", width:30},    // "-",

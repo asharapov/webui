@@ -59,8 +59,7 @@ public class BlankDispatcher implements Dispatcher {
         b5.setFieldLabel("simple button");
         b5.setHandler( new JSFunction(new String[]{"b", "e"}, "console.log(b,e);") );
         final Toolbar footer = panel.assignFooter( new Toolbar(ctx.getChild("fbar")) );
-        final Button b6 = footer.append( new Button(ctx.getChild("b6")) );
-        b6.setText("save");
+        final Button b6 = footer.addButton("b6");
         final Panel.ToolButton ptb1 = panel.appendToolButton( Panel.ToolButtonType.REFRESH );
         ptb1.setHandler( new JSFunction(null, "alert('refresh');") );
 

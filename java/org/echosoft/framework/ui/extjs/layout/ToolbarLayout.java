@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.echosoft.framework.ui.core.UIComponent;
+import org.echosoft.framework.ui.extjs.widgets.Button;
+import org.echosoft.framework.ui.extjs.widgets.ButtonGroup;
 import org.echosoft.framework.ui.extjs.widgets.ToolbarFill;
 import org.echosoft.framework.ui.extjs.widgets.ToolbarSeparator;
 import org.echosoft.framework.ui.extjs.widgets.ToolbarSpacer;
@@ -77,6 +79,35 @@ public class ToolbarLayout extends Layout {
         items.add( cmp );
         return cmp;
     }
+
+    /**
+     * Регистрирует новый компонент {@link Button} на панели инструментов.
+     * @param text  текст на кнопке.
+     * @return новый экземпляр компонента {@link Button} который был помещен на панель инструментов.<br/>
+     *  <strong>Внимание!</strong> в возвращаемом экземпляре не установлен контекст выполнения.
+     */
+    public Button addButton(final String text) {
+        final Button button = new Button();
+        button.setText(text);
+        items.add( button );
+        return button;
+    }
+
+    /**
+     * Создает и регистрирует новый компонент {@link ButtonGroup} на панели инструментов.
+     * @param title  текст заголовка.
+     * @param columns  максимальное кол-во дочерних компонент которые будут расположены на одной строке.
+     * @return новый экземпляр компонента {@link Button} который был помещен на панель инструментов.<br/>
+     *  <strong>Внимание!</strong> в возвращаемом экземпляре не установлен контекст выполнения.
+     */
+    public ButtonGroup addButtonGroup(final String title, final Integer columns) {
+        final ButtonGroup bg = new ButtonGroup();
+        bg.setTitle( title );
+        bg.setColumns( columns );
+        items.add( bg );
+        return bg;
+    }
+
 
     /**
      * {@inheritDoc}

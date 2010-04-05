@@ -56,6 +56,32 @@ public class Toolbar extends AbstractContainerComponent {
     }
 
     /**
+     * Регистрирует новый компонент {@link Button} на панели инструментов.
+     * @param text  текст на кнопке.
+     * @return новый экземпляр компонента {@link Button} который был помещен на панель инструментов.<br/>
+     *  <strong>Внимание!</strong> в возвращаемом экземпляре не установлен контекст выполнения.
+     */
+    public Button addButton(final String text) {
+        final Button button = getLayout().append( new Button() );
+        button.setText(text);
+        return button;
+    }
+
+    /**
+     * Создает и регистрирует новый компонент {@link ButtonGroup} на панели инструментов.
+     * @param title  текст заголовка.
+     * @param columns  максимальное кол-во дочерних компонент которые будут расположены на одной строке.
+     * @return новый экземпляр компонента {@link Button} который был помещен на панель инструментов.<br/>
+     *  <strong>Внимание!</strong> в возвращаемом экземпляре не установлен контекст выполнения.
+     */
+    public ButtonGroup addButtonGroup(final String title, final Integer columns) {
+        final ButtonGroup bg = getLayout().append( new ButtonGroup() );
+        bg.setTitle( title );
+        bg.setColumns( columns );
+        return bg;
+    }
+
+    /**
      * Возвращает способ выравнивания элементов панели инструментов.
      * @return выбранный способ выравнивания для элементов панели инструментов.
      *  По умолчанию возвращает {@link Align#LEFT}.

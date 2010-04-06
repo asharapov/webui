@@ -23,6 +23,7 @@ public class ButtonGroup extends AbstractContainerComponent {
         super.setLayout( new TableLayout() );
     }
 
+    @Override
     public void setLayout(final Layout layout) {
         if (layout instanceof TableLayout) {
             super.setLayout(layout);
@@ -78,6 +79,9 @@ public class ButtonGroup extends AbstractContainerComponent {
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
+        final ComponentContext ctx = getContext();
+        if (ctx!=null)
+            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
         out.beginObject();
         out.writeProperty("xtype", "buttongroup");
         renderAttrs(out);

@@ -1,0 +1,13 @@
+{
+  success: true,
+  errors: [
+    {id:"num1", msg:"num1 is wrong"},
+    {id:"txt1", msg:"txt1 is wrong"}
+  ],
+  data: [
+    {"name": "1", "date":"01.01.2010"},
+    {"name": "2", "date":"02.01.2010"},
+    {"name": "3", "date":"03.01.2010"},
+    {"name": "4", "date":"04.01.2010"}
+  ]
+}

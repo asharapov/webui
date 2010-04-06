@@ -483,7 +483,7 @@ public class Panel extends AbstractContainerComponent {
 
     @Override
     protected Set<String> getSupportedEvents() {
-        return EVENTS;
+        return Panel.EVENTS;
     }
 
 }

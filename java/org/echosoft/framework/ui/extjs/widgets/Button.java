@@ -344,7 +344,8 @@ public class Button extends AbstractBoxComponent {
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-buttons.js",false) );
+        if (ctx!=null)
+            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-buttons.js",false) );
         out.beginObject();
         out.writeProperty("xtype", "button");
         renderAttrs(out);

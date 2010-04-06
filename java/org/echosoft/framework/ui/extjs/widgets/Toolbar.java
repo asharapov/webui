@@ -6,6 +6,7 @@ import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.AbstractContainerComponent;
+import org.echosoft.framework.ui.extjs.layout.Layout;
 import org.echosoft.framework.ui.extjs.layout.ToolbarLayout;
 
 /**
@@ -29,6 +30,14 @@ public class Toolbar extends AbstractContainerComponent {
         super(ctx);
         buttonAlign = Align.LEFT;
         setLayout( new ToolbarLayout() );
+    }
+
+    @Override
+    public void setLayout(final Layout layout) {
+        if (layout instanceof ToolbarLayout) {
+            super.setLayout(layout);
+        } else
+            throw new IllegalArgumentException("Given component supports table layout only");
     }
 
     /**
@@ -121,7 +130,8 @@ public class Toolbar extends AbstractContainerComponent {
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
+        if (ctx!=null)
+            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
         out.beginObject();
         out.writeProperty("xtype", "toolbar");
         renderAttrs(out);
@@ -130,7 +140,7 @@ public class Toolbar extends AbstractContainerComponent {
 
     @Override
     protected Set<String> getSupportedEvents() {
-        return EVENTS;
+        return Toolbar.EVENTS;
     }
 
     @Override

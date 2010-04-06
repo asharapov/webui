@@ -305,7 +305,7 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      * @return  неизменяемый перечень событий, поддерживаемых данным компонентом. Метод никогда не возвращает <code>null</code>.
      */
     protected Set<String> getSupportedEvents() {
-        return EVENTS;
+        return AbstractComponent.EVENTS;
     }
 
     @Override

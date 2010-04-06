@@ -574,7 +574,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
 
     @Override
     protected Set<String> getSupportedEvents() {
-        return EVENTS;
+        return AbstractBoxComponent.EVENTS;
     }
 
 }

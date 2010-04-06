@@ -26,7 +26,6 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
 
     public AbstractContainerComponent(final ComponentContext ctx) {
         super(ctx);
-        layout = new AutoLayout();
         autoDestroy = true;
     }
 
@@ -35,6 +34,8 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
      * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
      */
     public Layout getLayout() {
+        if (layout==null)
+            layout = new AutoLayout();
         return layout;
     }
     /**
@@ -82,7 +83,7 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
      * @return  Добавленный в регион компонент.
      */
     public <T extends UIComponent> T append(final T item) {
-        return layout.append(item);
+        return getLayout().append(item);
     }
 
     /**
@@ -174,7 +175,7 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
 
     @Override
     protected Set<String> getSupportedEvents() {
-        return EVENTS;
+        return AbstractContainerComponent.EVENTS;
     }
 
 }

@@ -7,82 +7,99 @@
 <body>
 
 <script type="text/javascript">
+Ext.ns("Ext.ux.plugins");
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
-    Ext.QuickTips.init();
-    var root = new Ext.Viewport({
-      layout: "auto",
-      items: [ {
-          xtype: "form",
-          title: "form panel",
-          width: 500,
-          height: 300,
-          url: "/webui/ext/data/data1.json",
-          method: "GET",
-          items: [ {
-              id: "txt1",
-              xtype: "textfield",
-              name: "txt1",
-              fieldLabel: "Text field",
-              emptyText: "enter a value"
-            }, {
-              xtype: "textfield",
-              name: "file1",
-              fieldLabel: "File",
-              inputType: "text",
-              disabled: true
-            }, {
-              id: "num1",
-              xtype: "numberfield",
-              name: "num1",
-              fieldLabel: "Numeric field (0..10)",
-              invalidText: "invalid text",
-              vtypeText: "vtype text",
-              msgTarget: "under",
-              minValue: 0,
-              maxValue: 10
-            }
-          ],
-          monitorValid: true,
-          monitorPoll: 2000,
-          standardSubmit: false,
-          fbar: {
-            xtype: "toolbar",
-            frame: false,
-            items: [ {
-                xtype:"button",
-                text:"submit",
-                formBind:true,
-                handler:function(b,e){
-                  var fp = b.ownerCt.ownerCt;
-                  var f = fp.getForm();
-                  f.submit({
-                    xurl: "/webui/ext/data/data1.json",
-                    baseParams: {a: "A", b:"B"},
-                    waitMsg: "Wait please...",
-                    success: function(form, action) {
-                      console.log("success: ", action);
-                      alert("success");
-                    },
-                    failure: function(form, action) {
-                      console.log("failure: ", action);
-                      alert("failure");
-                    }
-                  });
-                }
-              },
-              {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}},
-              {xtype:"button", text:"b4", tooltip:"my tooltip"}
-            ]
-          },
-          frame: true,
-          border: true,
-          html: "text on the panel",
-          xlisteners: {
-            "clientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);}
+  Ext.QuickTips.init();
+
+  Ext.ux.plugins.FormFieldPlugin = Ext.extend(Ext.util.Observable, {
+    init: function(field) {
+      console.log("plugin fired  ", field);
+      if (field.initialConfig.activeError) {
+        field.on("render", function(){this.markInvalid(this.initialConfig.activeError);})
+      }
+    }
+  });
+  Ext.preg("ffp", Ext.ux.plugins.FormFieldPlugin);
+
+  var root = new Ext.Viewport({
+    layout: "auto",
+    items: [ {
+        xtype: "form",
+        title: "form panel",
+        width: 500,
+        height: 300,
+        url: "/webui/ext/data/data1.json",
+        method: "GET",
+        items: [ {
+            id: "txt1",
+            xtype: "textfield",
+            name: "txt1",
+            fieldLabel: "Text field",
+            emptyText: "enter a value",
+            activeError: "Some shit happens",
+            html: "some shit may be here",
+            xplugins: ["ffp"]
+          }, {
+            xtype: "textfield",
+            name: "file1",
+            fieldLabel: "File",
+            inputType: "text",
+            disabled: true
+          }, {
+            id: "num1",
+            xtype: "numberfield",
+            name: "num1",
+            fieldLabel: "Numeric field (0..10)",
+            invalidText: "invalid text",
+            vtypeText: "vtype text",
+            msgTarget: "under",
+            minValue: 0,
+            maxValue: 10,
+            activeError: "Advanced test error",
+            plugins: ["ffp"]
           }
-        }]
-      });
+        ],
+        monitorValid: true,
+        monitorPoll: 2000,
+        standardSubmit: false,
+        fbar: {
+          xtype: "toolbar",
+          frame: false,
+          items: [ {
+              xtype:"button",
+              text:"submit",
+              formBind:true,
+              handler:function(b,e){
+                var fp = b.ownerCt.ownerCt;
+                var f = fp.getForm();
+                f.submit({
+                  xurl: "/webui/ext/data/data1.json",
+                  baseParams: {a: "A", b:"B"},
+                  waitMsg: "Wait please...",
+                  success: function(form, action) {
+                    console.log("success: ", action);
+                    alert("success");
+                  },
+                  failure: function(form, action) {
+                    console.log("failure: ", action);
+                    alert("failure");
+                  }
+                });
+              }
+            },
+            {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}},
+            {xtype:"button", text:"b4", tooltip:"my tooltip"}
+          ]
+        },
+        frame: true,
+        border: true,
+        html: "text on the panel",
+        xlisteners: {
+          "clientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);}
+        }
+      }]
+    });
 });
 </script>
 

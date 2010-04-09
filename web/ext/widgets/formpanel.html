@@ -7,11 +7,33 @@
 <body>
 
 <script type="text/javascript">
-Ext.ns("Ext.ux.plugins");
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
   Ext.QuickTips.init();
 
+  Ext.ns("Ext.ux.plugins");
+  Ext.ux.plugins.FormSubmissionPlugin = Ext.extend(Ext.util.Observable, {
+    init: function(formPanel) {
+      formPanel.on("render", this.onRender);
+    },
+    onRender: function(fp) {
+      var formEl = fp.getForm().el.dom;
+      var funct = formEl.submit;
+      formEl.submit = function() {
+        for (var n in fp.baseParams) {
+          if (!fp.get(n)) {
+            fp.add( {xtype:"hidden", itemId:n, name:n, value:fp.baseParams[n]} );
+          }
+        }
+        if (!fp.get("__VIEWSTATE")) {
+          fp.add( {xtype:"hidden", itemId:"__VIEWSTATE", name:"__VIEWSTATE", value:"xyz"} );
+        }
+        fp.doLayout();
+        funct.apply(formEl);
+      };
+    }
+  });
+  Ext.preg("fsp", Ext.ux.plugins.FormSubmissionPlugin);
   Ext.ux.plugins.FormFieldPlugin = Ext.extend(Ext.util.Observable, {
     init: function(field) {
       console.log("plugin fired  ", field);
@@ -29,8 +51,11 @@ Ext.onReady( function() {
         title: "form panel",
         width: 500,
         height: 300,
-        url: "/webui/ext/data/data1.json",
+        url: "/webui/ext/widgets/formpanel.html",
         method: "GET",
+        baseParams: {a: "A", b:"B"},
+        waitTitle: "Please, wait that fucking form...",
+        standardSubmit: true,
         items: [ {
             id: "txt1",
             xtype: "textfield",
@@ -39,7 +64,7 @@ Ext.onReady( function() {
             emptyText: "enter a value",
             activeError: "Some shit happens",
             html: "some shit may be here",
-            xplugins: ["ffp"]
+            plugins: ["ffp"]
           }, {
             xtype: "textfield",
             name: "file1",
@@ -62,7 +87,6 @@ Ext.onReady( function() {
         ],
         monitorValid: true,
         monitorPoll: 2000,
-        standardSubmit: false,
         fbar: {
           xtype: "toolbar",
           frame: false,
@@ -73,10 +97,11 @@ Ext.onReady( function() {
               handler:function(b,e){
                 var fp = b.ownerCt.ownerCt;
                 var f = fp.getForm();
+                console.log("*** before f.submit()");
+                f.submit();
+                console.log("*** after f.submit()");
+                /*
                 f.submit({
-                  xurl: "/webui/ext/data/data1.json",
-                  baseParams: {a: "A", b:"B"},
-                  waitMsg: "Wait please...",
                   success: function(form, action) {
                     console.log("success: ", action);
                     alert("success");
@@ -86,17 +111,19 @@ Ext.onReady( function() {
                     alert("failure");
                   }
                 });
+                */
               }
             },
             {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}},
-            {xtype:"button", text:"b4", tooltip:"my tooltip"}
           ]
         },
         frame: true,
         border: true,
         html: "text on the panel",
-        xlisteners: {
-          "clientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);}
+        plugins: "fsp",
+        listeners: {
+          "xclientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);},
+          "render" : function(){console.log("render 1")}.createSequence(function(){console.log("render 2")})
         }
       }]
     });

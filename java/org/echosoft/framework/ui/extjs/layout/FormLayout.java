@@ -155,7 +155,7 @@ public class FormLayout extends AnchorLayout {
      * и свойство {@link #getLabelAlign()} равно {@link LabelAlign#RIGHT}.
      * @return отступ левой границы компонента от метки. По умолчанию равно <code>5</code>.
      */
-    public int labelPad() {
+    public int getLabelPad() {
         return labelPad;
     }
     /**

@@ -3,11 +3,13 @@ package org.echosoft.framework.ui.extjs.widgets;
 import java.util.Set;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.AbstractContainerComponent;
 import org.echosoft.framework.ui.extjs.layout.Layout;
 import org.echosoft.framework.ui.extjs.layout.ToolbarLayout;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Панель инструментов.
@@ -15,10 +17,12 @@ import org.echosoft.framework.ui.extjs.layout.ToolbarLayout;
  */
 public class Toolbar extends AbstractContainerComponent {
 
+    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractContainerComponent.EVENTS, "overflowchange");
+
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Align {
         LEFT, CENTER, RIGHT
     }
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractContainerComponent.EVENTS, "overflowchange");
 
     private Align buttonAlign;              // способ выравнивания кнопок в тулбаре
     private boolean enableOverflow;         // требуется ли обработка выхода кнопок за пределы тулбара

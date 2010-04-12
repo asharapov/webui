@@ -1,4 +1,4 @@
-Ext.ns("Ext.ux.plugins");
+Ext.ns("Ext.ux.wui.plugins");
 
 /**
  * Данный плагин отвечает за добавление ряда невидимый полей ввода в форму перед ее отправкой на сервер.
@@ -8,7 +8,7 @@ Ext.ns("Ext.ux.plugins");
  *  <li> параметры из свойства baseParams формы.
  * </ul>
  */
-Ext.ux.plugins.WUIFormPlugin = Ext.extend(Ext.util.Observable, {
+Ext.ux.wui.plugins.FormPanel = Ext.extend(Ext.util.Observable, {
     init: function(formPanel) {
         formPanel.on("render", this.onRender);
     },
@@ -29,14 +29,13 @@ Ext.ux.plugins.WUIFormPlugin = Ext.extend(Ext.util.Observable, {
         };
     }
 });
-Ext.preg("Ext.ux.WUIFormPlugin", Ext.ux.plugins.WUIFormPlugin);
+Ext.preg("Ext.ux.wui.plugins.FormPanel", Ext.ux.wui.plugins.FormPanel);
 
 /**
  * Данный плагин добавляет поддержку конфигурационного свойства <code>activeError</code> в полях формы.
  */
-Ext.ux.plugins.WUIFormFieldPlugin = Ext.extend(Ext.util.Observable, {
+Ext.ux.wui.plugins.Field = Ext.extend(Ext.util.Observable, {
     init: function(field) {
-        console.log("plugin fired  ", field);
         if (field.initialConfig.activeError) {
             field.on("render", function() {
                 this.markInvalid(this.initialConfig.activeError);
@@ -44,4 +43,4 @@ Ext.ux.plugins.WUIFormFieldPlugin = Ext.extend(Ext.util.Observable, {
         }
     }
 });
-Ext.preg("Ext.ux.WUIFormFieldPlugin", Ext.ux.plugins.WUIFormFieldPlugin);
+Ext.preg("Ext.ux.wui.plugins.Field", Ext.ux.wui.plugins.Field);

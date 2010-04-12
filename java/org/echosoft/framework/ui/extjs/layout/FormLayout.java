@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.framework.ui.extjs.model.Template;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Описывает характеристики менеджера компоновки <code>Ext.layout.FormLayout</code>.
@@ -15,6 +17,7 @@ public class FormLayout extends AnchorLayout {
     /**
      * Определяет способы выравнивания меток компонент по отношению к собственно контенту компонент на формах.
      */
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum LabelAlign {
         LEFT, TOP, RIGHT
     }
@@ -173,7 +176,7 @@ public class FormLayout extends AnchorLayout {
         if (hideLabels)
             out.writeProperty("hideLabels", true);
         if (labelAlign!=LabelAlign.LEFT)
-            out.writeProperty("labelAlign", labelAlign.name().toLowerCase());
+            out.writeProperty("labelAlign", labelAlign);
         if (labelWidth!=100)
             out.writeProperty("labelWidth", labelWidth);
         if (labelPad!=5)

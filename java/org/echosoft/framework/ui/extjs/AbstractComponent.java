@@ -13,7 +13,6 @@ import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.UIComponent;
-import org.echosoft.framework.ui.extjs.model.ComponentPlugin;
 
 /**
  * Базовый класс, от которого наследуются все компоненты ExtJS.
@@ -41,7 +40,7 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
     /**
      * Перечень плагинов, сопряженных с данным компонентом.
      */
-    private Set<ComponentPlugin> plugins;
+    private Set<String> plugins;
 
     private String cssClass;        // CSS класс, дополнительно применяемый к корневому элементу компонента.
     private String overCssClass;    // CSS класс, дополнительно применяемый к корневому элементу компонента в момент когда над ним находится курсор мышки.
@@ -221,13 +220,13 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
 
     /**
      * Подключает новый плагин к данному компоненту
-     * @param plugin  ссылка на соответствующий экземпляр {@link ComponentPlugin}
+     * @param plugin  идентификатор плагина под которым тот был зарегистрирован в ExtJS (см. метод Ext.preg(...)).
      */
-    public void addPlugin(final ComponentPlugin plugin) {
+    public void addPlugin(final String plugin) {
         if (plugin==null)
             throw new IllegalArgumentException("Plugin must be specified");
         if (plugins==null)
-            plugins = new HashSet<ComponentPlugin>();
+            plugins = new HashSet<String>();
         plugins.add( plugin );
     }
 
@@ -290,12 +289,7 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
             out.endObject();
         }
         if (plugins!=null && !plugins.isEmpty()) {
-            out.writeComplexProperty("plugins");
-            out.beginArray();
-            for (ComponentPlugin plugin : plugins) {
-                out.writeObject(plugin);
-            }
-            out.endArray();
+            out.writeProperty("plugins", plugins);
         }
     }
 

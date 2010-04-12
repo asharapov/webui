@@ -4,10 +4,11 @@ import java.util.Set;
 
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.AbstractBoxComponent;
-import org.echosoft.framework.ui.extjs.model.Align;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Описывает простую кнопку.
@@ -20,9 +21,17 @@ public class Button extends AbstractBoxComponent {
             "menushow", "menuhide", "menutriggerout", "menutriggerover", "mouseout", "mouseover"
     );
 
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
+    public static enum Align {
+        TOP, RIGHT, BOTTOM, LEFT
+    }
+
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Scale {
         SMALL, MEDIUM, LARGE
     }
+
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Type {
         SUBMIT, RESET, BUTTON
     }
@@ -353,17 +362,12 @@ public class Button extends AbstractBoxComponent {
     }
 
     @Override
-    protected Set<String> getSupportedEvents() {
-        return Button.EVENTS;
-    }
-
-    @Override
     protected void renderAttrs(final JsonWriter out) throws Exception {
         super.renderAttrs(out);
         if (allowDepress!=null)
             out.writeProperty("allowDepress", allowDepress);
         if (arrowAlign!=Align.RIGHT)
-            out.writeProperty("arrowAlign", arrowAlign.name().toLowerCase());
+            out.writeProperty("arrowAlign", arrowAlign);
         if (enableToggle)
             out.writeProperty("enableToggle", true);
         if (!handleMouseEvents)
@@ -376,11 +380,11 @@ public class Button extends AbstractBoxComponent {
         if (iconCls!=null)
             out.writeProperty("iconCls", iconCls);
         if (iconAlign!=Align.LEFT)
-            out.writeProperty("iconAlign", iconAlign.name().toLowerCase());
+            out.writeProperty("iconAlign", iconAlign);
         if (pressed)
             out.writeProperty("pressed", true);
         if (scale!=Scale.SMALL)
-            out.writeProperty("scale", scale.name().toLowerCase());
+            out.writeProperty("scale", scale);
         if (tabIndex!=null)
             out.writeProperty("tabIndex", tabIndex);
         if (text!=null)
@@ -390,6 +394,12 @@ public class Button extends AbstractBoxComponent {
         if (tooltip!=null)
             out.writeProperty("tooltip", tooltip);
         if (type!=Type.BUTTON)
-            out.writeProperty("type", type.name().toLowerCase());
+            out.writeProperty("type", type);
     }
+
+    @Override
+    protected Set<String> getSupportedEvents() {
+        return Button.EVENTS;
+    }
+
 }

@@ -7,12 +7,14 @@ import org.echosoft.framework.ui.extjs.ExtJSPage;
 import org.echosoft.framework.ui.extjs.layout.BorderLayout;
 import org.echosoft.framework.ui.extjs.layout.BorderLayoutRegion;
 import org.echosoft.framework.ui.extjs.layout.FitLayout;
-import org.echosoft.framework.ui.extjs.layout.FormLayout;
 import org.echosoft.framework.ui.extjs.model.Template;
 import org.echosoft.framework.ui.extjs.widgets.Box;
 import org.echosoft.framework.ui.extjs.widgets.Button;
 import org.echosoft.framework.ui.extjs.widgets.Panel;
 import org.echosoft.framework.ui.extjs.widgets.Toolbar;
+import org.echosoft.framework.ui.extjs.widgets.form.Field;
+import org.echosoft.framework.ui.extjs.widgets.form.FormPanel;
+import org.echosoft.framework.ui.extjs.widgets.form.TextField;
 
 import examples.ui.Dispatcher;
 
@@ -28,40 +30,55 @@ public class BlankDispatcher implements Dispatcher {
         page.setIcon("/img/favicon.ico");
         page.setLayout( new FitLayout() );
         page.addListener("render", new JSFunction(null, "alert('onrender...');"));
-        final Panel root = page.append( new Panel(null) );
-        final BorderLayout rtl = root.assignLayout( new BorderLayout() );
+        final Panel root = page.append( new Panel() );
+        final BorderLayout rootLayout = root.assignLayout( new BorderLayout() );
 
-        final BorderLayoutRegion north = rtl.getNorth(true);
+        final BorderLayoutRegion north = rootLayout.getNorth(true);
         north.setHeight(60);
-        final Box b1 = north.append( new Box(ctx.getChild("b1")) );
-        b1.setHtml("This is a north region");
+        final Box box1 = north.append( new Box() );
+        box1.setHtml("North region");
 
-        final BorderLayoutRegion south = rtl.getSouth(true);
+        final BorderLayoutRegion south = rootLayout.getSouth(true);
         south.setHeight(30);
-        final Box b2 = south.append( new Box(ctx.getChild("b2")) );
-        b2.setHtml("This is a south region");
+        final Box box2 = south.append( new Box() );
+        box2.setHtml("South region");
 
-        final BorderLayoutRegion central = rtl.getCenter();
-        final Panel panel = central.append( new Panel(ctx.getChild("p1")) );
-        panel.setTitle("Enter you data");
-        panel.setFrame(true);
-        panel.setWidth(400);
-        panel.setLayout( new FormLayout() );
-        final Box b3 = panel.append( new Box() );
-        b3.setTemplate( new Template("Hello, {0}!") );
-        b3.setData( new String[]{"Master"} );
-        b3.setFieldLabel("Greeting");
-        final Box b4 = panel.append( new Box() );
-        b4.setHtml("some text");
-        b4.setFieldLabel("test");
-        final Button b5 = panel.append( new Button(ctx.getChild("b5")) );
-        b5.setText("click me");
-        b5.setFieldLabel("simple button");
-        b5.setHandler( new JSFunction(new String[]{"b", "e"}, "console.log(b,e);") );
-        final Toolbar footer = panel.assignFooter( new Toolbar(ctx.getChild("fbar")) );
-        final Button b6 = footer.addButton("b6");
-        final Panel.ToolButton ptb1 = panel.appendToolButton( Panel.ToolButtonType.REFRESH );
-        ptb1.setHandler( new JSFunction(null, "alert('refresh');") );
+        final BorderLayoutRegion central = rootLayout.getCenter();
+        final FormPanel form = central.append( new FormPanel(ctx.getChild("p1")) );
+        form.setTitle("Enter you data");
+        form.setFrame(true);
+        form.setWidth(400);
+        form.setCollapsible(true);
+        form.setStandardSubmit(true);
+        form.setUrl(".");
+        form.setMethod(FormPanel.Method.POST);
+        final Panel.ToolButton tb1 = form.appendToolButton( Panel.ToolButtonType.REFRESH );
+        tb1.setHandler( new JSFunction(null, "alert('refresh');") );
+        final Box box3 = form.append( new Box() );
+        box3.setFieldLabel("Greeting");
+        box3.setTemplate( new Template("Hello, {0}!") );
+        box3.setData( new String[]{"Master"} );
+
+        final Button bt1 = form.append( new Button(ctx.getChild("bt1")) );
+        bt1.setFieldLabel("Action");
+        bt1.setText("click me");
+        bt1.setHandler( new JSFunction(new String[]{"b", "e"}, "console.log(b,e);") );
+
+        final TextField txt1 = form.append( new TextField(ctx.getChild("txt1")) );
+        txt1.setFieldLabel("Name");
+        txt1.setValue("Vasya Pupkinn");
+        txt1.setEmptyText("enter you name");
+        txt1.setAllowBlank(false);
+        txt1.setMinLength(3);
+        txt1.setMaxLength(10);
+        txt1.setMsgTarget(Field.MsgTarget.UNDER);
+        txt1.setStateful(true);
+
+        final Toolbar fbar = form.assignFooter( new Toolbar(ctx.getChild("fbar")) );
+        final Button bt2 = fbar.addButton("process");
+        bt2.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().submit()") );
+        final Button bt3 = fbar.addButton("cancel");
+        bt3.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().reset()") );
 
         page.invokePage();
     }

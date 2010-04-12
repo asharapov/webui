@@ -3,11 +3,15 @@ package org.echosoft.framework.ui.core;
 import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.EnumMap;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.echosoft.common.collections.IteratorEnumeration;
 import org.echosoft.common.io.FastStringWriter;
+import org.echosoft.framework.ui.core.spi.generic.StateAttributeMap;
 import org.echosoft.framework.ui.core.theme.Theme;
 
 /**
@@ -18,6 +22,7 @@ public class BaseMockUIContext implements UIContext {
     private Messages messages;
     private StateHolder states;
     private Theme theme;
+    private EnumMap<Scope,Map<String,Object>> scopes;
     private Agent agent;
     private FastStringWriter out;
     private String paramsPrefix;
@@ -28,6 +33,15 @@ public class BaseMockUIContext implements UIContext {
         this.states = new StateHolder();
         this.states.setCurrentDescriptor( new ViewStateDescriptor("/", "", 0) );
         this.theme = null; //Application.THEMES_MANAGER.getTheme(Application.DEFAULT_LOCALE);
+        this.scopes = new EnumMap<Scope,Map<String,Object>>(Scope.class);
+        this.scopes.put(Scope.PARAMS, new HashMap<String,Object>());
+        this.scopes.put(Scope.PARAMSVALUES, this.scopes.get(Scope.PARAMS));
+        this.scopes.put(Scope.REQUEST, new HashMap<String,Object>());
+        this.scopes.put(Scope.SHARED, new HashMap<String,Object>());
+        this.scopes.put(Scope.SESSION, new HashMap<String,Object>());
+        this.scopes.put(Scope.STATE, new StateAttributeMap(states));
+        this.scopes.put(Scope.APPLICATION, new HashMap<String,Object>());
+        this.scopes.put(Scope.INIT, new HashMap<String,Object>());
         this.agent = new Agent(Agent.Type.GECKO, Agent.OS.WINDOWS, 1, 9, "");
         this.paramsPrefix = "";
         this.out = new FastStringWriter(100);
@@ -45,17 +59,54 @@ public class BaseMockUIContext implements UIContext {
     public Resources getResources() {
         return resources;
     }
-    public Messages getMessages() {return messages;}
-    public Theme getTheme() {return theme;}
-    public Map<String, Object> getAttributesMap(Scope scope) {return null;}
-    public Enumeration<String> getAttributeNames(Scope scope) {return null;}
-    public <T> T getAttribute(String name, Scope scope) {return null;}
-    public <T> T getAttribute(String name, Scope[] scopes) {return null;}
-    public void setAttribute(String name, Object value, Scope scope) {}
-    public <T> T removeAttribute(String name, Scope scope) {return null;}
-    public Enumeration<String> getParameterNames() {return null;}
-    public String getParameter(String name) {return null;}
-    public String[] getParameterValues(String name) {return new String[0];}
+    public Messages getMessages() {
+        return messages;
+    }
+    public Theme getTheme() {
+        return theme;
+    }
+    public Map<String, Object> getAttributesMap(Scope scope) {
+        return scopes.get(scope);
+    }
+    public Enumeration<String> getAttributeNames(Scope scope) {
+        return new IteratorEnumeration<String>( scopes.get(scope).keySet().iterator() );
+    }
+    public <T> T getAttribute(String name, Scope scope) {
+        return (T)scopes.get(scope).get(name);
+    }
+    public <T> T getAttribute(String name, Scope[] scopes) {
+        for (Scope scope : scopes) {
+            final T result = (T)this.scopes.get(scope).get(name);
+            if (result!=null)
+                return result;
+        }
+        return null;
+    }
+    public void setAttribute(String name, Object value, Scope scope) {
+        scopes.get(scope).put(name, value);
+    }
+    public <T> T removeAttribute(String name, Scope scope) {
+        return (T)scopes.get(scope).remove(name);
+    }
+    public Enumeration<String> getParameterNames() {
+        return new IteratorEnumeration<String>( scopes.get(Scope.PARAMS).keySet().iterator() );
+    }
+    public String getParameter(String name) {
+        final Object value = scopes.get(Scope.PARAMS).get(name);
+        if (value==null)
+            return null;
+        if (value instanceof String[]) {
+            final String[] arr = (String[])value;
+            return arr.length>0 ? arr[0] : null;
+        } else
+            return value.toString();
+    }
+    public String[] getParameterValues(String name) {
+        final Object value = scopes.get(Scope.PARAMSVALUES).get(name);
+        return value instanceof String[]
+                ? (String[])value
+                : new String[]{value.toString()};
+    }
     public Cookie[] getRequestCookies() {return null;}
     public String getRequestHeader(String name) {return null;}
     public Map<String, String[]> getRequestHeaders() {return null;}

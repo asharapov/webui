@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Описывает характеристики менеджера компоновки <code>Ext.layout.HBoxLayout</code>.
@@ -11,6 +13,7 @@ import org.echosoft.common.json.JsonWriter;
  */
 public class HBoxLayout extends BoxLayout {
 
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Align {
         TOP, MIDDLE, STRETCH, STRETCHMAX
     }
@@ -82,9 +85,9 @@ public class HBoxLayout extends BoxLayout {
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);
         if (align!=Align.TOP)
-            out.writeProperty("align", align.name().toLowerCase());
+            out.writeProperty("align", align);
         if (pack!=Pack.START)
-            out.writeProperty("pack", pack.name().toLowerCase());
+            out.writeProperty("pack", pack);
         if (flex!=null)
             out.writeProperty("flex", flex);
     }

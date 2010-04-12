@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.extjs.model.Margins;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Описывает характеристики менеджера компоновки <code>Ext.layout.BoxLayout</code>.
@@ -15,6 +17,7 @@ import org.echosoft.framework.ui.extjs.model.Margins;
  */
 public abstract class BoxLayout extends Layout {
 
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Pack {
         START, CENTER, END
     }

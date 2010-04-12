@@ -61,16 +61,18 @@ Ext.onReady( function() {
             xtype: "textfield",
             name: "txt1",
             fieldLabel: "Text field",
+            cls: "AAA",
+            fieldClass: "BBB",
             emptyText: "enter a value",
             activeError: "Some shit happens",
             html: "some shit may be here",
             plugins: ["ffp"]
           }, {
-            xtype: "textfield",
+            xtype: "field",
             name: "file1",
             fieldLabel: "File",
-            inputType: "text",
-            disabled: true
+            inputType:  "text",
+            disabled: false
           }, {
             id: "num1",
             xtype: "numberfield",

@@ -305,6 +305,7 @@ public class FormPanel extends Panel {
             ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
             ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
         }
+        addPlugin("Ext.ux.wui.plugins.FormPanel");
 
         out.beginObject();
         out.writeProperty("xtype", "form");
@@ -318,7 +319,7 @@ public class FormPanel extends Panel {
         if (baseParams!=null)
             out.writeProperty("baseParams", baseParams);
         if (url!=null)
-            out.writeProperty("url", url);
+            out.writeProperty("url", getContext().encodeURL(url));
         if (method!=null)
             out.writeProperty("method", method);
         if (fileUpload)
@@ -340,7 +341,7 @@ public class FormPanel extends Panel {
         if (hideLabels)
             out.writeProperty("hideLabels", true);
         if (labelAlign!=FormLayout.LabelAlign.LEFT)
-            out.writeProperty("labelAlign", labelAlign.name().toLowerCase());
+            out.writeProperty("labelAlign", labelAlign);
         if (labelWidth!=100)
             out.writeProperty("labelWidth", labelWidth);
         if (labelPad!=5)

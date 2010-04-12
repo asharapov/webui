@@ -1,10 +1,12 @@
 package org.echosoft.framework.ui.extjs.layout;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.UIComponent;
 import org.echosoft.framework.ui.extjs.model.Margins;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Данный является частью менеджера упаковки {@link BorderLayout}.
@@ -12,10 +14,12 @@ import org.echosoft.framework.ui.extjs.model.Margins;
  */
 public class BorderLayoutRegion implements UIComponent {
 
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Region {
         NORTH, EAST, SOUTH, WEST, CENTER
     }
 
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum CollapseMode {
         STANDARD, MINI
     }
@@ -337,7 +341,7 @@ public class BorderLayoutRegion implements UIComponent {
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
-        out.writeProperty("region", region.name().toLowerCase());
+        out.writeProperty("region", region);
         if (!animFloat)
             out.writeProperty("animFloat", false);
         if (!autoHide)
@@ -351,7 +355,7 @@ public class BorderLayoutRegion implements UIComponent {
         if (collapsible)
             out.writeProperty("collapsible", true);
         if (collapseMode!=CollapseMode.STANDARD)
-            out.writeProperty("collapseMode", collapseMode.name().toLowerCase());
+            out.writeProperty("collapseMode", collapseMode);
         if (split)
             out.writeProperty("split", true);
         if (splitTip!=null)

@@ -1,8 +1,10 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css" href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css"/>
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/src/locale/ext-lang-ru.js"></script>
 </head>
 <body>
 
@@ -11,38 +13,39 @@ Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.
 Ext.onReady( function() {
   Ext.QuickTips.init();
 
-  Ext.ns("Ext.ux.plugins");
-  Ext.ux.plugins.FormSubmissionPlugin = Ext.extend(Ext.util.Observable, {
-    init: function(formPanel) {
-      formPanel.on("render", this.onRender);
-    },
-    onRender: function(fp) {
-      var formEl = fp.getForm().el.dom;
-      var funct = formEl.submit;
-      formEl.submit = function() {
-        for (var n in fp.baseParams) {
-          if (!fp.get(n)) {
-            fp.add( {xtype:"hidden", itemId:n, name:n, value:fp.baseParams[n]} );
-          }
-        }
-        if (!fp.get("__VIEWSTATE")) {
-          fp.add( {xtype:"hidden", itemId:"__VIEWSTATE", name:"__VIEWSTATE", value:"xyz"} );
-        }
-        fp.doLayout();
-        funct.apply(formEl);
-      };
-    }
-  });
-  Ext.preg("fsp", Ext.ux.plugins.FormSubmissionPlugin);
-  Ext.ux.plugins.FormFieldPlugin = Ext.extend(Ext.util.Observable, {
-    init: function(field) {
-      console.log("plugin fired  ", field);
-      if (field.initialConfig.activeError) {
-        field.on("render", function(){this.markInvalid(this.initialConfig.activeError);})
+  Ext.ns("Ext.ux.wui.plugins");
+  Ext.ux.wui.plugins.FormPanel = Ext.extend(Ext.util.Observable, {
+      init: function(formPanel) {
+          formPanel.on("render", this.onRender);
+      },
+      onRender: function(fp) {
+          var formEl = fp.getForm().el.dom;
+          var funct = formEl.submit;
+          formEl.submit = function() {
+              for (var n in fp.baseParams) {
+                  if (!fp.get(n)) {
+                      fp.add({xtype:"hidden", itemId:n, name:n, value:fp.baseParams[n]});
+                  }
+              }
+              if (!fp.get("__VIEWSTATE")) {
+                  fp.add({xtype:"hidden", itemId:"__VIEWSTATE", name:"__VIEWSTATE", value:"WUI.env.state"});
+              }
+              fp.doLayout();
+              funct.apply(formEl);
+          };
       }
-    }
   });
-  Ext.preg("ffp", Ext.ux.plugins.FormFieldPlugin);
+  Ext.preg("Ext.ux.wui.plugins.FormPanel", Ext.ux.wui.plugins.FormPanel);
+  Ext.ux.wui.plugins.Field = Ext.extend(Ext.util.Observable, {
+      init: function(field) {
+          if (field.initialConfig.activeError) {
+              field.on("render", function() {
+                  this.markInvalid(this.initialConfig.activeError);
+              })
+          }
+      }
+  });
+  Ext.preg("Ext.ux.wui.plugins.Field", Ext.ux.wui.plugins.Field);
 
   var root = new Ext.Viewport({
     layout: "auto",
@@ -50,23 +53,31 @@ Ext.onReady( function() {
         xtype: "form",
         title: "form panel",
         width: 500,
-        height: 300,
+        height: 400,
         url: "/webui/ext/widgets/formpanel.html",
         method: "GET",
         baseParams: {a: "A", b:"B"},
         waitTitle: "Please, wait that fucking form...",
         standardSubmit: true,
         items: [ {
+            xtype: "box",
+            fieldLabel: "Box",
+            html: "text in the box"
+          },{
+            xtype: "displayfield",
+            fieldLabel: "Display",
+            value: "text in the displayField"
+          },{
             id: "txt1",
             xtype: "textfield",
             name: "txt1",
             fieldLabel: "Text field",
-            cls: "AAA",
-            fieldClass: "BBB",
             emptyText: "enter a value",
+            maxLength: 10,
+            msgTarget: "under",
             activeError: "Some shit happens",
             html: "some shit may be here",
-            plugins: ["ffp"]
+            plugins: ["Ext.ux.wui.plugins.Field"]
           }, {
             xtype: "field",
             name: "file1",
@@ -74,6 +85,22 @@ Ext.onReady( function() {
             inputType:  "text",
             disabled: false
           }, {
+            xtype: "trigger",
+            fieldLabel: "trigger"
+          },{
+            xtype: "datefield",
+            format: "d.m.Y",
+            readOnly: false,
+            disabledDays: [0,6],
+            value: new Date(), //"20.0x2.2009",
+            fieldLabel: "date"
+          },{
+            xtype: "textarea",
+            fieldLabel: "area",
+            //width: 125,
+            grow: true,
+            growMax:300
+          },{
             id: "num1",
             xtype: "numberfield",
             name: "num1",
@@ -83,8 +110,9 @@ Ext.onReady( function() {
             msgTarget: "under",
             minValue: 0,
             maxValue: 10,
+            value: 1,
             activeError: "Advanced test error",
-            plugins: ["ffp"]
+          plugins: ["Ext.ux.wui.plugins.Field"]
           }
         ],
         monitorValid: true,
@@ -122,7 +150,7 @@ Ext.onReady( function() {
         frame: true,
         border: true,
         html: "text on the panel",
-        plugins: "fsp",
+        plugins: ["Ext.ux.wui.plugins.FormPanel"],
         listeners: {
           "xclientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);},
           "render" : function(){console.log("render 1")}.createSequence(function(){console.log("render 2")})

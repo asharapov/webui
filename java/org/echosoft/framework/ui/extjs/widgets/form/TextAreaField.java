@@ -5,20 +5,18 @@ import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 
 /**
- * Отвечает за ввод одной текстовой строки.
+ * Отвечает за ввод многострочного текста.
  * @author Anton Sharapov
  */
-public class TextField extends AbstractTextField {
+public class TextAreaField extends AbstractTextField {
 
     private String value;                   // текст в поле ввода.
-    private InputType inputType;            // значение атрибута "type" для тега "input".
 
-    public TextField() {
+    public TextAreaField() {
         this(null);
     }
-    public TextField(final ComponentContext ctx) {
+    public TextAreaField(final ComponentContext ctx) {
         super(ctx);
-        inputType = InputType.TEXT;
     }
 
     /**
@@ -36,21 +34,6 @@ public class TextField extends AbstractTextField {
         this.value = value;
     }
 
-    /**
-     * Возвращает тип данного поля ввода.
-     * @return тип данного поля ввода.  По умолчанию возвращает {@link InputType#TEXT}.
-     */
-    public InputType getInputType() {
-        return inputType;
-    }
-    /**
-     * Указывает тип данного поля ввода.
-     * @param inputType  тип данного поля ввода.
-     */
-    public void setInputType(final InputType inputType) {
-        this.inputType = inputType!=null ? inputType : InputType.TEXT;
-    }
-
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
@@ -64,7 +47,7 @@ public class TextField extends AbstractTextField {
             }
         }
         out.beginObject();
-        out.writeProperty("xtype", "textfield");
+        out.writeProperty("xtype", "textarea");
         renderAttrs(out);
         out.endObject();
     }
@@ -74,8 +57,6 @@ public class TextField extends AbstractTextField {
         super.renderAttrs(out);
         if (value!=null)
             out.writeProperty("value", value);
-        if (inputType!=InputType.TEXT)
-            out.writeProperty("inputType", inputType);
     }
 
 }

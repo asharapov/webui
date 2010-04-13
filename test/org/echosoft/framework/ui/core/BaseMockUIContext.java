@@ -71,9 +71,11 @@ public class BaseMockUIContext implements UIContext {
     public Enumeration<String> getAttributeNames(Scope scope) {
         return new IteratorEnumeration<String>( scopes.get(scope).keySet().iterator() );
     }
+    @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name, Scope scope) {
         return (T)scopes.get(scope).get(name);
     }
+    @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name, Scope[] scopes) {
         for (Scope scope : scopes) {
             final T result = (T)this.scopes.get(scope).get(name);
@@ -85,6 +87,7 @@ public class BaseMockUIContext implements UIContext {
     public void setAttribute(String name, Object value, Scope scope) {
         scopes.get(scope).put(name, value);
     }
+    @SuppressWarnings("unchecked")
     public <T> T removeAttribute(String name, Scope scope) {
         return (T)scopes.get(scope).remove(name);
     }

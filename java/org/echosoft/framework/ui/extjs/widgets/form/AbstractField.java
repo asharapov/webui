@@ -1,11 +1,13 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
+import org.echosoft.framework.ui.core.Message;
 import org.echosoft.framework.ui.extjs.AbstractBoxComponent;
 import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
@@ -13,7 +15,7 @@ import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
  * Базовый класс от которого наследуются все компоненты, реализующие поля ввода в формах.
  * @author Anton Sharapov
  */
-public abstract class Field extends AbstractBoxComponent {
+public abstract class AbstractField extends AbstractBoxComponent {
 
     public static final Set<String> EVENTS =
             StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS, "blur", "change", "focus", "invalid", "specialKey", "valid");
@@ -21,11 +23,6 @@ public abstract class Field extends AbstractBoxComponent {
     @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum MsgTarget {
         QTIP, TITLE, UNDER, SIDE
-    }
-
-    @JsonUseSeriazer(EnumLCJSONSerializer.class)
-    public static enum InputType {
-        TEXT, PASSWORD, RADIO, FILE
     }
 
     private String invalidText;             // Текст сообщения об ошибке по умолчанию.
@@ -36,7 +33,7 @@ public abstract class Field extends AbstractBoxComponent {
     private boolean stateful;               // Компонент должен сохранять свое состояние на сервере.
 
 
-    public Field(final ComponentContext ctx) {
+    public AbstractField(final ComponentContext ctx) {
         super(ctx);
         msgTarget = MsgTarget.QTIP;
         submitValue = true;
@@ -143,6 +140,14 @@ public abstract class Field extends AbstractBoxComponent {
 
     @Override
     protected void renderAttrs(final JsonWriter out) throws Exception {
+        final ComponentContext ctx = getContext();
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
+        final Iterator<Message> it = ctx.getMessages().messages(ctx.getClientId(), Message.Severity.WARN);
+        if (it.hasNext()) {
+            out.writeProperty("activeError", it.next().getSubject());
+            addPlugin("Ext.ux.wui.plugins.Field");  // этот вызов должен идти перед вызовом super.renderAttrs().
+        }
         super.renderAttrs(out);
         if (invalidText!=null)
             out.writeProperty("invalidText", invalidText);
@@ -158,7 +163,7 @@ public abstract class Field extends AbstractBoxComponent {
 
     @Override
     protected Set<String> getSupportedEvents() {
-        return Field.EVENTS;
+        return AbstractField.EVENTS;
     }
 
 }

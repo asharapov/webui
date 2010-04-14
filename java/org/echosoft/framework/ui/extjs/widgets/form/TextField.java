@@ -38,7 +38,7 @@ public class TextField extends AbstractTextField {
 
     /**
      * Возвращает тип данного поля ввода.
-     * @return тип данного поля ввода.  По умолчанию возвращает {@link InputType#TEXT}.
+     * @return тип данного поля ввода.  По умолчанию возвращает {@link AbstractTextField.InputType#TEXT}.
      */
     public InputType getInputType() {
         return inputType;

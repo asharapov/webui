@@ -251,14 +251,14 @@ public class FormPanel extends Panel {
 
     /**
      * Возвращает используемый данным компоновщиком способ выравнивания меток компонент по отношению к самим компонентам.
-     * @return текущий способ выравнивания меток. По умолчанию возвращает {@link FormLayout.LabelAlign#LEFT}.
+     * @return текущий способ выравнивания меток. По умолчанию возвращает {@link org.echosoft.framework.ui.extjs.layout.FormLayout.LabelAlign#LEFT}.
      */
     public FormLayout.LabelAlign getLabelAlign() {
         return labelAlign;
     }
     /**
      * Задает способ выравнивания меток компонент по отношению к самим компонентам.
-     * @param labelAlign текущий способ выравнивания меток. По умолчанию свойство равно {@link FormLayout.LabelAlign#LEFT}.
+     * @param labelAlign текущий способ выравнивания меток. По умолчанию свойство равно {@link org.echosoft.framework.ui.extjs.layout.FormLayout.LabelAlign#LEFT}.
      */
     public void setLabelAlign(final FormLayout.LabelAlign labelAlign) {
         this.labelAlign = labelAlign!=null ? labelAlign : FormLayout.LabelAlign.LEFT;
@@ -281,7 +281,7 @@ public class FormPanel extends Panel {
 
     /**
      * Возвращает величину отступа левой границы компонента от метки. Имеет смысл только если задан параметр {@link #getLabelWidth()}
-     * и свойство {@link #getLabelAlign()} равно {@link FormLayout.LabelAlign#RIGHT}.
+     * и свойство {@link #getLabelAlign()} равно {@link org.echosoft.framework.ui.extjs.layout.FormLayout.LabelAlign#RIGHT}.
      * @return отступ левой границы компонента от метки. По умолчанию равно <code>5</code>.
      */
     public int getLabelPad() {
@@ -289,7 +289,7 @@ public class FormPanel extends Panel {
     }
     /**
      * Задает величину отступа левой границы компонента от метки. Имеет смысл только если задан параметр {@link #getLabelWidth()}
-     * и свойство {@link #getLabelAlign()} равно {@link FormLayout.LabelAlign#RIGHT}.
+     * и свойство {@link #getLabelAlign()} равно {@link org.echosoft.framework.ui.extjs.layout.FormLayout.LabelAlign#RIGHT}.
      * @param labelPad отступ левой границы компонента от метки. По умолчанию равно <code>5</code>.
      */
     public void setLabelPad(final int labelPad) {

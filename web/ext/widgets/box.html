@@ -1,5 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css" />
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
@@ -9,45 +11,46 @@
 <script type="text/javascript">
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
-    var root = new Ext.Viewport({
-      layout: "fit",
+  Ext.QuickTips.init();
+  var viewport = new Ext.Viewport({
+    layout: "fit",
+    items: [{
+      layout: "auto",
       items: [{
-        layout: "auto",
-        items: [{
-            id: "B1",
-            xtype: "box",
-            boxMaxWidth: 300,
-            style: "border:1px solid green",
-            html: "<span>box 1</span>"
-          },{
-            xtype: "box",
-            style: "border: 1px solid red",
-            autoEl: {
-              tag: "span",
-              style: "background-color:yellow",
-              html: "<span>box 2</span>"
-            },
-            disabled: true
-          },{
-            itemId: "b3",
-            width: 400,
-            ctCls: "XXX",
-            xtype: "box",
-            style: "border: 1px solid blue",
-            autoEl: {
-              tag: "span",
-              html: "tag content",
-              children: [
-                {tag:"div", cls:"aaa", html:"aaa"},
-                {tag:"div", class:"bbb", html:"bbb"}
-              ]
-            },
-            //html: "test",
-            tpl: new Ext.Template("<span>Hello, <strong>{name}</strong>! I'm glad to see you at <b>{date}</b> for a <b>{cnt}</b> times.</span>"),
-            data: {name: "Anton", cnt: 3.5, date: new Date()}
-          }]
+          id: "B1",
+          xtype: "box",
+          boxMaxWidth: 300,
+          style: "border:1px solid green",
+          html: "<span>box 1</span>"
+        },{
+          xtype: "box",
+          style: "border: 1px solid red",
+          autoEl: {
+            tag: "span",
+            style: "background-color:yellow",
+            html: "<span>box 2</span>"
+          },
+          disabled: true
+        },{
+          itemId: "b3",
+          width: 400,
+          ctCls: "XXX",
+          xtype: "box",
+          style: "border: 1px solid blue",
+          autoEl: {
+            tag: "span",
+            html: "tag content",
+            children: [
+              {tag:"div", cls:"aaa", html:"aaa"},
+              {tag:"div", class:"bbb", html:"bbb"}
+            ]
+          },
+          //html: "test",
+          tpl: new Ext.Template("<span>Hello, <strong>{name}</strong>! I'm glad to see you at <b>{date}</b> for a <b>{cnt}</b> times.</span>"),
+          data: {name: "Anton", cnt: 3.5, date: new Date()}
         }]
-      });
+      }]
+    });
 });
 </script>
 

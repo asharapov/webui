@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -12,7 +13,6 @@
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
   Ext.QuickTips.init();
-
   Ext.ns("Ext.ux.wui.plugins");
   Ext.ux.wui.plugins.FormPanel = Ext.extend(Ext.util.Observable, {
       init: function(formPanel) {
@@ -47,116 +47,116 @@ Ext.onReady( function() {
   });
   Ext.preg("Ext.ux.wui.plugins.Field", Ext.ux.wui.plugins.Field);
 
-  var root = new Ext.Viewport({
+  var viewport = new Ext.Viewport({
     layout: "auto",
-    items: [ {
-        xtype: "form",
-        title: "form panel",
-        width: 500,
-        height: 400,
-        url: "/webui/ext/widgets/formpanel.html",
-        method: "GET",
-        baseParams: {a: "A", b:"B"},
-        waitTitle: "Please, wait that fucking form...",
-        standardSubmit: true,
-        items: [ {
-            xtype: "box",
-            fieldLabel: "Box",
-            html: "text in the box"
-          },{
-            xtype: "displayfield",
-            fieldLabel: "Display",
-            value: "text in the displayField"
-          },{
-            id: "txt1",
-            xtype: "textfield",
-            name: "txt1",
-            fieldLabel: "Text field",
-            emptyText: "enter a value",
-            maxLength: 10,
-            msgTarget: "under",
-            activeError: "Some shit happens",
-            html: "some shit may be here",
-            plugins: ["Ext.ux.wui.plugins.Field"]
-          }, {
-            xtype: "field",
-            name: "file1",
-            fieldLabel: "File",
-            inputType:  "text",
-            disabled: false
-          }, {
-            xtype: "trigger",
-            fieldLabel: "trigger"
-          },{
-            xtype: "datefield",
-            format: "d.m.Y",
-            readOnly: false,
-            disabledDays: [0,6],
-            value: new Date(), //"20.0x2.2009",
-            fieldLabel: "date"
-          },{
-            xtype: "textarea",
-            fieldLabel: "area",
-            //width: 125,
-            grow: true,
-            growMax:300
-          },{
-            id: "num1",
-            xtype: "numberfield",
-            name: "num1",
-            fieldLabel: "Numeric field (0..10)",
-            invalidText: "invalid text",
-            vtypeText: "vtype text",
-            msgTarget: "under",
-            minValue: 0,
-            maxValue: 10,
-            value: 1,
-            activeError: "Advanced test error",
+    items: {
+      xtype: "form",
+      title: "form panel",
+      width: 500,
+      height: 400,
+      url: "/webui/ext/widgets/formpanel.html",
+      method: "GET",
+      baseParams: {a: "A", b:"B"},
+      waitTitle: "Please, wait that fucking form...",
+      standardSubmit: true,
+      items: [{
+          xtype: "box",
+          fieldLabel: "Box",
+          html: "text in the box"
+        },{
+          xtype: "displayfield",
+          fieldLabel: "Display",
+          value: "text in the displayField"
+        },{
+          id: "txt1",
+          xtype: "textfield",
+          name: "txt1",
+          fieldLabel: "Text field",
+          emptyText: "enter a value",
+          maxLength: 10,
+          msgTarget: "under",
+          activeError: "Some shit happens",
+          html: "some shit may be here",
           plugins: ["Ext.ux.wui.plugins.Field"]
-          }
-        ],
-        monitorValid: true,
-        monitorPoll: 2000,
-        fbar: {
-          xtype: "toolbar",
-          frame: false,
-          items: [ {
-              xtype:"button",
-              text:"submit",
-              formBind:true,
-              handler:function(b,e){
-                var fp = b.ownerCt.ownerCt;
-                var f = fp.getForm();
-                console.log("*** before f.submit()");
-                f.submit();
-                console.log("*** after f.submit()");
-                /*
-                f.submit({
-                  success: function(form, action) {
-                    console.log("success: ", action);
-                    alert("success");
-                  },
-                  failure: function(form, action) {
-                    console.log("failure: ", action);
-                    alert("failure");
-                  }
-                });
-                */
-              }
-            },
-            {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}},
-          ]
-        },
-        frame: true,
-        border: true,
-        html: "text on the panel",
-        plugins: ["Ext.ux.wui.plugins.FormPanel"],
-        listeners: {
-          "xclientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);},
-          "render" : function(){console.log("render 1")}.createSequence(function(){console.log("render 2")})
+        },{
+          xtype: "field",
+          name: "file1",
+          fieldLabel: "File",
+          inputType:  "text",
+          disabled: false
+        },{
+          xtype: "trigger",
+          fieldLabel: "trigger"
+        },{
+          xtype: "datefield",
+          format: "d.m.Y",
+          readOnly: false,
+          disabledDays: [0,6],
+          value: new Date(), //"20.0x2.2009",
+          fieldLabel: "date"
+        },{
+          xtype: "textarea",
+          fieldLabel: "area",
+          //width: 125,
+          grow: true,
+          growMax:300
+        },{
+          id: "num1",
+          xtype: "numberfield",
+          name: "num1",
+          fieldLabel: "Numeric field (0..10)",
+          invalidText: "invalid text",
+          vtypeText: "vtype text",
+          msgTarget: "under",
+          minValue: 0,
+          maxValue: 10,
+          value: 1,
+          activeError: "Advanced test error",
+        plugins: ["Ext.ux.wui.plugins.Field"]
         }
-      }]
-    });
+      ],
+      monitorValid: true,
+      monitorPoll: 2000,
+      fbar: {
+        xtype: "toolbar",
+        frame: false,
+        items: [{
+            xtype:"button",
+            text:"submit",
+            formBind:true,
+            handler:function(b,e){
+              var fp = b.ownerCt.ownerCt;
+              var f = fp.getForm();
+              console.log("*** before f.submit()");
+              f.submit();
+              console.log("*** after f.submit()");
+              /*
+              f.submit({
+                success: function(form, action) {
+                  console.log("success: ", action);
+                  alert("success");
+                },
+                failure: function(form, action) {
+                  console.log("failure: ", action);
+                  alert("failure");
+                }
+              });
+              */
+            }
+          },
+          {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}},
+        ]
+      },
+      frame: true,
+      border: true,
+      html: "text on the panel",
+      plugins: ["Ext.ux.wui.plugins.FormPanel"],
+      listeners: {
+        "xclientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);},
+        "render" : function(){console.log("render 1")}.createSequence(function(){console.log("render 2")})
+      }
+    }
+  });
 });
 </script>
 

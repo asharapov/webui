@@ -1,5 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css" />
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
@@ -9,45 +11,46 @@
 <script type="text/javascript">
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
-    var viewport = new Ext.Viewport({
-      layout: "fit",
-      items: {
-        layout: "border",
-        items: [{
+  Ext.QuickTips.init();
+  var viewport = new Ext.Viewport({
+    layout: "fit",
+    items: {
+      layout: "border",
+      items: [{
           region: "north",
           height: 50,
           split: true,
           collapseMode: "mini",
-          items: [{
+          items: {
             xtype: "button",
             text: "north"
-          }]
-        }, {
+          }
+        },{
           region: "center",
-          items: [{
+          items: {
             xtype: "button",
             text: "center"
-          }]
-        }, {
-          region: "west",
-          width: 100,
-          //minSize: 60,
-          //maxSize:200,
-          margins: "30",
-          split: false,
-          collapsible: true,
-          collapseMode: "mini",
-          useSplitTips: true,
-          splitTip: "my tip",
-          collapsibleSplitTip: "my collapsible tip",
-          //cmargins: "2",
-          items: [ {
-            xtype: "button",
-            text: "west"
-          }]
-        }]
-      }
-    });
+          }
+        },{
+        region: "west",
+        width: 100,
+        //minSize: 60,
+        //maxSize:200,
+        margins: "30",
+        split: false,
+        collapsible: true,
+        collapseMode: "mini",
+        useSplitTips: true,
+        splitTip: "my tip",
+        collapsibleSplitTip: "my collapsible tip",
+        //cmargins: "2",
+        items: {
+          xtype: "button",
+          text: "west"
+        }
+      }]
+    }
+  });
 });
 </script>
 

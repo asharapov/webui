@@ -1,5 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css" />
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
@@ -9,6 +11,7 @@
 <script type="text/javascript">
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
+  Ext.QuickTips.init();
   var viewport = new Ext.Viewport({
     layout: "hbox",
     layoutConfig: {
@@ -20,16 +23,15 @@ Ext.onReady( function() {
       style: "border:1px dotted green",
       layout: "vbox",
       layoutConfig: {
-          pack: "center"
+        pack: "center"
       },
-      items: [{
-          xtype: "panel",
-          title: "my panel",
-          frame: true,
-          width: 400,
-          height: 200
-        }
-      ]
+      items: {
+        xtype: "panel",
+        title: "my panel",
+        frame: true,
+        width: 400,
+        height: 200
+      }
     }
   });
 });

@@ -1,5 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css" />
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
@@ -9,42 +11,43 @@
 <script type="text/javascript">
 Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
-    var root = new Ext.Viewport({
-      layout: "fit",
+  Ext.QuickTips.init();
+  var viewport = new Ext.Viewport({
+    layout: "fit",
+    items: [{
+      layout: "auto",
       items: [{
-        layout: "auto",
-        items: [{
-            id: "c1",
-            xtype: "container",
-            boxMaxWidth: 300,
-            style: "border:1px solid green; margin:2px",
-            html: "<span>container 1</span>",
-            items: [ {
-                id: "b1",
-                xtype: "box",
-                html: "box 1"
-              }, {
-                id: "b2",
-                xtype: "box",
-                html: "box 2"
-              }
-            ]
-          },{
-            xtype: "container",
-            style: "border: 1px solid red; margin:2px",
-            autoEl: {
-              tag: "div",
-              style: "background-color:yellow",
-              html: "<span>container 2</span>"
-            },
-            disabled: true,
-            items: [ {
-              autoEl: "span",
-              html: "box 3"
-            }]
+          id: "c1",
+          xtype: "container",
+          boxMaxWidth: 300,
+          style: "border:1px solid green; margin:2px",
+          html: "<span>container 1</span>",
+          items: [ {
+              id: "b1",
+              xtype: "box",
+              html: "box 1"
+            },{
+              id: "b2",
+              xtype: "box",
+              html: "box 2"
+            }
+          ]
+        },{
+          xtype: "container",
+          style: "border: 1px solid red; margin:2px",
+          autoEl: {
+            tag: "div",
+            style: "background-color:yellow",
+            html: "<span>container 2</span>"
+          },
+          disabled: true,
+          items: [{
+            autoEl: "span",
+            html: "box 3"
           }]
         }]
-      });
+      }]
+    });
 });
 </script>
 

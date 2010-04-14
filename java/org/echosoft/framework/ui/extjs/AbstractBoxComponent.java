@@ -14,7 +14,8 @@ import org.echosoft.framework.ui.extjs.model.Point;
  */
 public abstract class AbstractBoxComponent extends AbstractComponent {
 
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractComponent.EVENTS, "move", "resize");
+    public static final Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(AbstractComponent.EVENTS, "move", "resize");
 
     private boolean autoScroll;     // дает возможность скроллировать содержимое компонента если оно не влезает в установленные рамки.
     private boolean autoWidth;      // Если true то ширина будет полностью контролироваться браузером (путем установки стиля width:'auto'), в противном случае ширина будет контролироваться ExtJS
@@ -512,8 +513,8 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
 
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (autoWidth)
             out.writeProperty("autoWidth", true);
         if (autoHeight)

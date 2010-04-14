@@ -27,8 +27,9 @@ import org.echosoft.framework.ui.core.UIException;
  */
 public class JarTheme implements Theme {
 
-    private static final String GLOBAL_JS_FILES = "global.js.files";
     private static final String GLOBAL_CSS_FILES = "global.css.files";
+    private static final String GLOBAL_JS1_FILES = "global.js1.files";  // скрипты подгружаемые в первую очередь.
+    private static final String GLOBAL_JS2_FILES = "global.js2.files";  // скрипты подгружаемые в последнюю очередь.
 
     private final String name;
     private final Version version;
@@ -40,8 +41,9 @@ public class JarTheme implements Theme {
     private final Map<String,String> resources;
     private final String urlPrefix;
     private final String pathPrefix;
-    private final String[] globalJSFiles;
     private final String[] globalCSSFiles;
+    private final String[] globalJS1Files;
+    private final String[] globalJS2Files;
 
     /**
      * Создаем экземпляр новой темы.
@@ -77,13 +79,22 @@ public class JarTheme implements Theme {
         this.resources = loadBundle(pathPrefix+"/resources", locale, urls);
 
         final ArrayList<String> list = new ArrayList<String>();
-        for (String key : Any.asStringArray(params.get(GLOBAL_JS_FILES), StringUtil.EMPTY_STRING_ARRAY)) {
+        for (String key : Any.asStringArray(params.get(GLOBAL_JS1_FILES), StringUtil.EMPTY_STRING_ARRAY)) {
             key = StringUtil.trim(key);
             if (key!=null) {
                 list.add( key );
             }
         }
-        globalJSFiles = list.toArray(new String[list.size()]);
+        globalJS1Files = list.toArray(new String[list.size()]);
+
+        list.clear();
+        for (String key : Any.asStringArray(params.get(GLOBAL_JS2_FILES), StringUtil.EMPTY_STRING_ARRAY)) {
+            key = StringUtil.trim(key);
+            if (key!=null) {
+                list.add( key );
+            }
+        }
+        globalJS2Files = list.toArray(new String[list.size()]);
 
         list.clear();
         for (String key : Any.asStringArray(params.get(GLOBAL_CSS_FILES), StringUtil.EMPTY_STRING_ARRAY)) {
@@ -145,15 +156,22 @@ public class JarTheme implements Theme {
     /**
      * {@inheritDoc}
      */
-    public String[] getGlobalJSFiles() {
-        return globalJSFiles;
+    public String[] getGlobalStylesheets() {
+        return globalCSSFiles;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String[] getGlobalStylesheets() {
-        return globalCSSFiles;
+    public String[] getGlobalJS1Files() {
+        return globalJS1Files;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getGlobalJS2Files() {
+        return globalJS2Files;
     }
 
     /**
@@ -167,7 +185,7 @@ public class JarTheme implements Theme {
         final int s = key.indexOf(':',0);
         final int q = key.indexOf('?',0);
         if ( s<0 || (q>0 && s>q) ) {
-            // it's relative url ...
+            // это относительная ссылка ...
             uri = Application.RESOURCES_SERVLET_CONTEXT + urlPrefix + (uri.charAt(0)=='/' ? uri : '/'+uri);
         }
         return uri;

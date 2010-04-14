@@ -103,13 +103,13 @@ public class DecimalField extends AbstractTextField {
         }
         out.beginObject();
         out.writeProperty("xtype", "numberfield");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (value!=null) {
             final MathContext mc = new MathContext(value.precision()-value.scale() + precision);
             out.writeProperty("value", new JSExpression( value.round(mc).toPlainString() ));

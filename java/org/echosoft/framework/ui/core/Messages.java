@@ -50,10 +50,9 @@ public class Messages {
     }
 
     /**
-     * Return an Iterator over the Messages that have been queued and associated with the
-     * specific client identifier.
-     * @param  clientId  qualified component identifier.
-     * @return  all messages associated for the specified component.
+     * Возвращает итератор по всем сообщениям ассоциированным с определенным компонентом.
+     * @param clientId  полный идентификатор компонента.
+     * @return итератор по всем сообщениям удовлетворяющим требуемым критериям. Никогда не возвращает <code>null</code>.
      */
     public Iterator<Message> messages(final String clientId) {
         if (clientId==null)
@@ -69,9 +68,9 @@ public class Messages {
     }
 
     /**
-     * Return an Iterator over the Messages that have been queued, and has specific or more important severity.
-     * @param severity  minimal message severity.
-     * @return  all messages with same (or greater) severity.
+     * Возвращает итератор по всем сообщениям с заданной степенью "серьезности" ассоциированным c любыми компонентами на странице.
+     * @param severity минимально допустимая "серьезность" искомоых сообщений.
+     * @return итератор по всем сообщениям удовлетворяющим требуемым критериям. Никогда не возвращает <code>null</code>.
      */
     public Iterator<Message> messages(final Message.Severity severity) {
         if (severity==null)
@@ -87,11 +86,11 @@ public class Messages {
     }
 
     /**
-     * Return an Iterator over the Messages that have been queued, has specific or more important severity 
-     * and associated with specific client identifier.
-     * @param clientId  clientId  qualified component identifier.
-     * @param severity  minimal message severity.
-     * @return  all messages that confirms specified constraints.
+     * Возвращает итератор по всем сообщениям с заданной степенью "серьезности", и ассоциированным с определенным компонентом.
+     * @param clientId  полный идентификатор компонента.
+     * @param severity минимально допустимая "серьезность" искомоых сообщений.
+     * @return итератор по всем сообщениям удовлетворяющим требуемым критериям. Никогда не возвращает <code>null</code>.
+     * @see #getFirstMessage(String, org.echosoft.framework.ui.core.Message.Severity) 
      */
     public Iterator<Message> messages(final String clientId, final Message.Severity severity) {
         if (clientId==null) {
@@ -105,11 +104,27 @@ public class Messages {
             new Predicate<Message>() {
                 public boolean accept(final Message msg) {
                     return
-                        msg.getClientId().equals(clientId) &&
-                        msg.getSeverity().ordinal() <= severity.ordinal();
+                        msg.getSeverity().ordinal() <= severity.ordinal() &&
+                        msg.getClientId().equals(clientId);
                 }
             }
         );
+    }
+
+    /**
+     * Возвращает первое попавшееся сообщение с заданной степенью "серьезности",
+     * ассоциированное с компонентом имеющим указанный полный идентификатор.
+     * @param clientId  полный идентификатор компонента. Не может быть <code>null</code>.
+     * @param severity минимально допустимая "серьезность" искомого сообщения. Не может быть <code>null</code>.
+     * @return экземпляр соответствующего сообщения или <code>null</code>.
+     * @see #messages(String, org.echosoft.framework.ui.core.Message.Severity) 
+     */
+    public Message getFirstMessage(final String clientId, final Message.Severity severity) {
+        for (Message msg : messages) {
+            if ( msg.getSeverity().ordinal() <= severity.ordinal() && msg.getClientId().equals(clientId) )
+                return msg;
+        }
+        return null;
     }
 
     /**

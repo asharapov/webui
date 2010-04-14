@@ -22,9 +22,10 @@ import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
  */
 public class Panel extends AbstractContainerComponent {
 
-    public static Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractContainerComponent.EVENTS,
-            "activate", "beforeclose", "beforecollapse", "beforeexpand", "bodyresize",
-            "close", "collapse", "deactivate", "expand", "iconchange", "titlechange");
+    public static Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(AbstractContainerComponent.EVENTS,
+                    "activate", "beforeclose", "beforecollapse", "beforeexpand", "bodyresize",
+                    "close", "collapse", "deactivate", "expand", "iconchange", "titlechange");
 
     /**
      * Типы кнопок которые могут быть размещены на линейке инструментов в панели.
@@ -424,13 +425,13 @@ public class Panel extends AbstractContainerComponent {
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "panel");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (animCollapse!=null)
             out.writeProperty("animCollapse", animCollapse);
         if (bodyCssClass!=null)
@@ -451,7 +452,6 @@ public class Panel extends AbstractContainerComponent {
             out.writeProperty("border", false);
         if (preventBodyReset)
             out.writeProperty("preventBorderReset", true);
-
         if (tbar!=null) {
             out.writeComplexProperty("tbar");
             tbar.invoke(out);
@@ -472,7 +472,6 @@ public class Panel extends AbstractContainerComponent {
             }
             out.endArray();
         }
-
         if (html!=null)
             out.writeProperty("html", html);
         if (template!=null)

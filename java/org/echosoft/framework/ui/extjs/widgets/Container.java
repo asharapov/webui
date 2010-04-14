@@ -42,13 +42,13 @@ public class Container extends AbstractContainerComponent {
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "container");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (autoEl!=null) {
             out.writeProperty("autoEl", autoEl);
         }

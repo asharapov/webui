@@ -17,7 +17,8 @@ import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
  */
 public class Toolbar extends AbstractContainerComponent {
 
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractContainerComponent.EVENTS, "overflowchange");
+    public static final Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(AbstractContainerComponent.EVENTS, "overflowchange");
 
     @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum Align {
@@ -133,13 +134,23 @@ public class Toolbar extends AbstractContainerComponent {
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
+        out.beginObject();
+        out.writeProperty("xtype", "toolbar");
+        renderContent(out);
+        out.endObject();
+    }
+
+    @Override
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
+        if (buttonAlign!=Align.LEFT)
+            out.writeProperty("buttonAlign", buttonAlign);
+        if (enableOverflow)
+            out.writeProperty("enableOverflow", true);
+
         final ComponentContext ctx = getContext();
         if (ctx!=null)
             ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
-        out.beginObject();
-        out.writeProperty("xtype", "toolbar");
-        renderAttrs(out);
-        out.endObject();
     }
 
     @Override
@@ -147,12 +158,4 @@ public class Toolbar extends AbstractContainerComponent {
         return Toolbar.EVENTS;
     }
 
-    @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
-        if (buttonAlign!=Align.LEFT)
-            out.writeProperty("buttonAlign", buttonAlign);
-        if (enableOverflow)
-            out.writeProperty("enableOverflow", true);
-    }
 }

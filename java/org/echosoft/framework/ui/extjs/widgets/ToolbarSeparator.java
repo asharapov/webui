@@ -23,7 +23,7 @@ public class ToolbarSeparator extends AbstractBoxComponent {
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "tbseparator");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 }

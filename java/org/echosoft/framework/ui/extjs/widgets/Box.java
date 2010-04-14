@@ -101,13 +101,13 @@ public class Box extends AbstractBoxComponent {
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "box");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (autoEl !=null) {
             if (autoEl.hasContentOnly()) {
                 out.writeProperty("html", autoEl.getHtml());

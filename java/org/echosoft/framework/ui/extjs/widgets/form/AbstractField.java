@@ -1,6 +1,5 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import org.echosoft.common.json.JsonWriter;
@@ -18,7 +17,8 @@ import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 public abstract class AbstractField extends AbstractBoxComponent {
 
     public static final Set<String> EVENTS =
-            StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS, "blur", "change", "focus", "invalid", "specialKey", "valid");
+            StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS,
+                    "blur", "change", "focus", "invalid", "specialKey", "valid");
 
     @JsonUseSeriazer(EnumLCJSONSerializer.class)
     public static enum MsgTarget {
@@ -139,16 +139,14 @@ public abstract class AbstractField extends AbstractBoxComponent {
 
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
+    protected void renderContent(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
-        final Iterator<Message> it = ctx.getMessages().messages(ctx.getClientId(), Message.Severity.WARN);
-        if (it.hasNext()) {
-            out.writeProperty("activeError", it.next().getSubject());
-            addPlugin("Ext.ux.wui.plugins.Field");  // этот вызов должен идти перед вызовом super.renderAttrs().
-        }
-        super.renderAttrs(out);
+        final Message msg = ctx.getMessages().getFirstMessage(ctx.getClientId(), Message.Severity.WARN);
+        if (msg!=null)
+            addPlugin("Ext.ux.wui.plugins.Field");
+
+        super.renderContent(out);
+
         if (invalidText!=null)
             out.writeProperty("invalidText", invalidText);
         if (msgTarget!=MsgTarget.QTIP)
@@ -159,6 +157,11 @@ public abstract class AbstractField extends AbstractBoxComponent {
             out.writeProperty("validateOnBlur", false);
         if (readOnly)
             out.writeProperty("readOnly", true);
+        if (msg!=null)
+            out.writeProperty("activeError", msg.getSubject());
+
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
     }
 
     @Override

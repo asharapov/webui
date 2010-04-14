@@ -29,6 +29,9 @@ import org.echosoft.common.utils.StringUtil;
  */
 public class Resources {
 
+    private static final String DEFAULT_SCRIPT_CONTENT_TYPE = "text/javascript";
+    private static final String DEFAULT_STYLESHEET_CONTENT_TYPE = "text/css";
+
     private final LinkedHashMap<String, Resource> resources;
     private final LinkedHashSet<CharSequence> embeddedScripts;
     private final LinkedHashSet<CharSequence> embeddedStyles;
@@ -315,7 +318,7 @@ public class Resources {
     public static final class Script extends Resource {
         private boolean defered;
         public Script(final String url, final String contentType) {
-            super(url, StringUtil.getNonEmpty(contentType,"text/javascript"));
+            super(url, StringUtil.getNonEmpty(contentType,DEFAULT_SCRIPT_CONTENT_TYPE));
         }
         public boolean isDefered() {
             return defered;
@@ -331,7 +334,7 @@ public class Resources {
         private String media;
         private String title;
         public StyleSheet(final String url, final String contentType) {
-            super(url, StringUtil.getNonEmpty(contentType,"text/css"));
+            super(url, StringUtil.getNonEmpty(contentType,DEFAULT_STYLESHEET_CONTENT_TYPE));
             rel = "stylesheet";
         }
         public String getRel() {

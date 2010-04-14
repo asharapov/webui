@@ -20,11 +20,12 @@ import org.echosoft.framework.ui.core.UIComponent;
  */
 public abstract class AbstractComponent implements UIComponent, Serializable {
 
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(
-            "added", "afterrender", "beforedestroy", "beforehide", "beforerender",
-            "beforeshow", "beforestaterestore", "beforestatesave","destroy", "disable",
-            "enable", "hide", "removed", "render", "show",
-            "staterestore", "statesave"
+    public static final Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(
+                    "added", "afterrender", "beforedestroy", "beforehide", "beforerender",
+                    "beforeshow", "beforestaterestore", "beforestatesave","destroy", "disable",
+                    "enable", "hide", "removed", "render", "show",
+                    "staterestore", "statesave"
     );
 
     /**
@@ -42,9 +43,9 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      */
     private Set<String> plugins;
 
-    private String cssClass;        // CSS класс, дополнительно применяемый к корневому элементу компонента.
-    private String overCssClass;    // CSS класс, дополнительно применяемый к корневому элементу компонента в момент когда над ним находится курсор мышки.
-    private String cssStyle;        // CSS стиль дополнительно применяемый к корневому элементу компонента.
+    private String cls;        // CSS класс, дополнительно применяемый к корневому элементу компонента.
+    private String overCls;    // CSS класс, дополнительно применяемый к корневому элементу компонента в момент когда над ним находится курсор мышки.
+    private String style;        // CSS стиль дополнительно применяемый к корневому элементу компонента.
     private boolean disabled;       // признак неактивности компонента (false по умолчанию).
     private boolean hidden;         // признак невидимости компонента (false по умолчанию).
     private String ref;             // позволяет определить ссылку на данный компонент в одном из иных компонентов иерархии.
@@ -79,45 +80,45 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      * Возвращает CSS класс, который должен быть дополнительно применен к корневому DOM элементу компонента.
      * @return  имя класса или <code>null</code> в случае его отсутствия.
      */
-    public String getCssClass() {
-        return cssClass;
+    public String getCls() {
+        return cls;
     }
     /**
      * Указывает CSS класс, который должен быть дополнительно применен к корневому DOM элементу компонента.
-     * @param cssClass имя класса или <code>null</code> в случае его отсутствия.
+     * @param cls имя класса или <code>null</code> в случае его отсутствия.
      */
-    public void setCssClass(final String cssClass) {
-        this.cssClass = StringUtil.trim(cssClass);
+    public void setCls(final String cls) {
+        this.cls = StringUtil.trim(cls);
     }
 
     /**
      * Возвращает CSS класс, который будет дополнительно применен к корневому DOM элементу компонента в те моменты когда над ним находится курсор мышки.<br/>
      * @return имя класса или <code>null</code> в случае его отсутствия.
      */
-    public String getOverCssClass() {
-        return overCssClass;
+    public String getOverCls() {
+        return overCls;
     }
     /**
      * Указывает CSS класс, который будет дополнительно применен к корневому DOM элементу компонента в те моменты когда над ним находится курсор мышки.<br/>
-     * @param overCssClass имя класса или <code>null</code> в случае его отсутствия.
+     * @param overCls имя класса или <code>null</code> в случае его отсутствия.
      */
-    public void setOverCssClass(final String overCssClass) {
-        this.overCssClass = StringUtil.trim(overCssClass);
+    public void setOverCls(final String overCls) {
+        this.overCls = StringUtil.trim(overCls);
     }
 
     /**
      * Возвращает CSS стили которые должны быть дополнительно применены к корневому элементу компонента.
      * @return  стили CSS или <code>null</code> в случае их отсутствия.
      */
-    public String getCssStyle() {
-        return cssStyle;
+    public String getStyle() {
+        return style;
     }
     /**
      * Указывает CSS стили которые должны быть дополнительно применены к корневому элементу компонента.
-     * @param cssStyle  стили CSS или <code>null</code> в случае их отсутствия.
+     * @param style  стили CSS или <code>null</code> в случае их отсутствия.
      */
-    public void setCssStyle(final String cssStyle) {
-        this.cssStyle = StringUtil.trim(cssStyle);
+    public void setStyle(final String style) {
+        this.style = StringUtil.trim(style);
     }
 
     /**
@@ -248,26 +249,54 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
     }
 
 
+
     /**
-     * <p>Сериализует в javascript свойства компонента. В подавляющем большинстве случаев достаточно
-     * сериализировать только те свойства, чьи значения отличаются от значений по умолчанию принятых в ExtJS.</p>
-     * <p>Выходной JSON поток должен находиться в состоянии <i>редактирования свойств</i> объекта. 
+     * {@inheritDoc}
+     * В простейшем случае сериализация ExtJS компонента будет иметь один из нижеприведенных видов:
+     * <ol>
+     *  <li> Используется в случае когда данный тип компонент зарегистрирован в менеджере компонент ExtJS
+     *    <pre><code>
+     *    out.beginObject();
+     *    out.writeProperty("xtype", "&lt;component's xtype>");
+     *    this.renderAttrs(out);
+     *    out.endObject();
+     *    </code></pre>
+     *  </li>
+     *  <li>
+     *    <pre><code>
+     *    out.getOutputWriter().write("new MyJSComponent(");
+     *    out.beginObject();
+     *    this.renderAttrs(out);
+     *    out.endObject();
+     *    out.getOutptWriter().write(")");
+     *    </code></pre>
+     *  </li>
+     * </ol>
+     * В обоих случаях, рендеринг всех свойств компонента был вынесен в отдельный метод для обеспечения удобства наследования иерархии компонент.
+     * @see #renderContent(org.echosoft.common.json.JsonWriter)
+     */
+    public abstract void invoke(JsonWriter out) throws Exception;
+
+
+    /**
+     * <p>Сериализует в рамках нотации JSON свойства компонента и подключает, при необходимости, дополнительные ресурсы к формируемой HTML странице.
+     * На моменты начала и окончания обработки данного вызова выходной поток должен находиться в состоянии <i>редактирования свойств</i> объекта.</p>
      * @param out  выходной поток в который помещается формируемая модель ExtJS компонента в JSON формате.
      * @throws IOException  в случае каких-либо ошибок связанных с помещением данных в поток.
      * @throws InvocationTargetException  в случае ошибок в процессе сериализации данных в JSON формат.
      * @throws IllegalAccessException  в случае ошибок в процессе сериализации данных в JSON формат.
      */
-    protected void renderAttrs(final JsonWriter out) throws Exception {
+    protected void renderContent(final JsonWriter out) throws Exception {
         if (ctx!=null)
             out.writeProperty("id", ctx.getClientId());
         if (ref!=null)
             out.writeProperty("ref", ref);
-        if (cssClass!=null)
-            out.writeProperty("cls", cssClass);
-        if (overCssClass!=null)
-            out.writeProperty("overCls", overCssClass);
-        if (cssStyle!=null)
-            out.writeProperty("style", cssStyle);
+        if (cls!=null)
+            out.writeProperty("cls", cls);
+        if (overCls!=null)
+            out.writeProperty("overCls", overCls);
+        if (style!=null)
+            out.writeProperty("style", style);
         if (disabled)
             out.writeProperty("disabled", true);
         if (hidden)

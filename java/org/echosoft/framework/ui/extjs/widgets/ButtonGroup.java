@@ -79,20 +79,21 @@ public class ButtonGroup extends AbstractContainerComponent {
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
-        final ComponentContext ctx = getContext();
-        if (ctx!=null)
-            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
         out.beginObject();
         out.writeProperty("xtype", "buttongroup");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (title!=null)
             out.writeProperty("title", title);
+
+        final ComponentContext ctx = getContext();
+        if (ctx!=null)
+            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
     }
 
 }

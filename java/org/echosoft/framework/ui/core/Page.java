@@ -215,17 +215,20 @@ public abstract class Page implements UIComponent {
         final UIContext uctx = getUIContext();
         final Resources resources = uctx.getResources();
         final Theme theme = uctx.getTheme();
-        for (String uri : theme.getGlobalJSFiles()) {
-            resources.attachScript(uctx.encodeThemeURL(uri,false));
+        for (String url : theme.getGlobalStylesheets()) {
+            resources.attachStyleSheet(uctx.encodeThemeURL(url,false));
         }
-        for (String uri : theme.getGlobalStylesheets()) {
-            resources.attachStyleSheet(uctx.encodeThemeURL(uri,false));
+        for (String url : theme.getGlobalJS1Files()) {
+            resources.attachScript(uctx.encodeThemeURL(url,false));
         }
         uctx.switchState(getViewId(), getViewRank());
         final FastStringWriter jwout = new FastStringWriter(2048);  // промежуточный буфер используемый для сериализации JSON выражений всех компонент на данной странице.
         final JsonWriter jw = getJsonContext().makeJsonWriter(jwout);
         invoke(jw);
         uctx.getStates().clean( getCleanStrategy() );
+        for (String url : theme.getGlobalJS2Files()) {
+            resources.attachScript(uctx.encodeThemeURL(url,false));
+        }
 
         out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n");
         out.write("<html>\n");

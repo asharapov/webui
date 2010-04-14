@@ -53,7 +53,7 @@ public class BlankDispatcher implements Dispatcher {
         box2.setHtml("South region");
 
         final BorderLayoutRegion central = rootLayout.getCenter();
-        final FormPanel form = central.append( new FormPanel(ctx.getChild("p1")) );
+        final FormPanel form = central.append( new FormPanel(ctx.getChild("form")) );
         form.setTitle("Enter you data");
         form.setFrame(true);
         form.setWidth(400);

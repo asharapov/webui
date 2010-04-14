@@ -44,7 +44,6 @@ public class BorderLayoutRegion implements UIComponent {
         if (region==null)
             throw new IllegalArgumentException("No valid region specified");
         this.region = region;
-        layout = new AutoLayout();
         animFloat = true;
         autoHide = true;
         floatable = true;
@@ -78,6 +77,8 @@ public class BorderLayoutRegion implements UIComponent {
      * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
      */
     public Layout getLayout() {
+        if (layout==null)
+            layout = new AutoLayout();
         return layout;
     }
     /**
@@ -99,7 +100,7 @@ public class BorderLayoutRegion implements UIComponent {
     @SuppressWarnings("unchecked")
     public <T extends Layout> T assignLayout(final T layout) {
         setLayout(layout);
-        return (T)this.layout;
+        return (T)getLayout();
     }
 
     /**
@@ -263,7 +264,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @param minSize  минимально допустимый размер региона в пикселях.
      */
     public void setMinSize(final int minSize) {
-        this.minSize = minSize;
+        this.minSize = minSize>=0 ? minSize : 0;
     }
 
     /**
@@ -280,7 +281,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @param maxSize  максимально допустимый размер региона в пикселях.
      */
     public void setMaxSize(final int maxSize) {
-        this.maxSize = maxSize;
+        this.maxSize = maxSize>=0 ? maxSize : 0;
     }
 
     /**
@@ -318,7 +319,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @return  количество компонент размещенных в данном регионе.
      */
     public int getItemsCount() {
-        return layout.getItemsCount();
+        return getLayout().getItemsCount();
     }
 
     /**
@@ -326,7 +327,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @return  все компонента размещенные в данном регионе.
      */
     public Iterable<UIComponent> getItems() {
-        return layout.getItems();
+        return getLayout().getItems();
     }
 
     /**
@@ -335,7 +336,7 @@ public class BorderLayoutRegion implements UIComponent {
      * @return  Добавленный в регион компонент.
      */
     public <T extends UIComponent> T append(final T item) {
-        return layout.append(item);
+        return getLayout().append(item);
     }
 
     @Override
@@ -348,9 +349,9 @@ public class BorderLayoutRegion implements UIComponent {
             out.writeProperty("autoHide", false);
         if (!floatable)
             out.writeProperty("floatable", false);
-        if (cmargins!=null && !cmargins.isEmpty())
+        if (cmargins!=null)
             out.writeProperty("cmargins", cmargins.encode());
-        if (margins!=null && !margins.isEmpty())
+        if (margins!=null)
             out.writeProperty("margins", margins.encode());
         if (collapsible)
             out.writeProperty("collapsible", true);
@@ -360,9 +361,9 @@ public class BorderLayoutRegion implements UIComponent {
             out.writeProperty("split", true);
         if (splitTip!=null)
             out.writeProperty("splitTip", splitTip);
-        if (minSize!=50 && minSize>=0)
+        if (minSize!=50)
             out.writeProperty("minSize", minSize);
-        if (maxSize!=500 && maxSize>=0)
+        if (maxSize!=500)
             out.writeProperty("maxSize", maxSize);
         if (region==Region.NORTH || region==Region.SOUTH) {
             out.writeProperty("height", height);

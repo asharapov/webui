@@ -16,17 +16,16 @@ import org.echosoft.framework.ui.extjs.layout.Layout;
  */
 public abstract class AbstractContainerComponent extends AbstractBoxComponent {
 
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS, "add", "afterlayout", "beforeadd", "beforeremove", "remove");
+    public static final Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS,
+                    "add", "afterlayout", "beforeadd", "beforeremove", "remove");
 
     private Layout layout;                      // используемый менеджер упаковки дочерних компонент в контейнере.
     private String activeItem;                  // идентификатор активного компонента в контейнере.
-    private boolean autoDestroy;                // уничтожает компоненты в контейнере автоматически (по умолчанию) или делегирует это бизнес-программисту (событие 'remove').
     private boolean forceLayout;                // выполняет компоновку компонент в контейнере даже тогда когда этого можно было бы на первый взгляд и не делать (пр: скрытые/свернутые панели).
-    private boolean hideBorders;                // следует ли скрывать рамки вокруг каждого компонента в контейнере (false по умолчанию)
 
     public AbstractContainerComponent(final ComponentContext ctx) {
         super(ctx);
-        autoDestroy = true;
     }
 
     /**
@@ -108,26 +107,6 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     }
 
     /**
-     * Определяет последовательность действий при исключении компонента из контейнера.
-     * При установленном флаге контейнер автоматически вызовет метод <code>destroy</code> у компонента.
-     * При сброшенном флаге это может сделать бизнес-программист в обработчике события <code>remove</code>. 
-     * @return  <code>true</code> (по умолчанию) если контейнер автоматически уничтожает исключаемый из контейнера компонента.
-     */
-    public boolean isAutoDestroy() {
-        return autoDestroy;
-    }
-    /**
-     * Определяет последовательность действий при исключении компонента из контейнера.
-     * При установленном флаге контейнер автоматически вызовет метод <code>destroy</code> у компонента.
-     * При сброшенном флаге это может сделать бизнес-программист в обработчике события <code>remove</code>.
-     * @param autoDestroy если <code>true</code> то контейнер автоматически будет уничтожать исключаемые из контейнера компоненты; если <code>false</code> то эта обязанность
-     *      будет возложена на программистов.
-     */
-    public void setAutoDestroy(final boolean autoDestroy) {
-        this.autoDestroy = autoDestroy;
-    }
-
-    /**
      * Возвращает <code>true</code> если контейнер должен будет выполнять компоновку компонент в принудительном порядке даже тогда когда этого можно было бы и не делать (пр: скрытые/свернутые панели).
      * @return <code>true</code> если контейнер должен принудительно выполнять компоновку компонент. Значение свойства по умолчанию - <code>false</code>.
      */
@@ -142,33 +121,14 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
         this.forceLayout = forceLayout;
     }
 
-    /**
-     * Возвращает <code>true</code> если контейнер должен скрывать рамки вокруг каждого своего дочернего компонента.
-     * @return <code>true</code> если контейнер должен скрывать рамки вокруг дочерних компонент. По умолчанию возвращает <code>false</code>.
-     */
-    public boolean isHideBorders() {
-        return hideBorders;
-    }
-    /**
-     * Указывает должен ли контейнер скрывать рамки вокруг каждого своего дочернего компонента.
-     * @param hideBorders <code>true</code> если контейнер должен скрывать рамки вокруг дочерних компонент. Значение свойства по умолчанию = <code>false</code>.
-     */
-    public void setHideBorders(final boolean hideBorders) {
-        this.hideBorders = hideBorders;
-    }
-
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (activeItem!=null)
             out.writeProperty("activeItem", activeItem);
-        if (!autoDestroy)
-            out.writeProperty("autoDestroy", false);
         if (forceLayout)
             out.writeProperty("forceLayout", true);
-        if (hideBorders)
-            out.writeProperty("hideBorders", true);
         if (layout!=null)
             layout.serialize(out);
     }

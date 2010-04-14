@@ -23,7 +23,7 @@ public class ToolbarSpacer extends AbstractBoxComponent {
     public void invoke(final JsonWriter out) throws Exception {
         out.beginObject();
         out.writeProperty("xtype", "tbspacer");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 }

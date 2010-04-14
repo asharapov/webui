@@ -216,8 +216,8 @@ public abstract class AbstractTextField extends AbstractField {
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         out.writeProperty("name", name);
         if (tabIndex!=null)
             out.writeProperty("tabIndex", tabIndex);

@@ -81,13 +81,13 @@ public class IntegerField extends AbstractTextField {
         }
         out.beginObject();
         out.writeProperty("xtype", "numberfield");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (value!=null)
             out.writeProperty("value", value);
         out.writeProperty("allowDecimals", false);

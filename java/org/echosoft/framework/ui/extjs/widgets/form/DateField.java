@@ -114,9 +114,6 @@ public class DateField extends AbstractTextField {
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-menu.js",false) );
-
         setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
             final String svalue = ctx.getAttribute("value", Scope.PR_ST);
@@ -127,13 +124,13 @@ public class DateField extends AbstractTextField {
         }
         out.beginObject();
         out.writeProperty("xtype", "datefield");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         out.writeProperty("format", "d.m.Y");
         if (value!=null)
             out.writeProperty("value", value);
@@ -145,6 +142,9 @@ public class DateField extends AbstractTextField {
             out.writeProperty("disabledDates", disabledDates);
         if (disabledDays!=null)
             out.writeProperty("disabledDays", disabledDays);
+
+        final ComponentContext ctx = getContext();
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-menu.js",false) );
     }
 
     @Override

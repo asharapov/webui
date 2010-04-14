@@ -19,7 +19,8 @@ public class FormPanel extends Panel {
         GET, POST
     }
     public static Set<String> EVENTS =
-            StringUtil.asUnmodifiableSet(Panel.EVENTS, "clientvalidation", "actioncomplete", "actionfailed", "beforeaction");
+            StringUtil.asUnmodifiableSet(Panel.EVENTS,
+                    "clientvalidation", "actioncomplete", "actionfailed", "beforeaction");
 
     private Map<String,Object> baseParams;  // дополнительные параметры, отправляемые на сервер.
     private String url;                     // URL ресурса на который будет делаться запрос.
@@ -300,22 +301,16 @@ public class FormPanel extends Panel {
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
-        final ComponentContext ctx = getContext();
-        if (ctx!=null) {
-            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
-            ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
-        }
-        addPlugin("Ext.ux.wui.plugins.FormPanel");
-
         out.beginObject();
         out.writeProperty("xtype", "form");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        addPlugin("Ext.ux.wui.plugins.FormPanel");
+        super.renderContent(out);
         if (baseParams!=null)
             out.writeProperty("baseParams", baseParams);
         if (url!=null)
@@ -346,6 +341,10 @@ public class FormPanel extends Panel {
             out.writeProperty("labelWidth", labelWidth);
         if (labelPad!=5)
             out.writeProperty("labelPad", labelPad);
+
+        final ComponentContext ctx = getContext();
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
+        ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
     }
 
     @Override

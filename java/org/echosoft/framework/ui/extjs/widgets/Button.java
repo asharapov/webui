@@ -16,9 +16,10 @@ import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
  */
 public class Button extends AbstractBoxComponent {
 
-    public static final Set<String> EVENTS = StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS,
-            "click", "toggle",
-            "menushow", "menuhide", "menutriggerout", "menutriggerover", "mouseout", "mouseover"
+    public static final Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(AbstractBoxComponent.EVENTS,
+                    "click", "toggle",
+                    "menushow", "menuhide", "menutriggerout", "menutriggerover", "mouseout", "mouseover"
     );
 
     @JsonUseSeriazer(EnumLCJSONSerializer.class)
@@ -352,18 +353,15 @@ public class Button extends AbstractBoxComponent {
 
     @Override
     public void invoke(final JsonWriter out) throws Exception {
-        final ComponentContext ctx = getContext();
-        if (ctx!=null)
-            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-buttons.js",false) );
         out.beginObject();
         out.writeProperty("xtype", "button");
-        renderAttrs(out);
+        renderContent(out);
         out.endObject();
     }
 
     @Override
-    protected void renderAttrs(final JsonWriter out) throws Exception {
-        super.renderAttrs(out);
+    protected void renderContent(final JsonWriter out) throws Exception {
+        super.renderContent(out);
         if (allowDepress!=null)
             out.writeProperty("allowDepress", allowDepress);
         if (arrowAlign!=Align.RIGHT)

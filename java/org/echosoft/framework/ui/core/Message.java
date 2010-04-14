@@ -13,7 +13,7 @@ import org.echosoft.common.utils.StringUtil;
 public class Message implements Serializable, Comparable<Message> {
 
     /**
-     * Описывает уровни серьезности сообщений.
+     * Описывает уровни т.н. "серьезности" сообщений.
      */
     public static enum Severity {
         FATAL, ERROR, WARN, INFO
@@ -54,8 +54,8 @@ public class Message implements Serializable, Comparable<Message> {
     }
 
     /**
-     * Степень "важности" сообщения.
-     * @return  степень "важности" сообщения.
+     * Степень "серьезности" сообщения.
+     * @return  степень "серьезности" сообщения.
      */
     public Severity getSeverity() {
         return severity;

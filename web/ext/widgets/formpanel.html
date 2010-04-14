@@ -85,6 +85,16 @@ Ext.onReady( function() {
           inputType:  "text",
           disabled: false
         },{
+          xtype: "compositefield",
+          fieldLabel: "compositefield",
+          msgTarget: "under",
+          items: [
+            {xtype:"displayfield", value:"c "},
+            {xtype:"numberfield", fieldLabel:"from", flex:0},
+            {xtype:"displayfield", fieldLabel:"to", value:" по "},
+            {xtype:"numberfield", flex:0}
+          ]
+        },{
           xtype: "trigger",
           fieldLabel: "trigger"
         },{

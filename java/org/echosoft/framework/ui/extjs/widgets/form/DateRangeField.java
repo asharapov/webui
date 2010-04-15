@@ -1,34 +1,38 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
+import java.util.Date;
+
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 import org.echosoft.framework.ui.core.theme.Theme;
 
 /**
- * Компонент для ввода диапазона целых чисел.
+ * Компонент для ввода диапазона дат.
  * @author Anton Sharapov
  */
-public class IntegerRangeField extends AbstractField {
+public class DateRangeField extends AbstractField {
 
-    private static final String THEME_MSGRES_FROM = "field.numrange.from";
-    private static final String THEME_MSGRES_TO = "field.numrange.to";
+    private static final String THEME_MSGRES_FROM = "field.daterange.from";
+    private static final String THEME_MSGRES_TO = "field.daterange.to";
 
-    private Integer from;                   // нижняя граница диапазона.
-    private Integer to;                     // верхняя граница диапазона.
-    private Integer minValue;               // минимально-допустимое значение диапазона.
-    private Integer maxValue;               // максимально-допустимое значение диапазона.
+    private Date from;                      // нижняя граница диапазона.
+    private Date to;                        // верхняя граница диапазона.
+    private Date minValue;                  // минимально-допустимое значение диапазона.
+    private Date maxValue;                  // максимально-допустимое значение диапазона.
+    private String[] disabledDates;         // перечень дат (диапазонов дат) запрещенных для ввода в компоненте.
+    private int[] disabledDays;             // перечень дней недели(0..6) запрещенных для ввода в компоненте.
     private boolean allowBlank;             // могут ли поля ввода быть пустыми.
     private String vtype;                   // идентификатор валидатора, используемого для валидации обоих полей ввода.
     private JSFunction validator;           // функция используемая для валидации обоих полей ввода.
     private Integer tabIndex;               //
-    private Integer fieldWidth;             // ширина каждого поля ввода.
 
-    public IntegerRangeField() {
+    public DateRangeField() {
         this(null);
     }
-    public IntegerRangeField(final ComponentContext ctx) {
+    public DateRangeField(final ComponentContext ctx) {
         super(ctx);
         allowBlank = true;
     }
@@ -37,14 +41,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает нижнюю границу вводимого диапазона.
      * @return нижняя граница вводимого диапазона.
      */
-    public Integer getFrom() {
+    public Date getFrom() {
         return from;
     }
     /**
      * Устанавливает нижнюю границу вводимого диапазона.
      * @param from нижняя граница вводимого диапазона.
      */
-    public void setFrom(final Integer from) {
+    public void setFrom(final Date from) {
         this.from = from;
     }
 
@@ -52,14 +56,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает верхнюю границу вводимого диапазона.
      * @return верхняя граница вводимого диапазона.
      */
-    public Integer getTo() {
+    public Date getTo() {
         return to;
     }
     /**
      * Устанавливает верхнюю границу вводимого диапазона.
      * @param to верхняя граница вводимого диапазона.
      */
-    public void setTo(final Integer to) {
+    public void setTo(final Date to) {
         this.to = to;
     }
 
@@ -67,14 +71,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает минимально допустимое значение для обоих полей.
      * @return минимально допустимое значение.
      */
-    public Integer getMinValue() {
+    public Date getMinValue() {
         return minValue;
     }
     /**
      * Устанавливает минимально допустимое значение для обоих полей.
      * @param minValue минимально допустимое значение.
      */
-    public void setMinValue(final Integer minValue) {
+    public void setMinValue(final Date minValue) {
         this.minValue = minValue;
     }
 
@@ -82,15 +86,52 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает максимально допустимое значение для обоих полей.
      * @return максимально допустимое значение.
      */
-    public Integer getMaxValue() {
+    public Date getMaxValue() {
         return maxValue;
     }
     /**
      * Устанавливает максимально допустимое значение для обоих полей.
      * @param maxValue максимально допустимое значение.
      */
-    public void setMaxValue(final Integer maxValue) {
+    public void setMaxValue(final Date maxValue) {
         this.maxValue = maxValue;
+    }
+
+    /**
+     * Возвращает перечень дат запрещенных к указанию в данном поле. Каждый элемент в массиве
+     * является либо строковым представлением конкретной даты в формате <code>dd.MM.YYYY</code> либо
+     * описанием диапазона дат.
+     * @return массив строк где каждый элемент описывает либо дату либо диапазон дат запрещенные к выбору в данном поле.
+     *  По умолчанию возвращает <code>null</code>.
+     */
+    public String[] getDisabledDates() {
+        return disabledDates;
+    }
+    /**
+     * Указывает перечень дат запрещенных к указанию в данном поле. Каждый элемент в массиве
+     * является либо строковым представлением конкретной даты в формате <code>dd.MM.YYYY</code> либо
+     * описанием диапазона дат.
+     * @param disabledDates массив строк где каждый элемент описывает либо дату либо диапазон дат запрещенные к выбору в данном поле.
+     */
+    public void setDisabledDates(final String[] disabledDates) {
+        this.disabledDates = disabledDates;
+    }
+
+    /**
+     * Возвращает перечень дней недели которые запрещены к указанию в данном поле.
+     * Каждый день недели кодируется числом (0=воскресенье, 1=понедельник, ... 6=суббота).
+     * @return перечень дней недели запрещенные к указанию в данном поле.
+     */
+    public int[] getDisabledDays() {
+        return disabledDays;
+    }
+    /**
+     * Указывает перечень дней недели которые запрещены к указанию в данном поле.
+     * Каждый день недели кодируется числом (0=воскресенье, 1=понедельник, ... 6=суббота).
+     * @param disabledDays перечень дней недели запрещенные к указанию в данном поле.
+     */
+    public void setDisabledDays(final int[] disabledDays) {
+        this.disabledDays = disabledDays;
     }
 
     /**
@@ -149,20 +190,6 @@ public class IntegerRangeField extends AbstractField {
         this.tabIndex = tabIndex;
     }
 
-    /**
-     * Возвращает ширину обоих полей ввода.
-     * @return ширина каждого поля ввода.
-     */
-    public Integer getFieldWidth() {
-        return fieldWidth;
-    }
-    /**
-     * Устанавливает ширину обоих полей ввода.
-     * @param fieldWidth ширина каждого поля ввода.
-     */
-    public void setFieldWidth(final Integer fieldWidth) {
-        this.fieldWidth = fieldWidth;
-    }
 
 
     public void invoke(final JsonWriter out) throws Exception {
@@ -171,16 +198,16 @@ public class IntegerRangeField extends AbstractField {
             String svalue = ctx.getAttribute("from", Scope.PR_ST);
             if (svalue!=null && !svalue.isEmpty()) {
                 ctx.setAttribute("from", svalue, Scope.STATE);
-                from = Integer.parseInt(svalue,10);
+                from = StringUtil.parseDate(svalue);
             }
             svalue = ctx.getAttribute("to", Scope.PR_ST);
             if (svalue!=null && !svalue.isEmpty()) {
                 ctx.setAttribute("to", svalue, Scope.STATE);
-                to = Integer.parseInt(svalue,10);
+                to = StringUtil.parseDate(svalue);
             }
         }
-        if (from!=null && to!=null && from>to) {
-            final Integer swapped = from;
+        if (from!=null && to!=null && from.getTime()>to.getTime()) {
+            final Date swapped = from;
             from = to;
             to = swapped;
         }
@@ -200,9 +227,14 @@ public class IntegerRangeField extends AbstractField {
         out.writeProperty("combineErrors", false);
         out.writeComplexProperty("defaults");
         out.beginObject();
-        out.writeProperty("allowDecimals", false);
-        out.writeProperty("minValue", minValue!=null ? minValue : Integer.MIN_VALUE);
-        out.writeProperty("maxValue", maxValue!=null ? maxValue : Integer.MAX_VALUE);
+        if (minValue!=null)
+            out.writeProperty("minValue", minValue);
+        if (maxValue!=null)
+            out.writeProperty("maxValue", maxValue);
+        if (disabledDates!=null)
+            out.writeProperty("disabledDates", disabledDates);
+        if (disabledDays!=null)
+            out.writeProperty("disabledDays", disabledDays);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);
         if (vtype!=null)
@@ -218,7 +250,7 @@ public class IntegerRangeField extends AbstractField {
         out.writeProperty("value", theme.getMessage(THEME_MSGRES_FROM));
         out.endObject();
         out.beginObject();
-        out.writeProperty("xtype", "numberfield");
+        out.writeProperty("xtype", "datefield");
         out.writeProperty("itemId", "from");
         out.writeProperty("ref", "from");
         out.writeProperty("name", ctx.getClientId()+".from");
@@ -226,8 +258,6 @@ public class IntegerRangeField extends AbstractField {
             out.writeProperty("value", from);
         if (tabIndex!=null)
             out.writeProperty("tabIndex", tabIndex);
-        if (fieldWidth!=null)
-            out.writeProperty("width", fieldWidth);
         out.endObject();
 
         out.beginObject();
@@ -235,7 +265,7 @@ public class IntegerRangeField extends AbstractField {
         out.writeProperty("value", theme.getMessage(THEME_MSGRES_TO));
         out.endObject();
         out.beginObject();
-        out.writeProperty("xtype", "numberfield");
+        out.writeProperty("xtype", "datefield");
         out.writeProperty("itemId", "to");
         out.writeProperty("ref", "to");
         out.writeProperty("name", ctx.getClientId()+".to");
@@ -243,8 +273,6 @@ public class IntegerRangeField extends AbstractField {
             out.writeProperty("value", to);
         if (tabIndex!=null)
             out.writeProperty("tabIndex", tabIndex);
-        if (fieldWidth!=null)
-            out.writeProperty("width", fieldWidth);
         out.endObject();
 
         out.endArray();

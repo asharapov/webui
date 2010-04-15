@@ -1,9 +1,7 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
-import org.echosoft.common.json.JSExpression;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
@@ -110,18 +108,12 @@ public class DecimalField extends AbstractTextField {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (value!=null) {
-            final MathContext mc = new MathContext(value.precision()-value.scale() + precision);
-            out.writeProperty("value", new JSExpression( value.round(mc).toPlainString() ));
-        }
-        if (minValue!=null) {
-            final MathContext mc = new MathContext(minValue.precision()-minValue.scale() + precision);
-            out.writeProperty("minValue", new JSExpression( minValue.round(mc).toPlainString() ));
-        }
-        if (maxValue!=null) {
-            final MathContext mc = new MathContext(maxValue.precision()-maxValue.scale() + precision);
-            out.writeProperty("maxValue", new JSExpression( maxValue.round(mc).toPlainString() ));
-        }
+        if (value!=null)
+            out.writeProperty("value", value);
+        if (minValue!=null)
+            out.writeProperty("minValue", minValue);
+        if (maxValue!=null)
+            out.writeProperty("maxValue", maxValue);
         if (precision!=2)
             out.writeProperty("decimalPrecision", precision);
     }

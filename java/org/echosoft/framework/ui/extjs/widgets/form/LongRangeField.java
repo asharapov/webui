@@ -7,28 +7,28 @@ import org.echosoft.framework.ui.core.Scope;
 import org.echosoft.framework.ui.core.theme.Theme;
 
 /**
- * Компонент для ввода диапазона целых чисел.
+ * Компонент для ввода диапазона длинных целых чисел.
  * @author Anton Sharapov
  */
-public class IntegerRangeField extends AbstractField {
+public class LongRangeField extends AbstractField {
 
     private static final String THEME_MSGRES_FROM = "field.numrange.from";
     private static final String THEME_MSGRES_TO = "field.numrange.to";
 
-    private Integer from;                   // нижняя граница диапазона.
-    private Integer to;                     // верхняя граница диапазона.
-    private Integer minValue;               // минимально-допустимое значение диапазона.
-    private Integer maxValue;               // максимально-допустимое значение диапазона.
+    private Long from;                      // нижняя граница диапазона.
+    private Long to;                        // верхняя граница диапазона.
+    private Long minValue;                  // минимально-допустимое значение диапазона.
+    private Long maxValue;                  // максимально-допустимое значение диапазона.
     private boolean allowBlank;             // могут ли поля ввода быть пустыми.
     private String vtype;                   // идентификатор валидатора, используемого для валидации обоих полей ввода.
     private JSFunction validator;           // функция используемая для валидации обоих полей ввода.
     private Integer tabIndex;               //
     private Integer fieldWidth;             // ширина каждого поля ввода.
 
-    public IntegerRangeField() {
+    public LongRangeField() {
         this(null);
     }
-    public IntegerRangeField(final ComponentContext ctx) {
+    public LongRangeField(final ComponentContext ctx) {
         super(ctx);
         allowBlank = true;
     }
@@ -37,14 +37,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает нижнюю границу вводимого диапазона.
      * @return нижняя граница вводимого диапазона.
      */
-    public Integer getFrom() {
+    public Long getFrom() {
         return from;
     }
     /**
      * Устанавливает нижнюю границу вводимого диапазона.
      * @param from нижняя граница вводимого диапазона.
      */
-    public void setFrom(final Integer from) {
+    public void setFrom(final Long from) {
         this.from = from;
     }
 
@@ -52,14 +52,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает верхнюю границу вводимого диапазона.
      * @return верхняя граница вводимого диапазона.
      */
-    public Integer getTo() {
+    public Long getTo() {
         return to;
     }
     /**
      * Устанавливает верхнюю границу вводимого диапазона.
      * @param to верхняя граница вводимого диапазона.
      */
-    public void setTo(final Integer to) {
+    public void setTo(final Long to) {
         this.to = to;
     }
 
@@ -67,14 +67,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает минимально допустимое значение для обоих полей.
      * @return минимально допустимое значение.
      */
-    public Integer getMinValue() {
+    public Long getMinValue() {
         return minValue;
     }
     /**
      * Устанавливает минимально допустимое значение для обоих полей.
      * @param minValue минимально допустимое значение.
      */
-    public void setMinValue(final Integer minValue) {
+    public void setMinValue(final Long minValue) {
         this.minValue = minValue;
     }
 
@@ -82,14 +82,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает максимально допустимое значение для обоих полей.
      * @return максимально допустимое значение.
      */
-    public Integer getMaxValue() {
+    public Long getMaxValue() {
         return maxValue;
     }
     /**
      * Устанавливает максимально допустимое значение для обоих полей.
      * @param maxValue максимально допустимое значение.
      */
-    public void setMaxValue(final Integer maxValue) {
+    public void setMaxValue(final Long maxValue) {
         this.maxValue = maxValue;
     }
 
@@ -171,16 +171,16 @@ public class IntegerRangeField extends AbstractField {
             String svalue = ctx.getAttribute("from", Scope.PR_ST);
             if (svalue!=null && !svalue.isEmpty()) {
                 ctx.setAttribute("from", svalue, Scope.STATE);
-                from = Integer.parseInt(svalue,10);
+                from = Long.parseLong(svalue,10);
             }
             svalue = ctx.getAttribute("to", Scope.PR_ST);
             if (svalue!=null && !svalue.isEmpty()) {
                 ctx.setAttribute("to", svalue, Scope.STATE);
-                to = Integer.parseInt(svalue,10);
+                to = Long.parseLong(svalue,10);
             }
         }
         if (from!=null && to!=null && from>to) {
-            final Integer swapped = from;
+            final Long swapped = from;
             from = to;
             to = swapped;
         }
@@ -201,8 +201,8 @@ public class IntegerRangeField extends AbstractField {
         out.writeComplexProperty("defaults");
         out.beginObject();
         out.writeProperty("allowDecimals", false);
-        out.writeProperty("minValue", minValue!=null ? minValue : Integer.MIN_VALUE);
-        out.writeProperty("maxValue", maxValue!=null ? maxValue : Integer.MAX_VALUE);
+        out.writeProperty("minValue", minValue!=null ? minValue : Long.MIN_VALUE);
+        out.writeProperty("maxValue", maxValue!=null ? maxValue : Long.MAX_VALUE);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);
         if (vtype!=null)

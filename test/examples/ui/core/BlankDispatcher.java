@@ -21,6 +21,7 @@ import org.echosoft.framework.ui.extjs.widgets.form.DateField;
 import org.echosoft.framework.ui.extjs.widgets.form.DecimalField;
 import org.echosoft.framework.ui.extjs.widgets.form.FormPanel;
 import org.echosoft.framework.ui.extjs.widgets.form.IntegerField;
+import org.echosoft.framework.ui.extjs.widgets.form.IntegerRangeField;
 import org.echosoft.framework.ui.extjs.widgets.form.LongField;
 import org.echosoft.framework.ui.extjs.widgets.form.TextAreaField;
 import org.echosoft.framework.ui.extjs.widgets.form.TextField;
@@ -115,6 +116,15 @@ public class BlankDispatcher implements Dispatcher {
         num3.setMsgTarget(AbstractField.MsgTarget.SIDE);
         num3.setStateful(true);
         ctx.getMessages().addMessage( new Message("num3", Message.Severity.ERROR, "my serverside message 3") );
+
+        final IntegerRangeField rng1 = form.append( new IntegerRangeField(ctx.getChild("rng1")) );
+        rng1.setFieldLabel("Int range");
+        rng1.setMinValue(0);
+        rng1.setMaxValue(100);
+        rng1.setFrom(1);
+        rng1.setStateful(true);
+        rng1.setFieldWidth(50);
+        rng1.setMsgTarget(AbstractField.MsgTarget.UNDER);
 
         final DateField dat1 = form.append( new DateField(ctx.getChild("dat1")) );
         dat1.setFieldLabel("Date");

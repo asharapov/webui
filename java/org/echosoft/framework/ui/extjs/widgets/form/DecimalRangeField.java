@@ -1,5 +1,7 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
+import java.math.BigDecimal;
+
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.ComponentContext;
@@ -7,44 +9,46 @@ import org.echosoft.framework.ui.core.Scope;
 import org.echosoft.framework.ui.core.theme.Theme;
 
 /**
- * Компонент для ввода диапазона целых чисел.
+ * Компонент для ввода диапазона вещественных чисел.
  * @author Anton Sharapov
  */
-public class IntegerRangeField extends AbstractField {
+public class DecimalRangeField extends AbstractField {
 
     private static final String THEME_MSGRES_FROM = "field.numrange.from";
     private static final String THEME_MSGRES_TO = "field.numrange.to";
 
-    private Integer from;                   // нижняя граница диапазона.
-    private Integer to;                     // верхняя граница диапазона.
-    private Integer minValue;               // минимально-допустимое значение диапазона.
-    private Integer maxValue;               // максимально-допустимое значение диапазона.
+    private BigDecimal from;                // нижняя граница диапазона.
+    private BigDecimal to;                  // верхняя граница диапазона.
+    private BigDecimal minValue;            // минимально-допустимое значение диапазона.
+    private BigDecimal maxValue;            // максимально-допустимое значение диапазона.
+    private int precision;                  // количество знаков после запятой.
     private boolean allowBlank;             // могут ли поля ввода быть пустыми.
     private String vtype;                   // идентификатор валидатора, используемого для валидации обоих полей ввода.
     private JSFunction validator;           // функция используемая для валидации обоих полей ввода.
     private Integer tabIndex;               //
     private Integer fieldWidth;             // ширина каждого поля ввода.
 
-    public IntegerRangeField() {
+    public DecimalRangeField() {
         this(null);
     }
-    public IntegerRangeField(final ComponentContext ctx) {
+    public DecimalRangeField(final ComponentContext ctx) {
         super(ctx);
         allowBlank = true;
+        precision = 2;
     }
 
     /**
      * Возвращает нижнюю границу вводимого диапазона.
      * @return нижняя граница вводимого диапазона.
      */
-    public Integer getFrom() {
+    public BigDecimal getFrom() {
         return from;
     }
     /**
      * Устанавливает нижнюю границу вводимого диапазона.
      * @param from нижняя граница вводимого диапазона.
      */
-    public void setFrom(final Integer from) {
+    public void setFrom(final BigDecimal from) {
         this.from = from;
     }
 
@@ -52,14 +56,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает верхнюю границу вводимого диапазона.
      * @return верхняя граница вводимого диапазона.
      */
-    public Integer getTo() {
+    public BigDecimal getTo() {
         return to;
     }
     /**
      * Устанавливает верхнюю границу вводимого диапазона.
      * @param to верхняя граница вводимого диапазона.
      */
-    public void setTo(final Integer to) {
+    public void setTo(final BigDecimal to) {
         this.to = to;
     }
 
@@ -67,14 +71,14 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает минимально допустимое значение для обоих полей.
      * @return минимально допустимое значение.
      */
-    public Integer getMinValue() {
+    public BigDecimal getMinValue() {
         return minValue;
     }
     /**
      * Устанавливает минимально допустимое значение для обоих полей.
      * @param minValue минимально допустимое значение.
      */
-    public void setMinValue(final Integer minValue) {
+    public void setMinValue(final BigDecimal minValue) {
         this.minValue = minValue;
     }
 
@@ -82,15 +86,31 @@ public class IntegerRangeField extends AbstractField {
      * Возвращает максимально допустимое значение для обоих полей.
      * @return максимально допустимое значение.
      */
-    public Integer getMaxValue() {
+    public BigDecimal getMaxValue() {
         return maxValue;
     }
     /**
      * Устанавливает максимально допустимое значение для обоих полей.
      * @param maxValue максимально допустимое значение.
      */
-    public void setMaxValue(final Integer maxValue) {
+    public void setMaxValue(final BigDecimal maxValue) {
         this.maxValue = maxValue;
+    }
+
+    /**
+     * Возвращает максимально допустимое количество знаков в дробной части числа.
+     * @return максимально допустимое количество знаков в дробной части числа.
+     *  Значение свойства по умолчанию: <code>2</code>.
+     */
+    public int getPrecision() {
+        return precision;
+    }
+    /**
+     * Указывает максимально допустимое количество знаков в дробной части числа.
+     * @param precision максимально допустимое количество знаков в дробной части числа.
+     */
+    public void setPrecision(final int precision) {
+        this.precision = precision<0 ? 0 : precision;
     }
 
     /**
@@ -171,16 +191,16 @@ public class IntegerRangeField extends AbstractField {
             String svalue = ctx.getAttribute("from", Scope.PR_ST);
             if (svalue!=null && !svalue.isEmpty()) {
                 ctx.setAttribute("from", svalue, Scope.STATE);
-                from = Integer.parseInt(svalue,10);
+                from = new BigDecimal(svalue);
             }
             svalue = ctx.getAttribute("to", Scope.PR_ST);
             if (svalue!=null && !svalue.isEmpty()) {
                 ctx.setAttribute("to", svalue, Scope.STATE);
-                to = Integer.parseInt(svalue,10);
+                to = new BigDecimal(svalue);
             }
         }
-        if (from!=null && to!=null && from>to) {
-            final Integer swapped = from;
+        if (from!=null && to!=null && from.compareTo(to)==1) {
+            final BigDecimal swapped = from;
             from = to;
             to = swapped;
         }
@@ -200,9 +220,12 @@ public class IntegerRangeField extends AbstractField {
         out.writeProperty("combineErrors", false);
         out.writeComplexProperty("defaults");
         out.beginObject();
-        out.writeProperty("allowDecimals", false);
-        out.writeProperty("minValue", minValue!=null ? minValue : Integer.MIN_VALUE);
-        out.writeProperty("maxValue", maxValue!=null ? maxValue : Integer.MAX_VALUE);
+        if (minValue!=null)
+            out.writeProperty("minValue", minValue);
+        if (maxValue!=null)
+            out.writeProperty("maxValue", maxValue);
+        if (precision!=2)
+            out.writeProperty("decimalPrecision", precision);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);
         if (vtype!=null)

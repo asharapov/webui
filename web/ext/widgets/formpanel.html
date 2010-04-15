@@ -47,7 +47,7 @@ Ext.onReady( function() {
   });
   Ext.preg("Ext.ux.wui.plugins.Field", Ext.ux.wui.plugins.Field);
 
-  var viewport = new Ext.Viewport({
+  viewport = new Ext.Viewport({
     layout: "auto",
     items: {
       xtype: "form",
@@ -86,14 +86,26 @@ Ext.onReady( function() {
           disabled: false
         },{
           xtype: "compositefield",
+          id: "composite",
           fieldLabel: "compositefield",
           msgTarget: "under",
+          readOnly: false,
+          disabled: false,
+          combineErrors:false,
           items: [
-            {xtype:"displayfield", value:"c "},
-            {xtype:"numberfield", fieldLabel:"from", flex:0},
-            {xtype:"displayfield", fieldLabel:"to", value:" по "},
-            {xtype:"numberfield", flex:0}
-          ]
+            {xtype:"displayfield", value:"c"},
+            {xtype:"numberfield", itemId:"from", name:"composite.from", ref:"from"},
+            {xtype:"displayfield", value:"по"},
+            {xtype:"numberfield", itemId:"to", name:"composite.to", ref:"to", fieldLabel:"по"}
+          ],
+          listeners: {
+            valid : function(){
+              var from = this.innerCt.get("from");
+              var to = this.innerCt.get("to");
+              console.log("composite validation: ", this.innerCt, "  ", from, "  ", to);
+              alert("x");
+            }
+          }
         },{
           xtype: "trigger",
           fieldLabel: "trigger"

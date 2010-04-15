@@ -141,7 +141,7 @@ public abstract class AbstractTextField extends AbstractField {
      * @return идентификатор валидатора в ExtJS который будет использоваться для проверки значения данного поля ввода.
      * @see <code>Ext.form.VTypes</code>
      */
-    public String getVtype() {
+    public String getVType() {
         return vtype;
     }
     /**
@@ -149,7 +149,7 @@ public abstract class AbstractTextField extends AbstractField {
      * @param vtype идентификатор валидатора в ExtJS который будет использоваться для проверки значения данного поля ввода.
      * @see <code>Ext.form.VTypes</code>
      */
-    public void setVtype(final String vtype) {
+    public void setVType(final String vtype) {
         this.vtype = vtype;
     }
 

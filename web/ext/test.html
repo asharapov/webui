@@ -7,41 +7,86 @@
   <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
 </head>
 <body>
-  <table id="my-table" border="1">
-    <tr>
-      <td>1</td>
-      <td>2</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>5</td>
-      <td>6</td>
-    </tr>
-     <tr>
-      <td>7</td>
-      <td>8</td>
-      <td>9</td>
-    </tr>
-   </table>
+
+<div style="display:none">
+ <div id="header1">
+    <table border="0" style="background-color:#3A73BA;width:100%">
+      <tr>
+        <td style="width:1%"><img border="0" alt="logo" src="../img/logo.gif" height="50"/></td>
+        <td style="width:99%"><font face="Arial" color="white" size="4">Test Project</font></td>
+      </tr>
+    </table>
+   </div>
+  <div id="header2">
+    <div style="margin:5px;" class="x-small-editor">
+      Test Project
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript">
-Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/s.gif";
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
 Ext.onReady( function() {
-    Ext.QuickTips.init();
-    Ext.namespace("webui");
-
-    Ext.Msg.prompt("Anton", "Can I do it ?", function(btn,response) {
-        var element = Ext.get("my-table");
-        console.debug(btn, response, element, "  >  ", element.dom.rows[1]);
-        element.dom.rows[1].cells[1].innerHTML = response;
-        Ext.DomHelper.applyStyles(element.dom.rows[1].cells[1], {
-            backgroundColor: "#EFEFEF",
-            cursor: "pointer",
-            color:"magenta"
-        });
-        Ext.Element.get(element.dom.rows[1].cells[1]).highlight();
-    });
+  Ext.QuickTips.init();
+  var viewport = new Ext.Viewport({
+    layout: "fit",
+    items: [{
+      layout: "border",
+      items: [{
+          id: "NORTH",
+          region: "north",
+          xtype: "box",
+          contentEl: "header2"
+        },{
+          id: "WEST",
+          region: "west",
+          xtype: "panel",
+          split: true,
+          collapseMode: "mini",
+          width: 150,
+          items: {
+            xtype: "treepanel",
+            lines: false,
+            useArrows: true,
+            //animate: false,
+            rootVisible: false,
+            root: {
+              nodeType: 'async',
+              text: 'Ext JS',
+              draggable: false,
+              id: 'source',
+              children: [
+                {text: "Item 1", leaf: true},
+                {text: "Item 2", leaf: true},
+                {text: "Item 3", leaf: true},
+                {
+                  text: "SubModule",
+                  children: [
+                    {text: "Item 2", leaf: true},
+                    {text: "Item 3", leaf: true}
+                  ]
+                }
+              ]
+            }
+          }
+        },{
+          region: "south",
+          autoEl: {tag:"span", html:"test"},
+          html: "<div>this is a south region</div>"
+        },{
+        region: "center",
+        layout: "auto",
+        autoScroll: true,
+        items: [{
+          xtype: "box",
+          html: "my-div"
+        },{
+          xtype: "box",
+          html: "my-table"
+        }]
+      }]
+    }]
+  });
 });
 </script>
 

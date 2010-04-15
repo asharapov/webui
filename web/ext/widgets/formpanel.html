@@ -108,7 +108,13 @@ Ext.onReady( function() {
           }
         },{
           xtype: "trigger",
-          fieldLabel: "trigger"
+          fieldLabel: "combo",
+          emptyText: "choose one...",
+          valueField: "key",
+          displayField: "title",
+          mode: "local",
+          store: new Ext.data.ArrayStore({
+          })
         },{
           xtype: "datefield",
           format: "d.m.Y",

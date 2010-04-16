@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css"/>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/src/locale/ext-lang-ru.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
+Ext.onReady( function() {
+  Ext.QuickTips.init();
+  var viewport = new Ext.Viewport({
+    layout: "auto",
+    items: {
+      xtype: "form",
+      title: "Simple Form with FieldSets",
+      width: 400,
+      frame: true,
+      collapsible: true,
+      layout: "form",
+      labelWidth: 75,
+      defaults: {
+        layout: "form",
+        border: true,
+        anchor: "50%",
+        bodyStyle: "padding: 5px"
+      },
+      items: [{
+          // Fieldset in Column 1
+          xtype: "fieldset",
+          columnWidth: 0.5,
+          title: "Fieldset 1",
+        collapsed: true,
+          collapsible: true,
+          titleCollapse: true,
+          autoHeight: true,
+          defaults: {
+            anchor: "-20" // leave room for error icon
+          },
+          defaultType: "textfield",
+          items: [{
+              xtype: "datefield",
+              fieldLabel: "Field 1"
+            },{
+              fieldLabel: "Field 2"
+            },{
+              fieldLabel: "Field 3"
+            }
+          ]
+        },{
+          // Fieldset in Column 2 - Panel inside
+          xtype: "fieldset",
+          title: "Show Panel",
+          autoHeight:true,
+          columnWidth: 0.5,
+          checkboxName: "xxx",
+          checkboxToggle: true,
+          collapsed: false,
+          layout: "anchor",
+          items: {
+            xtype: "panel",
+            anchor: "100%",
+            title: "Panel inside a fieldset",
+            frame: true,
+            height: 100
+          }
+        }
+      ]
+    }
+  });
+});
+</script>
+
+</body>
+</html>

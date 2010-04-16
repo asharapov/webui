@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css"  href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css" />
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base-debug.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
+Ext.onReady( function() {
+  Ext.QuickTips.init();
+  var viewport = new Ext.Viewport({
+    layout: "fit",
+    items: [{
+      xtype: "tabpanel",
+      tabWidth: 200,
+      activeItem: 2,
+      //plain: false,
+      bodyStyle: "padding: 50",
+      tabPosition: "top",
+      resizeTabs: true,
+      title: "My Panel",
+      fbar: [
+        {text:"xxx"}
+      ],
+      items: [{
+          xtype:"panel",
+          title: "Pane 1",
+          html: "<span>box 1</span>"
+        },{
+          title: "Pane 2",
+          xtype: "box",
+          //autoLoad: {url:"/", method:"POST", params:"a=A", text:"загрузка...", timeout:3},
+          html: "<span>box 2</span>"
+        },{
+          title: "Pane 3",
+          tpl: new Ext.Template("<span>Hello, <strong>{name}</strong>! I'm glad to see you at <b>{date}</b> for a <b>{cnt}</b> times.</span>"),
+          data: {name: "Anton", cnt: 3.5, date: new Date()}
+        }]
+      }]
+    });
+});
+</script>
+
+</body>
+</html>

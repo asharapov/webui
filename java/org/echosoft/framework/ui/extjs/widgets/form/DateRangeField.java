@@ -227,6 +227,7 @@ public class DateRangeField extends AbstractField {
         out.writeProperty("combineErrors", false);
         out.writeComplexProperty("defaults");
         out.beginObject();
+        out.writeProperty("format", "d.m.Y");
         if (minValue!=null)
             out.writeProperty("minValue", minValue);
         if (maxValue!=null)

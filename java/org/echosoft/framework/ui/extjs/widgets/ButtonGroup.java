@@ -20,15 +20,20 @@ public class ButtonGroup extends AbstractContainerComponent {
     }
     public ButtonGroup(final ComponentContext ctx) {
         super(ctx);
-        super.setLayout( new TableLayout() );
+    }
+
+    @Override
+    public TableLayout getLayout() {
+        return (TableLayout)super.getLayout();
     }
 
     @Override
     public void setLayout(final Layout layout) {
         if (layout instanceof TableLayout) {
+            layout.setSkipLayout(true);
             super.setLayout(layout);
         } else
-            throw new IllegalArgumentException("Given component supports table layout only");
+            throw new IllegalArgumentException("ButtonGroup supports 'Ext.layout.TableLayout' only");
     }
 
     /**
@@ -54,7 +59,7 @@ public class ButtonGroup extends AbstractContainerComponent {
      *  По умолчанию возвращает <code>null</code>.
      */
     public Integer getColumns() {
-        return ((TableLayout)getLayout()).getColumns();
+        return getLayout().getColumns();
     }
     /**
      * Задает количество колонок на которые компоновщик будет разбивать все кнопки в контейнере.
@@ -62,7 +67,7 @@ public class ButtonGroup extends AbstractContainerComponent {
      * @param columns количество колонок на которые будут биться все кнопки в контейнере.
      */
     public void setColumns(final Integer columns) {
-        ((TableLayout)getLayout()).setColumns(columns);
+        getLayout().setColumns(columns);
     }
 
     /**
@@ -96,4 +101,10 @@ public class ButtonGroup extends AbstractContainerComponent {
             ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-toolbars.js", false));
     }
 
+    @Override
+    protected Layout makeDefaultLayout() {
+        final TableLayout layout = new TableLayout();
+        layout.setSkipLayout(true);
+        return layout;
+    }
 }

@@ -1,6 +1,7 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 
@@ -73,11 +74,11 @@ public class IntegerField extends AbstractTextField {
         final ComponentContext ctx = getContext();
         setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
-            final String svalue = ctx.getAttribute("value", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("value", svalue, Scope.STATE);
+            final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
+            if (svalue!=null) {
                 value = Integer.parseInt(svalue,10);
             }
+            ctx.setAttribute("value", svalue, Scope.STATE);
         }
         out.beginObject();
         out.writeProperty("xtype", "numberfield");

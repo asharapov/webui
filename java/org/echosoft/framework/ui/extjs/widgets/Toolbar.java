@@ -34,15 +34,19 @@ public class Toolbar extends AbstractContainerComponent {
     public Toolbar(final ComponentContext ctx) {
         super(ctx);
         buttonAlign = Align.LEFT;
-        setLayout( new ToolbarLayout() );
     }
 
     @Override
+    public ToolbarLayout getLayout() {
+        return (ToolbarLayout)super.getLayout();
+    }
+    @Override
     public void setLayout(final Layout layout) {
         if (layout instanceof ToolbarLayout) {
+            layout.setSkipLayout(true);
             super.setLayout(layout);
         } else
-            throw new IllegalArgumentException("Given component supports table layout only");
+            throw new IllegalArgumentException("Toolbar supports 'Ext.layout.ToolbarLayout' only");
     }
 
     /**
@@ -158,4 +162,10 @@ public class Toolbar extends AbstractContainerComponent {
         return Toolbar.EVENTS;
     }
 
+    @Override
+    protected Layout makeDefaultLayout() {
+        final ToolbarLayout layout = new ToolbarLayout();
+        layout.setSkipLayout(true);
+        return layout;
+    }
 }

@@ -195,16 +195,16 @@ public class DateRangeField extends AbstractField {
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
         if (isStateful()) {
-            String svalue = ctx.getAttribute("from", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("from", svalue, Scope.STATE);
+            String svalue = StringUtil.trim( (String)ctx.getAttribute("from", Scope.PR_ST) );
+            if (svalue!=null) {
                 from = StringUtil.parseDate(svalue);
             }
-            svalue = ctx.getAttribute("to", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("to", svalue, Scope.STATE);
+            ctx.setAttribute("from", svalue, Scope.STATE);
+            svalue = StringUtil.trim( (String)ctx.getAttribute("to", Scope.PR_ST) );
+            if (svalue!=null) {
                 to = StringUtil.parseDate(svalue);
             }
+            ctx.setAttribute("to", svalue, Scope.STATE);
         }
         if (from!=null && to!=null && from.getTime()>to.getTime()) {
             final Date swapped = from;

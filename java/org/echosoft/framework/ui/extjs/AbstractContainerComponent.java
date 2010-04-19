@@ -29,12 +29,14 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     }
 
     /**
-     * Возвращает менеджер упаковки компонент в контейнере.
+     * Возвращает менеджер упаковки компонент в контейнере. Если компоновщик еще не был указан для данного компонента
+     * то вызывается метод {@link #makeDefaultLayout()} и полученный экземпляр компоновщика будет далее использоваться
+     * как компоновщик по умолчанию для данного компонента.
      * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
      */
     public Layout getLayout() {
         if (layout==null)
-            layout = new AutoLayout();
+            layout = makeDefaultLayout();
         return layout;
     }
     /**
@@ -136,6 +138,19 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     @Override
     protected Set<String> getSupportedEvents() {
         return AbstractContainerComponent.EVENTS;
+    }
+
+    /**
+     * Конструирует экземпляр компоновщика который будет использоваться компонентами данного типа по умолчанию.<br/>
+     * В большинстве случаев таким компоновщиком является {@link AutoLayout Ext.layout.AutoLayout} но есть компоненты
+     * которые работают только с определенными типами компоновщиков и для них этот метод должен быть переопределен.
+     * @return новый экземпляр компоновщика того типа который используется по умолчанию для данного типа компонент.
+     *  По умолчанию возвращает экземпляр {@link AutoLayout}.
+     */
+    protected Layout makeDefaultLayout() {
+        final AutoLayout layout = new AutoLayout();
+        layout.setSkipLayout(true);
+        return layout;
     }
 
 }

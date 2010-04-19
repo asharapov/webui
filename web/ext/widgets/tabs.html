@@ -16,7 +16,10 @@ Ext.onReady( function() {
     layout: "fit",
     items: [{
       xtype: "tabpanel",
-      activeItem: 2,
+      layoutConfig: {
+        deferredRender: false
+      },
+      activeItem: "p2",
       tabPosition: "top",
       plain: true,
       resizeTabs: false,
@@ -24,20 +27,31 @@ Ext.onReady( function() {
       minTabWidth: 80,
       enableTabScroll: true,
       title: "My Panel",
-      fbar: [
-        {text:"xxx"}
+      tbar: [{
+          xtype:"buttongroup",
+          title: "Actions",
+          layout: "table",
+          columns: 2,
+          items: [
+            {text:"xxx"},
+            {text:"yyy"}
+          ]
+        }
       ],
       items: [{
+          id: "p1",
           xtype:"panel",
           title: "Pane 1",
           tabTip: "This is a my tip",
           html: "<span>box 1</span>"
         },{
+          id: "p2",
           xtype: "box",
           title: "Pane 2",
           //autoLoad: {url:"/", method:"POST", params:"a=A", text:"загрузка...", timeout:3},
           html: "<span>box 2</span>"
         },{
+          id: "p3",
           title: "Pane 3",
           tpl: new Ext.Template("<span>Hello, <strong>{name}</strong>! I'm glad to see you at <b>{date}</b> for a <b>{cnt}</b> times.</span>"),
           data: {name: "Anton", cnt: 3.5, date: new Date()}

@@ -72,7 +72,7 @@ public class TableLayout extends Layout {
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);
         if (columns!=null)
-            out.writeProperty("table", columns);
+            out.writeProperty("columns", columns);
     }
 
 }

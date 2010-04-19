@@ -1,6 +1,7 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 
@@ -57,11 +58,11 @@ public class TextField extends AbstractTextField {
         final ComponentContext ctx = getContext();
         setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
-            final String svalue = ctx.getAttribute("value", Scope.PR_ST);
+            final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
             if (svalue!=null) {
-                ctx.setAttribute("value", svalue, Scope.STATE);
                 value = svalue;
             }
+            ctx.setAttribute("value", svalue, Scope.STATE);
         }
         out.beginObject();
         out.writeProperty("xtype", "textfield");
@@ -72,9 +73,9 @@ public class TextField extends AbstractTextField {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (value!=null)
+        if (value != null)
             out.writeProperty("value", value);
-        if (inputType!=InputType.TEXT)
+        if (inputType != InputType.TEXT)
             out.writeProperty("inputType", inputType);
     }
 

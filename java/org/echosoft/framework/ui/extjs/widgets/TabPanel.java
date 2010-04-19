@@ -33,7 +33,6 @@ public class TabPanel extends AbstractContainerComponent {
     private static final int DEFAULT_MIN_TAB_WIDTH = 30;
 
     private boolean enableTabScroll;        // разрешает скроллировать закладки если они не умещаются в контейнере.
-    private boolean layoutOnTabChange;      // дает возм-ть обновлять компоновку компонент на активной панели при установке фокуса на ней.
     private boolean plain;                  // отрисовывает панели без фоновой окантовки.
     private boolean resizeTabs;             // разрешает изменять размеры закладок.
     private int tabWidth;                   // ширина закладок по умолчанию (работает только при resizeTabs=true).
@@ -51,15 +50,20 @@ public class TabPanel extends AbstractContainerComponent {
         tabWidth = DEFAULT_TAB_WIDTH;
         minTabWidth = DEFAULT_MIN_TAB_WIDTH;
         tabPosition = Position.TOP;
-        setLayout( new CardLayout() );
+    }
+
+    @Override
+    public CardLayout getLayout() {
+        return (CardLayout)super.getLayout();
     }
 
     @Override
     public void setLayout(final Layout layout) {
         if (layout instanceof CardLayout) {
+            layout.setSkipLayout(true);
             super.setLayout(layout);
         } else
-            throw new IllegalArgumentException("Given component supports card layout only");
+            throw new IllegalArgumentException("TabPanel supports 'Ext.layout.CardLayout' only");
     }
 
     /**
@@ -67,7 +71,7 @@ public class TabPanel extends AbstractContainerComponent {
      * @return итератор по всем панелям управляемым данным компонентом.
      */
     public Iterable<Panel> getPanels() {
-        return ((CardLayout)getLayout()).getPanels();
+        return getLayout().getPanels();
     }
 
     /**
@@ -84,21 +88,6 @@ public class TabPanel extends AbstractContainerComponent {
      */
     public void setEnableTabScroll(final boolean enableTabScroll) {
         this.enableTabScroll = enableTabScroll;
-    }
-
-    /**
-     * Требуется ли перекомпоновывать содержимое панели при ее активации.
-     * @return По умолчанию возвращает <code>false</code>.
-     */
-    public boolean isLayoutOnTabChange() {
-        return layoutOnTabChange;
-    }
-    /**
-     * Требуется ли перекомпоновывать содержимое панели при ее активации.
-     * @param layoutOnTabChange <code>true</code> если требуется компоновка содержимого панели при каждой ее активации.
-     */
-    public void setLayoutOnTabChange(final boolean layoutOnTabChange) {
-        this.layoutOnTabChange = layoutOnTabChange;
     }
 
     /**
@@ -253,8 +242,6 @@ public class TabPanel extends AbstractContainerComponent {
         super.renderContent(out);
         if (enableTabScroll)
             out.writeProperty("enableTabScroll", true);
-        if (layoutOnTabChange)
-            out.writeProperty("layoutOnTabChange", true);
         if (plain)
             out.writeProperty("plain", true);
         if (resizeTabs)
@@ -289,4 +276,10 @@ public class TabPanel extends AbstractContainerComponent {
         return TabPanel.EVENTS;
     }
 
+    @Override
+    protected Layout makeDefaultLayout() {
+        final CardLayout layout = new CardLayout();
+        layout.setSkipLayout(true);
+        return layout;
+    }
 }

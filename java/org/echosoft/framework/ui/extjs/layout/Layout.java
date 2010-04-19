@@ -17,7 +17,8 @@ import org.echosoft.framework.ui.core.UIComponent;
 public abstract class Layout implements Serializable {
 
     private String extraCls;            // имя CSS класса которое будет дополнительно назначено контейнеру.
-    private boolean renderHidden;
+    private boolean renderHidden;       // все компоненты кроме невидимого делает как невидимые
+    private boolean skipLayout;         // если мы должны пропустить рендеринг свойства "layout". Хак применяемый в некоторых компонентах с намертво назначенным компоновщиком.
 
     /**
      * Опциональное имя CSS класса которое быть назначено контейнеру.
@@ -35,20 +36,40 @@ public abstract class Layout implements Serializable {
     }
 
     /**
-     * Определяет следует ли компоновщику отрисовывать все компоненты в контейнеры как невидимые (по умолчанию все компоненты отрисовываются как видимые).<br/>
-     * Значение свойства по умолчанию: <code>false</code>.
-     * @return признак как отображаются компоненты в контейнере или <code>null</code> если используется значение по умолчанию.
+     * Если свойство равно <code>true</code> то все компоненты в контейнере кроме активного будут рендериться по умолчанию невидимыми.
+     * @return <code>true</code> если все компоненты в контейнере кроме активного будут рендериться по умолчанию невидимыми.
+     *      Значение свойства по умолчанию: <code>false</code>.
      */
     public boolean isRenderHidden() {
         return renderHidden;
     }
     /**
      * Устанавливает флаг, указывающий что все компоненты в контейнеры должны отрисовываться в невидимом режиме. По умолчанию этот режим выключен.
-     * Значение свойства по умолчанию: <code>false</code>.
-     * @param renderHidden  новое значение флага.
+     * @param renderHidden <code>true</code> если все компоненты в контейнере кроме активного должны будут рендериться по умолчанию невидимыми.
      */
     public void setRenderHidden(final boolean renderHidden) {
         this.renderHidden = renderHidden;
+    }
+
+    /**
+     * Данное свойство представляет собой способ обойти багу в ExtJS которая проявляется для того набора контейнерных компонент
+     * в которых тип используемого компоновщика жестко определен на стадии дизайна. Типичным примером такого является компонент
+     * <code>TabPanel</code> жестко сцепленный с компоновщиком <code>CardLayout</code>. В подобных случаях указание в конфиге
+     * компонента свойства <code>layout</code> как минимум избыточно, а в ряде случаев еще и приводит к явным ошибкам
+     * (<code>TabPanel</code>, версия 3.2.0 ExtJS).<br/>
+     * Установка данного свойства приводит к тому что свойство <code>layout</code> не будет включаться в конфигурацию компонента.
+     * @return <code>true</code> если свойство <code>layout</code> не должно сериализоваться в выходной JSON поток.
+     */
+    public boolean isSkipLayout() {
+        return skipLayout;
+    }
+
+    /**
+     * @param skipLayout <code>true</code> если свойство <code>layout</code> не должно сериализоваться в выходной JSON поток.
+     * @see #isSkipLayout() 
+     */
+    public void setSkipLayout(final boolean skipLayout) {
+        this.skipLayout = skipLayout;
     }
 
     /**
@@ -89,7 +110,8 @@ public abstract class Layout implements Serializable {
      * @throws Exception  в случае каких-либо ошибок в процессе сериализации или отправки данных.
      */
     public void serialize(final JsonWriter out) throws Exception {
-        out.writeProperty("layout", getLayout());
+        if (!skipLayout)
+            out.writeProperty("layout", getLayout());
         if (isCustomized()) {
             out.writeComplexProperty("layoutConfig");
             out.beginObject();

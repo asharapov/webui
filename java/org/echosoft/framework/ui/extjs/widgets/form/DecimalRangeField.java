@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 import org.echosoft.framework.ui.core.theme.Theme;
@@ -16,6 +17,7 @@ public class DecimalRangeField extends AbstractField {
 
     private static final String THEME_MSGRES_FROM = "field.numrange.from";
     private static final String THEME_MSGRES_TO = "field.numrange.to";
+    private static final int DEFAULT_PRECISION = 2;
 
     private BigDecimal from;                // нижняя граница диапазона.
     private BigDecimal to;                  // верхняя граница диапазона.
@@ -34,7 +36,7 @@ public class DecimalRangeField extends AbstractField {
     public DecimalRangeField(final ComponentContext ctx) {
         super(ctx);
         allowBlank = true;
-        precision = 2;
+        precision = DEFAULT_PRECISION;
     }
 
     /**
@@ -110,7 +112,7 @@ public class DecimalRangeField extends AbstractField {
      * @param precision максимально допустимое количество знаков в дробной части числа.
      */
     public void setPrecision(final int precision) {
-        this.precision = precision<0 ? 0 : precision;
+        this.precision = precision>=0 ? precision : DEFAULT_PRECISION;
     }
 
     /**
@@ -188,16 +190,16 @@ public class DecimalRangeField extends AbstractField {
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
         if (isStateful()) {
-            String svalue = ctx.getAttribute("from", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("from", svalue, Scope.STATE);
+            String svalue = StringUtil.trim( (String)ctx.getAttribute("from", Scope.PR_ST) );
+            if (svalue!=null) {
                 from = new BigDecimal(svalue);
             }
-            svalue = ctx.getAttribute("to", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("to", svalue, Scope.STATE);
+            ctx.setAttribute("from", svalue, Scope.STATE);
+            svalue = StringUtil.trim( (String)ctx.getAttribute("to", Scope.PR_ST) );
+            if (svalue!=null) {
                 to = new BigDecimal(svalue);
             }
+            ctx.setAttribute("to", svalue, Scope.STATE);
         }
         if (from!=null && to!=null && from.compareTo(to)==1) {
             final BigDecimal swapped = from;
@@ -224,7 +226,7 @@ public class DecimalRangeField extends AbstractField {
             out.writeProperty("minValue", minValue);
         if (maxValue!=null)
             out.writeProperty("maxValue", maxValue);
-        if (precision!=2)
+        if (precision!=DEFAULT_PRECISION)
             out.writeProperty("decimalPrecision", precision);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);

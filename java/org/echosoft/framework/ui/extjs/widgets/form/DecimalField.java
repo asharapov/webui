@@ -3,6 +3,7 @@ package org.echosoft.framework.ui.extjs.widgets.form;
 import java.math.BigDecimal;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 
@@ -11,6 +12,8 @@ import org.echosoft.framework.ui.core.Scope;
  * @author Anton Sharapov
  */
 public class DecimalField extends AbstractTextField {
+
+    private static final int DEFAULT_PRECISION = 2;
 
     private BigDecimal value;               // значение в данном поле ввода.
     private BigDecimal minValue;            // минимально допустимое значение.
@@ -22,7 +25,7 @@ public class DecimalField extends AbstractTextField {
     }
     public DecimalField(final ComponentContext ctx) {
         super(ctx);
-        precision = 2;
+        precision = DEFAULT_PRECISION;
     }
 
 
@@ -84,7 +87,7 @@ public class DecimalField extends AbstractTextField {
      * @param precision максимально допустимое количество знаков в дробной части числа.
      */
     public void setPrecision(final int precision) {
-        this.precision = precision<0 ? 0 : precision;
+        this.precision = precision>=0 ? precision : DEFAULT_PRECISION;
     }
 
 
@@ -93,11 +96,11 @@ public class DecimalField extends AbstractTextField {
         final ComponentContext ctx = getContext();
         setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
-            final String svalue = ctx.getAttribute("value", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("value", svalue, Scope.STATE);
+            final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
+            if (svalue!=null) {
                 value = new BigDecimal(svalue);
             }
+            ctx.setAttribute("value", svalue, Scope.STATE);
         }
         out.beginObject();
         out.writeProperty("xtype", "numberfield");
@@ -108,13 +111,13 @@ public class DecimalField extends AbstractTextField {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (value!=null)
+        if (value != null)
             out.writeProperty("value", value);
-        if (minValue!=null)
+        if (minValue != null)
             out.writeProperty("minValue", minValue);
-        if (maxValue!=null)
+        if (maxValue != null)
             out.writeProperty("maxValue", maxValue);
-        if (precision!=2)
+        if (precision != DEFAULT_PRECISION)
             out.writeProperty("decimalPrecision", precision);
     }
 

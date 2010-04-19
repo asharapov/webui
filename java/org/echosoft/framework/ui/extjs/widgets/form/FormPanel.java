@@ -7,6 +7,7 @@ import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.layout.FormLayout;
+import org.echosoft.framework.ui.extjs.layout.Layout;
 import org.echosoft.framework.ui.extjs.widgets.Panel;
 
 /**
@@ -52,7 +53,6 @@ public class FormPanel extends Panel {
         labelAlign = FormLayout.LabelAlign.LEFT;
         labelWidth = FormLayout.DEFAULT_LABEL_WIDTH;
         labelPad = FormLayout.DEFAULT_LABEL_PAD;
-        setLayout( new FormLayout() );
     }
 
     /**
@@ -355,4 +355,10 @@ public class FormPanel extends Panel {
     protected Set<String> getSupportedEvents() {
         return FormPanel.EVENTS;
     }
+
+    @Override
+    protected Layout makeDefaultLayout() {
+        return new FormLayout();
+    }
+
 }

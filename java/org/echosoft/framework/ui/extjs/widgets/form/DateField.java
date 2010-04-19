@@ -116,11 +116,11 @@ public class DateField extends AbstractTextField {
         final ComponentContext ctx = getContext();
         setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
-            final String svalue = ctx.getAttribute("value", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("value", svalue, Scope.STATE);
+            final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
+            if (svalue!=null) {
                 value = StringUtil.parseDate(svalue);
             }
+            ctx.setAttribute("value", svalue, Scope.STATE);
         }
         out.beginObject();
         out.writeProperty("xtype", "datefield");
@@ -132,19 +132,19 @@ public class DateField extends AbstractTextField {
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
         out.writeProperty("format", "d.m.Y");
-        if (value!=null)
+        if (value != null)
             out.writeProperty("value", value);
-        if (minValue!=null)
+        if (minValue != null)
             out.writeProperty("minValue", minValue);
-        if (maxValue!=null)
+        if (maxValue != null)
             out.writeProperty("maxValue", maxValue);
-        if (disabledDates!=null)
+        if (disabledDates != null)
             out.writeProperty("disabledDates", disabledDates);
-        if (disabledDays!=null)
+        if (disabledDays != null)
             out.writeProperty("disabledDays", disabledDays);
 
         final ComponentContext ctx = getContext();
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-menu.js",false) );
+        ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-menu.js", false));
     }
 
     @Override

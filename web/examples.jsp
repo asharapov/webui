@@ -9,7 +9,8 @@
 
   <h1>Примеры использования базовых классов фреймворка</h1>
   <ol>
-    <li><a href="examples/blank">Пустая форма</a></li>
+    <li><a href="examples/blank">Пустая страница</a></li>
+    <li><a href="examples/forms">Работа с формами</a></li>
   </ol>
 
 </body>

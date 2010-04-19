@@ -2,6 +2,7 @@ package org.echosoft.framework.ui.extjs.widgets.form;
 
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
 import org.echosoft.framework.ui.core.theme.Theme;
@@ -168,16 +169,16 @@ public class LongRangeField extends AbstractField {
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
         if (isStateful()) {
-            String svalue = ctx.getAttribute("from", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("from", svalue, Scope.STATE);
+            String svalue = StringUtil.trim( (String)ctx.getAttribute("from", Scope.PR_ST) );
+            if (svalue!=null) {
                 from = Long.parseLong(svalue,10);
             }
-            svalue = ctx.getAttribute("to", Scope.PR_ST);
-            if (svalue!=null && !svalue.isEmpty()) {
-                ctx.setAttribute("to", svalue, Scope.STATE);
+            ctx.setAttribute("from", svalue, Scope.STATE);
+            svalue = StringUtil.trim( (String)ctx.getAttribute("to", Scope.PR_ST) );
+            if (svalue!=null) {
                 to = Long.parseLong(svalue,10);
             }
+            ctx.setAttribute("to", svalue, Scope.STATE);
         }
         if (from!=null && to!=null && from>to) {
             final Long swapped = from;

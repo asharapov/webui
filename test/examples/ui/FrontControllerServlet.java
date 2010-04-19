@@ -14,6 +14,7 @@ import org.echosoft.framework.ui.core.Application;
 import org.echosoft.framework.ui.core.UIContext;
 
 import examples.ui.core.BlankDispatcher;
+import examples.ui.core.FormsDispatcher;
 
 /**
  * @author Anton Sharapov
@@ -27,6 +28,7 @@ public class FrontControllerServlet extends HttpServlet {
         Application.jsonContext.setWriterFactory( Serializers.PRINTABLE_JSON_WRITER_FACTORY );
         bindings = new HashMap<String,Dispatcher>();
         bindings.put("/blank", new BlankDispatcher());
+        bindings.put("/forms", new FormsDispatcher());
     }
 
     public void destroy() {

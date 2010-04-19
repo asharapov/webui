@@ -3,6 +3,7 @@ package org.echosoft.framework.ui.extjs.widgets.form;
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.extjs.layout.FormLayout;
+import org.echosoft.framework.ui.extjs.layout.Layout;
 import org.echosoft.framework.ui.extjs.widgets.Panel;
 
 /**
@@ -18,7 +19,6 @@ public class FieldSet extends Panel {
     }
     public FieldSet(final ComponentContext ctx) {
         super(ctx);
-        setLayout( new FormLayout() );
     }
 
     /**
@@ -55,4 +55,8 @@ public class FieldSet extends Panel {
         }
     }
 
+    @Override
+    protected Layout makeDefaultLayout() {
+        return new FormLayout();
+    }
 }

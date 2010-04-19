@@ -16,12 +16,13 @@ Ext.onReady( function() {
     layout: "fit",
     items: [{
       xtype: "tabpanel",
-      tabWidth: 200,
       activeItem: 2,
-      //plain: false,
-      bodyStyle: "padding: 50",
       tabPosition: "top",
-      resizeTabs: true,
+      plain: true,
+      resizeTabs: false,
+      tabWidth: 200,
+      minTabWidth: 80,
+      enableTabScroll: true,
       title: "My Panel",
       fbar: [
         {text:"xxx"}
@@ -29,16 +30,32 @@ Ext.onReady( function() {
       items: [{
           xtype:"panel",
           title: "Pane 1",
+          tabTip: "This is a my tip",
           html: "<span>box 1</span>"
         },{
-          title: "Pane 2",
           xtype: "box",
+          title: "Pane 2",
           //autoLoad: {url:"/", method:"POST", params:"a=A", text:"загрузка...", timeout:3},
           html: "<span>box 2</span>"
         },{
           title: "Pane 3",
           tpl: new Ext.Template("<span>Hello, <strong>{name}</strong>! I'm glad to see you at <b>{date}</b> for a <b>{cnt}</b> times.</span>"),
           data: {name: "Anton", cnt: 3.5, date: new Date()}
+        },{
+          title: "Pane 4",
+          html: "pane 4"
+        },{
+          title: "Pane 5",
+          html: "pane 5"
+        },{
+          title: "Pane 6",
+          html: "pane 6"
+        },{
+          title: "Pane 7",
+          html: "pane 7"
+        },{
+          title: "Pane 8",
+          html: "pane 8"
         }]
       }]
     });

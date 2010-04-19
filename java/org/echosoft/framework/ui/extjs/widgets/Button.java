@@ -362,36 +362,36 @@ public class Button extends AbstractBoxComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (allowDepress!=null)
+        if (allowDepress != null)
             out.writeProperty("allowDepress", allowDepress);
-        if (arrowAlign!=Align.RIGHT)
+        if (arrowAlign != Align.RIGHT)
             out.writeProperty("arrowAlign", arrowAlign);
         if (enableToggle)
             out.writeProperty("enableToggle", true);
         if (!handleMouseEvents)
             out.writeProperty("handleMouseEvents", false);
-        if (handler!=null)
+        if (handler != null)
             out.writeProperty("handler", handler);
-        if (icon!=null) {
+        if (icon != null) {
             out.writeProperty("icon", getContext().encodeURL(icon));
         }
-        if (iconCls!=null)
+        if (iconCls != null)
             out.writeProperty("iconCls", iconCls);
-        if (iconAlign!=Align.LEFT)
+        if (iconAlign != Align.LEFT)
             out.writeProperty("iconAlign", iconAlign);
         if (pressed)
             out.writeProperty("pressed", true);
-        if (scale!=Scale.SMALL)
+        if (scale != Scale.SMALL)
             out.writeProperty("scale", scale);
-        if (tabIndex!=null)
+        if (tabIndex != null)
             out.writeProperty("tabIndex", tabIndex);
-        if (text!=null)
+        if (text != null)
             out.writeProperty("text", text);
-        if (toggleGroup!=null)
+        if (toggleGroup != null)
             out.writeProperty("toggleGroup", toggleGroup);
-        if (tooltip!=null)
+        if (tooltip != null)
             out.writeProperty("tooltip", tooltip);
-        if (type!=Type.BUTTON)
+        if (type != Type.BUTTON)
             out.writeProperty("type", type);
     }
 

@@ -22,6 +22,9 @@ public class FormLayout extends AnchorLayout {
         LEFT, TOP, RIGHT
     }
 
+    public static final int DEFAULT_LABEL_WIDTH = 100;
+    public static final int DEFAULT_LABEL_PAD = 5;
+
     // конфигурация компоновщика ExtJS
     private Template fieldTpl;      // шаблон используемый для адаптации компонента к отображению в форме.
     private String labelSeparator;  // фрагмент html, используемый в качестве разделителя между меткой к компоненту и самим компонентом.
@@ -35,8 +38,8 @@ public class FormLayout extends AnchorLayout {
     public FormLayout() {
         super();
         labelAlign = LabelAlign.LEFT;
-        labelWidth = 100;
-        labelPad = 5;
+        labelWidth = DEFAULT_LABEL_WIDTH;
+        labelPad = DEFAULT_LABEL_PAD;
     }
 
     /**
@@ -150,7 +153,7 @@ public class FormLayout extends AnchorLayout {
      * @param labelWidth ширина области зарезервированной для отрисовки меток компонент на форме.
      */
     public void setLabelWidth(final int labelWidth) {
-        this.labelWidth = labelWidth;
+        this.labelWidth = labelWidth>=0 ? labelWidth : DEFAULT_LABEL_WIDTH;
     }
 
     /**
@@ -167,7 +170,7 @@ public class FormLayout extends AnchorLayout {
      * @param labelPad отступ левой границы компонента от метки. По умолчанию равно <code>5</code>.
      */
     public void setLabelPad(final int labelPad) {
-        this.labelPad = labelPad;
+        this.labelPad = labelPad>=0 ? labelPad : DEFAULT_LABEL_PAD;
     }
 
 
@@ -175,11 +178,11 @@ public class FormLayout extends AnchorLayout {
     public void serialize(final JsonWriter out) throws Exception {
         if (hideLabels)
             out.writeProperty("hideLabels", true);
-        if (labelAlign!=LabelAlign.LEFT)
+        if (labelAlign != LabelAlign.LEFT)
             out.writeProperty("labelAlign", labelAlign);
-        if (labelWidth!=100)
+        if (labelWidth != DEFAULT_LABEL_WIDTH)
             out.writeProperty("labelWidth", labelWidth);
-        if (labelPad!=5)
+        if (labelPad != DEFAULT_LABEL_PAD)
             out.writeProperty("labelPad", labelPad);
         super.serialize(out);
     }

@@ -84,6 +84,7 @@ public class Panel extends AbstractContainerComponent {
     private String bodyCssClass;        // CSS класс применяемый к основному телу панели.
     private String bodyStyle;           // CSS стиль применяемый к основному телу панели.
     private String title;               // Заголовок панели.
+    private String tabTip;              // всплывающая подсказка к заголовку панели. Используется в компоненте TabPanel.
     private boolean collapsible;        // Может ли содержимое панели схлопываться.
     private boolean collapsed;          // По умолчанию содержимое панели схлопнуто ?
     private boolean titleCollapse;      // Позволять ли схлопывание панели по клику на любое место заголовка ?.
@@ -167,6 +168,23 @@ public class Panel extends AbstractContainerComponent {
      */
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+    /**
+     * Возвращает текст отображаемый во всплывающей подсказке к заголовку для данной панели.
+     * Используется в компоненте <code>TabPanel</code>.
+     * @return текст всплывающей подсказки к заголовку для данной панели.
+     */
+    public String getTabTip() {
+        return tabTip;
+    }
+    /**
+     * Указывает текст который должен отображаться во всплывающей подсказке к заголовку для данной панели.
+     * Используется в компоненте <code>TabPanel</code>.
+     * @param tabTip текст всплывающей подсказки к заголовку для данной панели.
+     */
+    public void setTabTip(final String tabTip) {
+        this.tabTip = tabTip;
     }
 
     /**
@@ -432,14 +450,16 @@ public class Panel extends AbstractContainerComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (animCollapse!=null)
+        if (animCollapse != null)
             out.writeProperty("animCollapse", animCollapse);
-        if (bodyCssClass!=null)
+        if (bodyCssClass != null)
             out.writeProperty("bodyCssClass", bodyCssClass);
-        if (bodyStyle!=null)
+        if (bodyStyle != null)
             out.writeProperty("bodyStyle", bodyStyle);
-        if (title!=null)
+        if (title != null)
             out.writeProperty("title", title);
+        if (tabTip != null)
+            out.writeProperty("tabTip", tabTip);
         if (collapsible)
             out.writeProperty("collapsible", true);
         if (collapsed)
@@ -452,19 +472,19 @@ public class Panel extends AbstractContainerComponent {
             out.writeProperty("border", false);
         if (preventBodyReset)
             out.writeProperty("preventBorderReset", true);
-        if (tbar!=null) {
+        if (tbar != null) {
             out.writeComplexProperty("tbar");
             tbar.invoke(out);
         }
-        if (bbar!=null) {
+        if (bbar != null) {
             out.writeComplexProperty("bbar");
             bbar.invoke(out);
         }
-        if (fbar!=null) {
+        if (fbar != null) {
             out.writeComplexProperty("fbar");
             fbar.invoke(out);
         }
-        if (tools!=null) {
+        if (tools != null) {
             out.writeComplexProperty("tools");
             out.beginArray();
             for (ToolButton tb : tools) {
@@ -472,11 +492,11 @@ public class Panel extends AbstractContainerComponent {
             }
             out.endArray();
         }
-        if (html!=null)
+        if (html != null)
             out.writeProperty("html", html);
-        if (template!=null)
+        if (template != null)
             out.writeProperty("tpl", template);
-        if (data!=null)
+        if (data != null)
             out.writeProperty("data", data);
     }
 

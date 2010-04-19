@@ -108,16 +108,16 @@ public class Box extends AbstractBoxComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (autoEl !=null) {
+        if (autoEl != null) {
             if (autoEl.hasContentOnly()) {
                 out.writeProperty("html", autoEl.getHtml());
             } else {
                 out.writeProperty("autoEl", autoEl);
             }
         }
-        if (template!=null)
+        if (template != null)
             out.writeProperty("tpl", template);
-        if (data!=null)
+        if (data != null)
             out.writeProperty("data", data);
     }
 }

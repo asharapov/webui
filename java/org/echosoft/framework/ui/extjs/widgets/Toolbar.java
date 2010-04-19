@@ -143,14 +143,14 @@ public class Toolbar extends AbstractContainerComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (buttonAlign!=Align.LEFT)
+        if (buttonAlign != Align.LEFT)
             out.writeProperty("buttonAlign", buttonAlign);
         if (enableOverflow)
             out.writeProperty("enableOverflow", true);
 
         final ComponentContext ctx = getContext();
-        if (ctx!=null)
-            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
+        if (ctx != null)
+            ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-toolbars.js", false));
     }
 
     @Override

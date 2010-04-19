@@ -49,7 +49,7 @@ public class Container extends AbstractContainerComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (autoEl!=null) {
+        if (autoEl != null) {
             out.writeProperty("autoEl", autoEl);
         }
     }

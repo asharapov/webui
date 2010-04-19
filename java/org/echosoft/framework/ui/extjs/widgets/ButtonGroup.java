@@ -88,12 +88,12 @@ public class ButtonGroup extends AbstractContainerComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (title!=null)
+        if (title != null)
             out.writeProperty("title", title);
 
         final ComponentContext ctx = getContext();
-        if (ctx!=null)
-            ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-toolbars.js",false) );
+        if (ctx != null)
+            ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-toolbars.js", false));
     }
 
 }

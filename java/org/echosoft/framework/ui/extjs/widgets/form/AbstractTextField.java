@@ -219,25 +219,25 @@ public abstract class AbstractTextField extends AbstractField {
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
         out.writeProperty("name", name);
-        if (tabIndex!=null)
+        if (tabIndex != null)
             out.writeProperty("tabIndex", tabIndex);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);
-        if (emptyText!=null)
+        if (emptyText != null)
             out.writeProperty("emptyText", emptyText);
-        if (minLength!=null)
+        if (minLength != null)
             out.writeProperty("minLength", minLength);
-        if (maxLength!=null)
+        if (maxLength != null)
             out.writeProperty("maxLength", maxLength);
-        if (vtype!=null)
+        if (vtype != null)
             out.writeProperty("vtype", vtype);
-        if (validator!=null)
+        if (validator != null)
             out.writeProperty("validator", validator);
-        if (regex!=null)
+        if (regex != null)
             out.writeProperty("regex", regex);
-        if (maskRe!=null)
+        if (maskRe != null)
             out.writeProperty("maskRe", maskRe);
-        if (stripCharsRe!=null)
+        if (stripCharsRe != null)
             out.writeProperty("stripCharsRe", stripCharsRe);
     }
 

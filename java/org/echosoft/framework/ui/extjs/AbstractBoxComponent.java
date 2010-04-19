@@ -519,22 +519,22 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
             out.writeProperty("autoWidth", true);
         if (autoHeight)
             out.writeProperty("autoHeight", true);
-        if (width!=null)
+        if (width != null)
             out.writeProperty("width", width);
-        if (height!=null)
+        if (height != null)
             out.writeProperty("height", height);
-        if (maxWidth!=null)
+        if (maxWidth != null)
             out.writeProperty("boxMaxWidth", maxWidth);
-        if (minWidth!=null)
+        if (minWidth != null)
             out.writeProperty("boxMinWidth", minWidth);
-        if (maxHeight!=null)
+        if (maxHeight != null)
             out.writeProperty("boxMaxHeight", maxHeight);
-        if (minHeight!=null)
+        if (minHeight != null)
             out.writeProperty("boxMinHeight", minHeight);
         if (autoScroll)
             out.writeProperty("autoScroll", true);
 
-        if (point!=null) {
+        if (point != null) {
             if (point.isAbsolute()) {
                 out.writeProperty("pageX", point.getX());
                 out.writeProperty("pageY", point.getY());
@@ -543,33 +543,33 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
                 out.writeProperty("y", point.getY());
             }
         }
-        if (anchor!=null)
+        if (anchor != null)
             out.writeProperty("anchor", anchor);
-        if (margins!=null)
+        if (margins != null)
             out.writeProperty("margins", margins.encode());
-        if (flex!=0)
+        if (flex != 0)
             out.writeProperty("flex", flex);
-        if (clearCls!=null)
+        if (clearCls != null)
             out.writeProperty("clearCls", clearCls);
-        if (itemCls!=null)
+        if (itemCls != null)
             out.writeProperty("itemCls", itemCls);
-        if (labelStyle!=null)
+        if (labelStyle != null)
             out.writeProperty("labelStyle", labelStyle);
-        if (labelSeparator!=null)
+        if (labelSeparator != null)
             out.writeProperty("labelSeparator", labelSeparator);
-        if (fieldLabel!=null)
+        if (fieldLabel != null)
             out.writeProperty("fieldLabel", fieldLabel);
         if (hideLabel)
             out.writeProperty("hideLabel", true);
-        if (columnWidth!=null)
+        if (columnWidth != null)
             out.writeProperty("columnWidth", columnWidth);
-        if (rowspan!=null)
+        if (rowspan != null)
             out.writeProperty("rowspan", rowspan);
-        if (colspan!=null)
+        if (colspan != null)
             out.writeProperty("colspan", colspan);
-        if (cellId!=null)
+        if (cellId != null)
             out.writeProperty("cellId", cellId);
-        if (cellCls!=null)
+        if (cellCls != null)
             out.writeProperty("cellCls", cellCls);
     }
 

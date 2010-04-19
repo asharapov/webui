@@ -142,14 +142,14 @@ public abstract class AbstractField extends AbstractBoxComponent {
     protected void renderContent(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
         final Message msg = ctx.getMessages().getFirstMessage(ctx.getClientId(), Message.Severity.WARN);
-        if (msg!=null)
+        if (msg != null)
             addPlugin("Ext.ux.wui.plugins.Field");
 
         super.renderContent(out);
 
-        if (invalidText!=null)
+        if (invalidText != null)
             out.writeProperty("invalidText", invalidText);
-        if (msgTarget!=MsgTarget.QTIP)
+        if (msgTarget != MsgTarget.QTIP)
             out.writeProperty("msgTarget", msgTarget);
         if (!submitValue)
             out.writeProperty("submitValue", false);
@@ -157,11 +157,11 @@ public abstract class AbstractField extends AbstractBoxComponent {
             out.writeProperty("validateOnBlur", false);
         if (readOnly)
             out.writeProperty("readOnly", true);
-        if (msg!=null)
+        if (msg != null)
             out.writeProperty("activeError", msg.getSubject());
 
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
+        ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-forms.js", false));
+        ctx.getResources().attachScript(ctx.encodeThemeURL("/ux/form-plugins.js", false));
     }
 
     @Override

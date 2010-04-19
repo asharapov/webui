@@ -125,11 +125,11 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
-        if (activeItem!=null)
+        if (activeItem != null)
             out.writeProperty("activeItem", activeItem);
         if (forceLayout)
             out.writeProperty("forceLayout", true);
-        if (layout!=null)
+        if (layout != null)
             layout.serialize(out);
     }
 

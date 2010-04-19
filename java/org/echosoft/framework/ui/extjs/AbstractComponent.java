@@ -287,37 +287,37 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
      * @throws IllegalAccessException  в случае ошибок в процессе сериализации данных в JSON формат.
      */
     protected void renderContent(final JsonWriter out) throws Exception {
-        if (ctx!=null)
+        if (ctx != null)
             out.writeProperty("id", ctx.getClientId());
-        if (ref!=null)
+        if (ref != null)
             out.writeProperty("ref", ref);
-        if (cls!=null)
+        if (cls != null)
             out.writeProperty("cls", cls);
-        if (overCls!=null)
+        if (overCls != null)
             out.writeProperty("overCls", overCls);
-        if (style!=null)
+        if (style != null)
             out.writeProperty("style", style);
         if (disabled)
             out.writeProperty("disabled", true);
         if (hidden)
             out.writeProperty("hidden", true);
 
-        if (ctCls!=null)
+        if (ctCls != null)
             out.writeProperty("ctCls", ctCls);
-        if (itemId!=null)
+        if (itemId != null)
             out.writeProperty("itemId", itemId);
         if (hideParent)
             out.writeProperty("hideParent", true);
 
-        if (listeners!=null && !listeners.isEmpty()) {
+        if (listeners != null && !listeners.isEmpty()) {
             out.writeComplexProperty("listeners");
             out.beginObject();
-            for (Map.Entry<String,JSFunction> entry : listeners.entrySet()) {
+            for (Map.Entry<String, JSFunction> entry : listeners.entrySet()) {
                 out.writeProperty(entry.getKey(), entry.getValue());
             }
             out.endObject();
         }
-        if (plugins!=null && !plugins.isEmpty()) {
+        if (plugins != null && !plugins.isEmpty()) {
             out.writeProperty("plugins", plugins);
         }
     }

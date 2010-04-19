@@ -15,12 +15,16 @@ import org.echosoft.framework.ui.extjs.widgets.Panel;
  */
 public class FormPanel extends Panel {
 
-    public static enum Method {
-        GET, POST
-    }
     public static Set<String> EVENTS =
             StringUtil.asUnmodifiableSet(Panel.EVENTS,
                     "clientvalidation", "actioncomplete", "actionfailed", "beforeaction");
+
+    public static enum Method {
+        GET, POST
+    }
+
+    private static final int DEFAULT_TIMEOUT = 30;
+    private static final int DEFAULT_MONITOR_POLL = 200;
 
     private Map<String,Object> baseParams;  // дополнительные параметры, отправляемые на сервер.
     private String url;                     // URL ресурса на который будет делаться запрос.
@@ -43,11 +47,11 @@ public class FormPanel extends Panel {
     }
     public FormPanel(final ComponentContext ctx) {
         super(ctx);
-        timeout = 30;
-        monitorPoll = 200;
+        timeout = DEFAULT_TIMEOUT;
+        monitorPoll = DEFAULT_MONITOR_POLL;
         labelAlign = FormLayout.LabelAlign.LEFT;
-        labelWidth = 100;
-        labelPad = 5;
+        labelWidth = FormLayout.DEFAULT_LABEL_WIDTH;
+        labelPad = FormLayout.DEFAULT_LABEL_PAD;
         setLayout( new FormLayout() );
     }
 
@@ -166,7 +170,7 @@ public class FormPanel extends Panel {
      * @param timeout Время максимального ожидания результата действий формы (отправка данных на сервер, загрузка данных с сервера).
      */
     public void setTimeout(final int timeout) {
-        this.timeout = timeout;
+        this.timeout = timeout>=0 ? timeout : DEFAULT_TIMEOUT;
     }
 
     /**
@@ -228,7 +232,7 @@ public class FormPanel extends Panel {
      *  Значение по умолчанию: 200.
      */
     public void setMonitorPoll(final int monitorPoll) {
-        this.monitorPoll = monitorPoll;
+        this.monitorPoll = monitorPoll>=0 ? monitorPoll : DEFAULT_MONITOR_POLL;
     }
 
     /**
@@ -277,7 +281,7 @@ public class FormPanel extends Panel {
      * @param labelWidth ширина области зарезервированной для отрисовки меток компонент на форме.
      */
     public void setLabelWidth(final int labelWidth) {
-        this.labelWidth = labelWidth;
+        this.labelWidth = labelWidth>=0 ? labelWidth : FormLayout.DEFAULT_LABEL_WIDTH;
     }
 
     /**
@@ -294,7 +298,7 @@ public class FormPanel extends Panel {
      * @param labelPad отступ левой границы компонента от метки. По умолчанию равно <code>5</code>.
      */
     public void setLabelPad(final int labelPad) {
-        this.labelPad = labelPad;
+        this.labelPad = labelPad>=0 ? labelPad : FormLayout.DEFAULT_LABEL_PAD;
     }
 
 
@@ -311,11 +315,11 @@ public class FormPanel extends Panel {
     protected void renderContent(final JsonWriter out) throws Exception {
         addPlugin("Ext.ux.wui.plugins.FormPanel");
         super.renderContent(out);
-        if (baseParams!=null)
+        if (baseParams != null)
             out.writeProperty("baseParams", baseParams);
-        if (url!=null)
+        if (url != null)
             out.writeProperty("url", getContext().encodeURL(url));
-        if (method!=null)
+        if (method != null)
             out.writeProperty("method", method);
         if (fileUpload)
             out.writeProperty("fileUpload", true);
@@ -323,28 +327,28 @@ public class FormPanel extends Panel {
             out.writeProperty("standardSubmit", true);
         if (trackResetOnLoad)
             out.writeProperty("trackResetOnLoad", true);
-        if (timeout!=30)
+        if (timeout != DEFAULT_TIMEOUT)
             out.writeProperty("timeout", timeout);
-        if (waitTitle!=null)
+        if (waitTitle != null)
             out.writeProperty("waitTitle", waitTitle);
-        if (formId!=null)
+        if (formId != null)
             out.writeProperty("formId", formId);
         if (monitorValid)
             out.writeProperty("monitorValid", true);
-        if (monitorPoll!=200)
+        if (monitorPoll != DEFAULT_MONITOR_POLL)
             out.writeProperty("monitorPoll", monitorPoll);
         if (hideLabels)
             out.writeProperty("hideLabels", true);
-        if (labelAlign!=FormLayout.LabelAlign.LEFT)
+        if (labelAlign != FormLayout.LabelAlign.LEFT)
             out.writeProperty("labelAlign", labelAlign);
-        if (labelWidth!=100)
+        if (labelWidth != FormLayout.DEFAULT_LABEL_WIDTH)
             out.writeProperty("labelWidth", labelWidth);
-        if (labelPad!=5)
+        if (labelPad != FormLayout.DEFAULT_LABEL_PAD)
             out.writeProperty("labelPad", labelPad);
 
         final ComponentContext ctx = getContext();
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/pkgs/pkg-forms.js",false) );
-        ctx.getResources().attachScript( ctx.encodeThemeURL("/ux/form-plugins.js",false) );
+        ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-forms.js", false));
+        ctx.getResources().attachScript(ctx.encodeThemeURL("/ux/form-plugins.js", false));
     }
 
     @Override

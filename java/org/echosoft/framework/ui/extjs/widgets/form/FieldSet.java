@@ -47,6 +47,12 @@ public class FieldSet extends Panel {
         super.renderContent(out);
         if (checkboxToggle)
             out.writeProperty("checkboxToggle", true);
+
+        final ComponentContext ctx = getContext();
+        if (ctx!=null) {
+            ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-forms.js", false));
+            ctx.getResources().attachScript(ctx.encodeThemeURL("/ux/form-plugins.js", false));
+        }
     }
 
 }

@@ -110,7 +110,7 @@ public class ExtJSPage extends Page implements Serializable {
      * @return  Добавленный в регион компонент.
      */
     public <T extends UIComponent> T append(final T item) {
-        return layout.append(item);
+        return getLayout().append(item);
     }
 
 
@@ -152,14 +152,19 @@ public class ExtJSPage extends Page implements Serializable {
         out.write("Ext.QuickTips.init();\n");
         out.write("Ext.namespace(\"WUI\");\n");
         out.write("WUI.env = ");
-        final JsonWriter jw = getJsonContext().makeJsonWriter(out);
+        JsonWriter jw = getJsonContext().makeJsonWriter(out);
         jw.beginObject();
         jw.writeProperty("location", uctx.encodeURL("/"));
         jw.writeProperty("theme", uctx.encodeThemeURL("/",true));
         jw.writeProperty("version", Application.VERSION);
-        jw.writeProperty("state", Application.getStateSerializer().encodeState(uctx));
         jw.endObject();
-        out.write('\n');
+        out.write(";\n");
+        out.write("WUI.params = ");
+        jw = getJsonContext().makeJsonWriter(out);
+        jw.beginObject();
+        jw.writeProperty("__VIEWSTATE", Application.getStateSerializer().encodeState(uctx));
+        jw.endObject();
+        out.write(";\n");
     }
 
     /**

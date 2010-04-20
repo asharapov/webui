@@ -98,10 +98,10 @@ public abstract class BoxLayout extends Layout {
     @Override
     protected void serializeConfigAttrs(final JsonWriter out) throws IOException, InvocationTargetException, IllegalAccessException {
         super.serializeConfigAttrs(out);
-        if (padding!=null && !padding.isEmpty())
-            out.writeProperty("padding", padding.encode());
-        if (defaultMargins!=null && !defaultMargins.isEmpty())
-            out.writeProperty("defaultMargins", defaultMargins.encode());
+        if (padding!=null)
+            out.writeProperty("padding", padding);
+        if (defaultMargins!=null)
+            out.writeProperty("defaultMargins", defaultMargins);
     }
 
 }

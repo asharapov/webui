@@ -3,11 +3,14 @@ package org.echosoft.framework.ui.extjs.model;
 import java.io.Serializable;
 
 import org.echosoft.common.io.FastStringTokenizer;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
+import org.echosoft.framework.ui.extjs.spi.model.MarginsJSONSerializer;
 
 /**
  * Описывает величину отступов по краям относительно компонента унаследованного от {@link org.echosoft.framework.ui.extjs.AbstractBoxComponent}.
  * @author Anton Sharapov
  */
+@JsonUseSeriazer(MarginsJSONSerializer.class)
 public class Margins implements Serializable, Cloneable {
 
     /**

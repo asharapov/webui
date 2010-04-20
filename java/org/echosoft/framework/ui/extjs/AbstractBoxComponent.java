@@ -546,7 +546,7 @@ public abstract class AbstractBoxComponent extends AbstractComponent {
         if (anchor != null)
             out.writeProperty("anchor", anchor);
         if (margins != null)
-            out.writeProperty("margins", margins.encode());
+            out.writeProperty("margins", margins);
         if (flex != 0)
             out.writeProperty("flex", flex);
         if (clearCls != null)

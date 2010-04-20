@@ -350,9 +350,9 @@ public class BorderLayoutRegion implements UIComponent {
         if (!floatable)
             out.writeProperty("floatable", false);
         if (cmargins!=null)
-            out.writeProperty("cmargins", cmargins.encode());
+            out.writeProperty("cmargins", cmargins);
         if (margins!=null)
-            out.writeProperty("margins", margins.encode());
+            out.writeProperty("margins", margins);
         if (collapsible)
             out.writeProperty("collapsible", true);
         if (collapseMode!=CollapseMode.STANDARD)

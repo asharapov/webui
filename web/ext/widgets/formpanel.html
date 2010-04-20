@@ -47,13 +47,27 @@ Ext.onReady( function() {
   });
   Ext.preg("Ext.ux.wui.plugins.Field", Ext.ux.wui.plugins.Field);
 
+  Ext.create({
+    xtype: "arraystore",
+    storeId: "st1",
+    fields:["value",{name:"label",mapping:"0"}],
+    data: [
+      ["v1", "Moscow", "Москва"],
+      ["v2", "St Peterburg", "С. Петербург"],
+      ["v3", "Tula", "Тула"],
+      ["v4", "Saratov", "Саратов"],
+      ["v5", "Samara", "Самара"],
+      ["v6", "Novgorod", "Новгород"]
+    ]
+  });
+
   viewport = new Ext.Viewport({
     layout: "auto",
     items: {
       xtype: "form",
       title: "form panel",
       width: 500,
-      height: 400,
+      //autoHeight: true,
       url: "/webui/ext/widgets/formpanel.html",
       method: "GET",
       baseParams: {a: "A", b:"B"},
@@ -107,14 +121,40 @@ Ext.onReady( function() {
             }
           }
         },{
-          xtype: "trigger",
+          xtype: "combo",
           fieldLabel: "combo",
           emptyText: "choose one...",
-          valueField: "key",
-          displayField: "title",
+          valueField: "value",
+          displayField: "label",
+          forceSelection: false,
+        title: "What The Fuck ?",
+          resizable:true,
+          listEmptyText: "no records found. FUCK!",
           mode: "local",
+          triggerAction: "all",
+          typeAhead: false,
           store: new Ext.data.ArrayStore({
-          })
+            storeId: "st2",
+            fields:["value","label"],
+            data: [
+              ["v1", "Value 1"],
+              ["v2", "Value 2"],
+              ["v3", "Value 3"],
+              ["v4", "Value 4"],
+              ["v5", "Value 5"],
+              ["v6", "Moscow"]
+            ]
+          }),
+          editable: false,
+          hiddenValue: "v2",
+          value:"Value 2"
+        },{
+          xtype: "combo",
+          fieldLabel: "Combo 2",
+          valueField: "value",
+          displayField: "label",
+          store: "st1",
+          mode: "local"
         },{
           xtype: "datefield",
           format: "d.m.Y",

@@ -45,7 +45,7 @@ public abstract class AbstractContainerComponent extends AbstractBoxComponent {
      * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
      */
     public void setLayout(final Layout layout) {
-        this.layout = layout!=null ? layout : new AutoLayout();
+        this.layout = layout!=null ? layout : makeDefaultLayout();
     }
     /**
      * Устанавливает менеджер упаковки компонент в контейнере и возвращает ссылку на него.<br/>

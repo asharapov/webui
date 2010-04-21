@@ -50,7 +50,7 @@ Ext.onReady( function() {
   Ext.create({
     xtype: "arraystore",
     storeId: "st1",
-    fields:["value",{name:"label",mapping:"0"}],
+    fields:["value",{name:"label",mapping:"2"}],
     data: [
       ["v1", "Moscow", "Москва"],
       ["v2", "St Peterburg", "С. Петербург"],
@@ -127,13 +127,14 @@ Ext.onReady( function() {
           valueField: "value",
           displayField: "label",
           forceSelection: false,
-        title: "What The Fuck ?",
+          title: "What The Fuck ?",
           resizable:true,
           listEmptyText: "no records found. FUCK!",
           mode: "local",
           triggerAction: "all",
           typeAhead: false,
-          store: new Ext.data.ArrayStore({
+          store: {
+            xtype: "arraystore",
             storeId: "st2",
             fields:["value","label"],
             data: [
@@ -144,7 +145,7 @@ Ext.onReady( function() {
               ["v5", "Value 5"],
               ["v6", "Moscow"]
             ]
-          }),
+          },
           editable: false,
           hiddenValue: "v2",
           value:"Value 2"

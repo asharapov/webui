@@ -309,17 +309,10 @@ public abstract class AbstractComponent implements UIComponent, Serializable {
         if (hideParent)
             out.writeProperty("hideParent", true);
 
-        if (listeners != null && !listeners.isEmpty()) {
-            out.writeComplexProperty("listeners");
-            out.beginObject();
-            for (Map.Entry<String, JSFunction> entry : listeners.entrySet()) {
-                out.writeProperty(entry.getKey(), entry.getValue());
-            }
-            out.endObject();
-        }
-        if (plugins != null && !plugins.isEmpty()) {
+        if (listeners != null)
+            out.writeProperty("listeners", listeners);
+        if (plugins != null && !plugins.isEmpty())
             out.writeProperty("plugins", plugins);
-        }
     }
 
     /**

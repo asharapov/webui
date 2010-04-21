@@ -57,7 +57,7 @@ public class DataField implements Serializable, Cloneable {
     /**
      * Указывает строковой идентификатор типа данных.
      * @param type информация о типе данных находящихся в данном поле.
-     * @see  <code>ExtJS:  Ext.data.Types</code..
+     * @see  <code>ExtJS:  Ext.data.Types</code>
      */
     public void setType(final String type) {
         this.type = type;

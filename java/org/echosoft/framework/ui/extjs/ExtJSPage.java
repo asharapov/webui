@@ -30,7 +30,6 @@ public class ExtJSPage extends Page implements Serializable {
 
     public ExtJSPage(final UIContext uctx) {
         super(uctx);
-        layout = new AutoLayout();
     }
 
     /**
@@ -50,20 +49,14 @@ public class ExtJSPage extends Page implements Serializable {
     }
 
     /**
-     * Возвращает перечень всех поддерживаемых компонентом событий.<br/>
-     * Если компонент, являющийся наследником данного класса поддерживает иной перечень событий то он должен переопределить данный метод.
-     * @return  неизменяемый перечень событий, поддерживаемых данным компонентом. Метод никогда не возвращает <code>null</code>.
-     */
-    protected Set<String> getSupportedEvents() {
-        return AbstractContainerComponent.EVENTS;
-    }
-
-    /**
-     * Возвращает менеджер упаковки компонент в контейнере.
-     * По умолчанию используется компоновщик {@link AutoLayout}.
+     * Возвращает менеджер упаковки компонент в контейнере. Если компоновщик еще не был указан для данного компонента
+     * то вызывается метод {@link #makeDefaultLayout()} и полученный экземпляр компоновщика будет далее использоваться
+     * как компоновщик по умолчанию для данного компонента.
      * @return используемый в настоящий момент упаковщик компонент. Никогда не возвращает <code>null</code>.
      */
     public Layout getLayout() {
+        if (layout==null)
+            layout = makeDefaultLayout();
         return layout;
     }
     /**
@@ -72,7 +65,7 @@ public class ExtJSPage extends Page implements Serializable {
      * @param layout  упаковщик компонент или <code>null</code> если требуется использовать упаковщик по умолчанию.
      */
     public void setLayout(final Layout layout) {
-        this.layout = layout!=null ? layout : new AutoLayout();
+        this.layout = layout!=null ? layout : makeDefaultLayout();
     }
     /**
      * Устанавливает менеджер упаковки компонент в контейнере и возвращает ссылку на него.<br/>
@@ -85,7 +78,7 @@ public class ExtJSPage extends Page implements Serializable {
     @SuppressWarnings("unchecked")
     public <T extends Layout> T assignLayout(final T layout) {
         setLayout(layout);
-        return (T)this.layout;
+        return (T)getLayout();
     }
 
     /**
@@ -126,15 +119,10 @@ public class ExtJSPage extends Page implements Serializable {
         out.getOutputWriter().write("WUI.viewport = new Ext.Viewport(");
         out.beginObject();
         out.writeProperty("id", getContext().getClientId());
-        layout.serialize(out);
-        if (listeners!=null && !listeners.isEmpty()) {
-            out.writeComplexProperty("listeners");
-            out.beginObject();
-            for (Map.Entry<String,JSFunction> entry : listeners.entrySet()) {
-                out.writeProperty(entry.getKey(), entry.getValue());
-            }
-            out.endObject();
-        }
+        if (listeners!=null)
+            out.writeProperty("listeners", listeners);
+        if (layout!=null)
+            layout.serialize(out);
         out.endObject();
         out.getOutputWriter().write(");\n");
     }
@@ -176,4 +164,27 @@ public class ExtJSPage extends Page implements Serializable {
     protected String getInitCallbackFunction() {
         return "Ext.onReady";
     }
+
+    /**
+     * Возвращает перечень всех поддерживаемых компонентом событий.<br/>
+     * Если компонент, являющийся наследником данного класса поддерживает иной перечень событий то он должен переопределить данный метод.
+     * @return  неизменяемый перечень событий, поддерживаемых данным компонентом. Метод никогда не возвращает <code>null</code>.
+     */
+    protected Set<String> getSupportedEvents() {
+        return AbstractContainerComponent.EVENTS;
+    }
+
+    /**
+     * Конструирует экземпляр компоновщика который будет использоваться компонентами данного типа по умолчанию.<br/>
+     * В большинстве случаев таким компоновщиком является {@link AutoLayout Ext.layout.AutoLayout} но есть компоненты
+     * которые работают только с определенными типами компоновщиков и для них этот метод должен быть переопределен.
+     * @return новый экземпляр компоновщика того типа который используется по умолчанию для данного типа компонент.
+     *  По умолчанию возвращает экземпляр {@link AutoLayout}.
+     */
+    protected Layout makeDefaultLayout() {
+        final AutoLayout layout = new AutoLayout();
+        layout.setSkipLayout(true);
+        return layout;
+    }
+
 }

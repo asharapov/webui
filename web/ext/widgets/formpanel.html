@@ -146,9 +146,14 @@ Ext.onReady( function() {
               ["v6", "Moscow"]
             ]
           },
-          editable: false,
-          hiddenValue: "v2",
-          value:"Value 2"
+          listeners: {
+            //"render": function(){this.setValue("v4");},
+            "select": function(){console.log("onselect: ", arguments);},
+            "change": function(){console.log("onchange: ", arguments);}
+          },
+          //editable: false,
+          //hiddenValue: "v2",
+          value:"v2"
         },{
           xtype: "combo",
           fieldLabel: "Combo 2",
@@ -184,7 +189,7 @@ Ext.onReady( function() {
         plugins: ["Ext.ux.wui.plugins.Field"]
         }
       ],
-      monitorValid: true,
+      monitorValid: false,
       monitorPoll: 2000,
       fbar: {
         xtype: "toolbar",

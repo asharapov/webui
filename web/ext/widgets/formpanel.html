@@ -126,13 +126,15 @@ Ext.onReady( function() {
           emptyText: "choose one...",
           valueField: "value",
           displayField: "label",
-          forceSelection: false,
+          forceSelection: true,
+          editable: true,
           title: "What The Fuck ?",
           resizable:true,
           listEmptyText: "no records found. FUCK!",
           mode: "local",
           triggerAction: "all",
           typeAhead: false,
+          pageSize: 3,
           store: {
             xtype: "arraystore",
             storeId: "st2",
@@ -151,7 +153,6 @@ Ext.onReady( function() {
             "select": function(){console.log("onselect: ", arguments);},
             "change": function(){console.log("onchange: ", arguments);}
           },
-          //editable: false,
           //hiddenValue: "v2",
           value:"v2"
         },{

@@ -13,8 +13,10 @@ import org.echosoft.common.json.Serializers;
 import org.echosoft.framework.ui.core.Application;
 import org.echosoft.framework.ui.core.UIContext;
 
-import examples.ui.core.BlankDispatcher;
-import examples.ui.core.FormsDispatcher;
+import examples.ui.dispatchers.BlankDispatcher;
+import examples.ui.dispatchers.ComboBoxDispatcher;
+import examples.ui.dispatchers.FormsDispatcher;
+import examples.ui.services.Facade;
 
 /**
  * @author Anton Sharapov
@@ -25,10 +27,12 @@ public class FrontControllerServlet extends HttpServlet {
 
     public void init() throws ServletException {
         super.init();
+        this.getServletContext().setAttribute("services", new Facade());
         Application.jsonContext.setWriterFactory( Serializers.PRINTABLE_JSON_WRITER_FACTORY );
         bindings = new HashMap<String,Dispatcher>();
         bindings.put("/blank", new BlankDispatcher());
         bindings.put("/forms", new FormsDispatcher());
+        bindings.put("/combobox", new ComboBoxDispatcher());
     }
 
     public void destroy() {
@@ -103,7 +107,8 @@ public class FrontControllerServlet extends HttpServlet {
             buf.append('\n');
         }
         buf.append('\n');
-        log(buf.toString());
+//        log(buf.toString());
+        System.out.println(buf.toString());
     }
 
 }

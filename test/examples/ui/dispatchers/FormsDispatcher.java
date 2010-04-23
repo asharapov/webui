@@ -1,4 +1,4 @@
-package examples.ui.core;
+package examples.ui.dispatchers;
 
 import java.math.BigDecimal;
 

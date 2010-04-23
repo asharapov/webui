@@ -345,6 +345,10 @@ public class Store implements Serializable, Cloneable {
     public void setReader(final DataReader reader) {
         this.reader = reader;
     }
+    public DataReader assignReader( final DataReader reader ) {
+        setReader( reader );
+        return getReader();
+    }
 
     /**
      * Возвращает перечень всех ассоциированных с данных хранилищем обработчиков событий.

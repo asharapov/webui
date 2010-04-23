@@ -1,26 +1,28 @@
 package org.echosoft.framework.ui.extjs.data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-
-import org.echosoft.common.json.annotate.JsonWriteNulls;
+import java.util.LinkedHashMap;
 
 /**
  * Абстрактный класс для чтения структурированных данных из источников данных и конвертирования из
  * в объекты класса <code>Ext.data.Record</code> (ExtJS)
  * @author Anton Sharapov
  */
-@JsonWriteNulls(false)
 public abstract class DataReader implements Serializable, Cloneable {
 
-    private List<DataField> fields;         // описания полей данных; должно быть обязательно.
-    private String messageProperty;         // опциональное имя поля, содержащее текст сообщения пользователю от сервера.
+    private LinkedHashMap<String,DataField> fields; // описания полей данных; должно быть обязательно.
+    private String messageProperty;             // опциональное имя поля, содержащее текст сообщения пользователю от сервера.
 
     public DataReader() {
-        fields = new ArrayList<DataField>();
+        fields = new LinkedHashMap<String,DataField>();
+    }
+    public DataReader(final String... fields) {
+        this();
+        for (String field : fields) {
+            appendField( field );
+        }
     }
 
     /**
@@ -28,16 +30,30 @@ public abstract class DataReader implements Serializable, Cloneable {
      * @return неизменяемый список дескрипторов всех полей.
      */
     public Collection<DataField> getFields() {
-        return Collections.unmodifiableCollection(fields);
+        return Collections.unmodifiableCollection(fields.values());
     }
+
+    /**
+     * Возвращает дескриптор поля по его имени.
+     * @param name  логическое имя поля.
+     * @return дескриптор поля по его имени или <code>null</code> если поле с таким именем
+     * в источнике данных не определено.
+     */
+    public DataField getField(final String name) {
+        return fields.get(name);
+    }
+
     /**
      * Добавляет дескриптор нового поля в информацию о записях хранилищя.
      * @param name  логическое имя поля. Должно быть уникальным среди всех прочих полей записи.
      * @return дескриптор поля.
      */
     public DataField appendField(final String name) {
-        final DataField field = new DataField(name);
-        fields.add( field );
+        DataField field = fields.get(name);
+        if (field==null) {
+            field = new DataField(name);
+            fields.put(name, field);
+        }
         return field;
     }
 
@@ -65,9 +81,9 @@ public abstract class DataReader implements Serializable, Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         final DataReader result = (DataReader)super.clone();
-        result.fields = new ArrayList<DataField>(fields.size());
-        for (DataField field : fields) {
-            result.fields.add( (DataField)field.clone() );
+        result.fields = new LinkedHashMap<String,DataField>(fields.size());
+        for (DataField field : fields.values()) {
+            result.fields.put( field.getName(), (DataField)field.clone() );
         }
         return result;
     }

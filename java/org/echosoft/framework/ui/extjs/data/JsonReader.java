@@ -1,10 +1,14 @@
 package org.echosoft.framework.ui.extjs.data;
 
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
+import org.echosoft.framework.ui.extjs.spi.data.JsonReaderJsonSerializer;
+
 /**
  * Предназначен для чтения структурированных данных представленных в формате JSON в объекты класса
  * <code>Ext.data.Record</code> (ExtJS)
  * @author Anton Sharapov
  */
+@JsonUseSeriazer(JsonReaderJsonSerializer.class)
 public class JsonReader extends DataReader {
     private String root;                    // Свойство содержащее массив записей.
     private String successProperty;         // Свойство содержащее статус выполнения запроса (успешно/неуспешно).
@@ -13,6 +17,9 @@ public class JsonReader extends DataReader {
 
     public JsonReader() {
         super();
+    }
+    public JsonReader(final String... fields) {
+        super(fields);
     }
 
     /**

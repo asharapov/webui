@@ -5,10 +5,8 @@ import java.util.Set;
 import org.echosoft.common.json.JSExpression;
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.common.json.JsonWriter;
-import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
-import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Абстрактный класс от которого наследуются те компоненты которые подразумевают ввод пользователем значения
@@ -19,11 +17,6 @@ public abstract class AbstractTextField extends AbstractField {
 
     public static final Set<String> EVENTS =
             StringUtil.asUnmodifiableSet(AbstractField.EVENTS, "autosize", "keydown", "keypress", "keyup");
-
-    @JsonUseSeriazer(EnumLCJSONSerializer.class)
-    public static enum InputType {
-        TEXT, PASSWORD, RADIO, FILE
-    }
 
     private String name;                    // имя под которым значение данного компонента будет сохраняться на сервер.
     private Integer tabIndex;               //

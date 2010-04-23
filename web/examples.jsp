@@ -10,7 +10,8 @@
   <h1>Примеры использования базовых классов фреймворка</h1>
   <ol>
     <li><a href="examples/blank">Пустая страница</a></li>
-    <li><a href="examples/forms">Работа с формами</a></li>
+    <li><a href="examples/forms">Работа с элементами форм</a></li>
+    <li><a href="examples/combobox">Работа с элементами форм: выпадающие списки</a></li>
   </ol>
 
 </body>

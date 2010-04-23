@@ -1,4 +1,4 @@
-package examples.ui.core;
+package examples.ui.dispatchers;
 
 import org.echosoft.common.json.JSFunction;
 import org.echosoft.framework.ui.core.ComponentContext;

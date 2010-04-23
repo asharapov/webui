@@ -3,12 +3,15 @@ package org.echosoft.framework.ui.extjs.data;
 import java.io.Serializable;
 
 import org.echosoft.common.json.JSExpression;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
+import org.echosoft.framework.ui.extjs.spi.data.DataFieldJsonSerializer;
 
 /**
  * Содержит информацию об отдельном поле записи в источнике данных.
  * 
  * @author Anton Sharapov
  */
+@JsonUseSeriazer(DataFieldJsonSerializer.class)
 public class DataField implements Serializable, Cloneable {
 
     private final String name;              // имя поля. Обязательное поле!

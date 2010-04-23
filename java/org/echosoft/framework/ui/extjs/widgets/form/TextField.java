@@ -1,15 +1,22 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.json.annotate.JsonUseSeriazer;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
+import org.echosoft.framework.ui.extjs.spi.model.EnumLCJSONSerializer;
 
 /**
  * Отвечает за ввод одной текстовой строки.
  * @author Anton Sharapov
  */
 public class TextField extends AbstractTextField {
+
+    @JsonUseSeriazer(EnumLCJSONSerializer.class)
+    public static enum InputType {
+        TEXT, PASSWORD, RADIO, FILE
+    }
 
     private String value;                   // текст в поле ввода.
     private InputType inputType;            // значение атрибута "type" для тега "input".
@@ -39,7 +46,7 @@ public class TextField extends AbstractTextField {
 
     /**
      * Возвращает тип данного поля ввода.
-     * @return тип данного поля ввода.  По умолчанию возвращает {@link AbstractTextField.InputType#TEXT}.
+     * @return тип данного поля ввода.  По умолчанию возвращает {@link InputType#TEXT}.
      */
     public InputType getInputType() {
         return inputType;

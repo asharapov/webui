@@ -163,6 +163,28 @@ Ext.onReady( function() {
           store: "st1",
           mode: "local"
         },{
+          xtype: "checkbox",
+          fieldLabel: "Checkbox",
+          checked: true,
+          boxLabel: "box label text",
+          inputValue: "test",
+          handler: function() {console.log("checkbox handler: ",arguments);}
+        },{
+          xtype: "checkboxgroup",
+          fieldLabel: "CheckBox Group",
+          style: "border:1px solid green",
+          columns: [.4, null, .4],
+          vertical: true,
+          items: [
+            {xtype:"checkbox", boxLabel:"item 1", checked:false},
+            {xtype:"checkbox", boxLabel:"item 2", checked:true},
+            {xtype:"checkbox", boxLabel:"item 3", checked:false},
+            {xtype:"checkbox", boxLabel:"item 4", checked:false},
+            {xtype:"checkbox", boxLabel:"item 5", checked:false},
+            {xtype:"checkbox", boxLabel:"item 6", checked:false},
+            {xtype:"checkbox", boxLabel:"item 7", checked:false}
+          ]
+        },{
           xtype: "datefield",
           format: "d.m.Y",
           readOnly: false,

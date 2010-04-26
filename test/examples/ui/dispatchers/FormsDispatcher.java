@@ -14,6 +14,8 @@ import org.echosoft.framework.ui.extjs.widgets.ButtonGroup;
 import org.echosoft.framework.ui.extjs.widgets.TabPanel;
 import org.echosoft.framework.ui.extjs.widgets.Toolbar;
 import org.echosoft.framework.ui.extjs.widgets.form.AbstractField;
+import org.echosoft.framework.ui.extjs.widgets.form.CheckBox;
+import org.echosoft.framework.ui.extjs.widgets.form.CheckBoxGroup;
 import org.echosoft.framework.ui.extjs.widgets.form.DateField;
 import org.echosoft.framework.ui.extjs.widgets.form.DateRangeField;
 import org.echosoft.framework.ui.extjs.widgets.form.DecimalField;
@@ -24,6 +26,7 @@ import org.echosoft.framework.ui.extjs.widgets.form.IntegerField;
 import org.echosoft.framework.ui.extjs.widgets.form.IntegerRangeField;
 import org.echosoft.framework.ui.extjs.widgets.form.LongField;
 import org.echosoft.framework.ui.extjs.widgets.form.LongRangeField;
+import org.echosoft.framework.ui.extjs.widgets.form.Radio;
 import org.echosoft.framework.ui.extjs.widgets.form.TextAreaField;
 import org.echosoft.framework.ui.extjs.widgets.form.TextField;
 
@@ -171,6 +174,42 @@ public class FormsDispatcher implements Dispatcher {
         bt1.setFieldLabel("Action");
         bt1.setText("click me");
         bt1.setHandler( new JSFunction(new String[]{"b", "e"}, "console.log(b,e);") );
+
+
+        final CheckBox chb1 = fp2.append( new CheckBox(ctx.getChild("chb1")) );
+        chb1.setFieldLabel("CheckBox");
+        chb1.setBoxLabel("something <b>text</b> for checkbox.");
+        chb1.setTristate(true);
+        chb1.setStateful(true);
+
+        final CheckBox chb2 = fp2.append( new CheckBox(ctx.getChild("chb2")) );
+        chb2.setFieldLabel("CheckBox");
+        chb2.setBoxLabel("something text for 2nd checkbox.");
+        chb2.setTristate(true);
+        chb2.setChecked(true);
+        chb2.setStateful(true);
+
+        final Radio rad1 = fp2.append( new Radio(ctx.getChild("rad1")) );
+        rad1.setFieldLabel("Radio");
+        rad1.setBoxLabel("something <b>text</b> for radio.");
+        rad1.setChecked(true);
+        rad1.setStateful(true);
+
+        final CheckBoxGroup cbg1 = fp2.append( new CheckBoxGroup(ctx.getChild("cbg1")) );
+        cbg1.setFieldLabel("CheckBoxGroup");
+        cbg1.setVertical(true);
+        cbg1.setAllowBlank(false);
+        cbg1.setColumnsCount(3);
+        cbg1.setStateful(true);
+        cbg1.setStyle("border:1px dotted green");
+        cbg1.setMsgTarget(AbstractField.MsgTarget.UNDER);
+        cbg1.append( new CheckBox(ctx.getChild("cbi1")) ).setBoxLabel("item 1");
+        cbg1.append( new CheckBox(ctx.getChild("cbi2")) ).setBoxLabel("item 2");
+        cbg1.append( new CheckBox(ctx.getChild("cbi3")) ).setBoxLabel("item 3");
+        cbg1.append( new CheckBox(ctx.getChild("cbi4")) ).setBoxLabel("item 4");
+        cbg1.append( new CheckBox(ctx.getChild("cbi5")) ).setBoxLabel("item 5");
+        cbg1.append( new CheckBox(ctx.getChild("cbi6")) ).setBoxLabel("item 6");
+        cbg1.append( new CheckBox(ctx.getChild("cbi7")) ).setBoxLabel("item 7");
 
         final Toolbar fbar2 = fp2.assignFooter( new Toolbar(ctx.getChild("fb2")) );
         final Button bt21 = fbar2.addButton("submit 2");

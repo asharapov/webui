@@ -27,7 +27,6 @@ public class DateRangeField extends AbstractField {
     private boolean allowBlank;             // могут ли поля ввода быть пустыми.
     private String vtype;                   // идентификатор валидатора, используемого для валидации обоих полей ввода.
     private JSFunction validator;           // функция используемая для валидации обоих полей ввода.
-    private Integer tabIndex;               //
 
     public DateRangeField() {
         this(null);
@@ -183,14 +182,6 @@ public class DateRangeField extends AbstractField {
         this.validator = validator;
     }
 
-    public Integer getTabIndex() {
-        return tabIndex;
-    }
-    public void setTabIndex(final Integer tabIndex) {
-        this.tabIndex = tabIndex;
-    }
-
-
 
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
@@ -223,6 +214,7 @@ public class DateRangeField extends AbstractField {
         super.renderContent(out);
         final ComponentContext ctx = getContext();
         final Theme theme = ctx.getTheme();
+        final Integer tabIndex = getTabIndex();
 
         out.writeProperty("combineErrors", false);
         out.writeComplexProperty("defaults");

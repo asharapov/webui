@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css"/>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/src/locale/ext-lang-ru.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
+Ext.onReady( function() {
+  Ext.QuickTips.init();
+
+  Ext.create({
+    xtype: "jsonstore",
+    storeId: "st1",
+    fields:["id", "title"],
+    url: "/webui/ajax/simple/application/services.environmentServices/getEnvironment",
+    autoLoad: true,
+    listeners: {
+      "clear": function(){console.log('store.onclear: ',arguments);},
+      "load": function(){console.log('store.onload: ',arguments);},
+      "exception": function(){console.log('store.onexception: ',arguments);}
+    }
+  });
+
+  viewport = new Ext.Viewport({
+    layout: "auto",
+    items: {
+      xtype: "form",
+      title: "form panel",
+      width: 500,
+      frame: true,
+      monitorValid: false,
+      monitorPoll: 2000,
+      url: "/webui/ext/widgets/combobox.html",
+      method: "GET",
+      standardSubmit: true,
+      items: [{
+          id: "cb1",
+          xtype: "combo",
+          fieldLabel: "combo",
+          store: "st1",
+          valueField: "id",
+          displayField: "title",
+          mode: "remote",
+          triggerAction: "all",
+          typeAhead: false,
+          lazyRender: true,
+          forceSelection: false,
+          editable: true,
+          resizable: true,
+          submitValue: true,
+          //pageSize: 3,
+          emptyText: "choose one...",
+          title: "What The Fuck ?",
+          listEmptyText: "{no records found}",
+          //valueNotFoundText: "{illegal value}",
+          listeners: {
+            "render": function(){
+              console.log("onrender: ", this.getValue());
+              if (this.store!=null && this.store.autoLoad && this.store.getCount()===0 && this.valueField!==this.displayField && this.getValue()!==undefined) {
+                console.log("start hack ...");
+                var cmp = this,
+                    val = this.getValue(),
+                    handler = function() {
+                      console.log("apply hack...");
+                      cmp.setValue(val);
+                      this.un("load", handler);
+                    };
+                cmp.clearValue();
+                this.store.on("load", handler);
+                console.log("end hack ...");
+              }
+            },
+            "select": function(){console.log("onselect: ", arguments);},
+            "change": function(){console.log("onchange: ", arguments);}
+          },
+          hiddenName: "cb1.value",
+          value: "NWLANGUAGE"  // Русский
+        },{
+          xtype: "combo",
+          id: "cb2",
+          fieldLabel: "Combo 2",
+          store: "st1",
+          valueField: "id",
+          displayField: "title",
+          mode: "local",
+          triggerAction: "all",
+          hiddenName: "cb2.value",
+          forceSelection: true,
+          resizable: true
+        }
+      ],
+      fbar: {
+        xtype: "toolbar",
+        frame: false,
+        items: [
+          {xtype:"button", text:"submit", handler:function(){this.ownerCt.ownerCt.getForm().submit();}},
+          {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}}
+        ]
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -30,7 +30,7 @@ public class ComboBoxDispatcher implements Dispatcher {
 
         final TabPanel tabs = page.append( new TabPanel(ctx.getChild("tp")) );
         tabs.setResizeTabs(true);
-        tabs.setActiveItem("fp1");
+        tabs.setActiveItem("fp2");
 
         final FormPanel fp1 = tabs.append( new FormPanel(ctx.getChild("fp1")) );
         fp1.setTitle("Local data");
@@ -89,16 +89,22 @@ public class ComboBoxDispatcher implements Dispatcher {
         store.setUrl(ctx.encodeURL("/ajax/simple/application/services.environmentServices/getEnvironment"));
         store.setAutoLoad(true);
         store.setReader( new JsonReader("id", "title"));
+        store.addListener("load", new JSFunction(null, "console.log('store.onload: ',arguments);"));
+        store.addListener("clear", new JSFunction(null, "console.log('store.onclear: ',arguments);"));
+        store.addListener("exception", new JSFunction(null, "console.log('store.onexception: ',arguments);"));
         cb3.setStore( store );
         cb3.setValueField("id");
         cb3.setDisplayField("title");
+        cb3.setMode(ComboBox.Mode.REMOTE);
+        cb3.setTriggerAction(ComboBox.TriggerAction.ALL);
         cb3.setResizable(true);
+        cb3.setPageSize(5);
 
         final Toolbar tb2 = fp2.assignFooter( new Toolbar(ctx.getChild("tb2")) );
-        final Button bt21 = tb2.addButton("submit 1");
-        bt11.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().submit()") );
-        final Button bt22 = tb2.addButton("cancel 1");
-        bt12.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().reset()") );
+        final Button bt21 = tb2.addButton("submit 2");
+        bt21.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().submit()") );
+        final Button bt22 = tb2.addButton("cancel 2");
+        bt22.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().reset()") );
 
         page.invokePage();
     }

@@ -19,7 +19,6 @@ public abstract class AbstractTextField extends AbstractField {
             StringUtil.asUnmodifiableSet(AbstractField.EVENTS, "autosize", "keydown", "keypress", "keyup");
 
     private String name;                    // имя под которым значение данного компонента будет сохраняться на сервер.
-    private Integer tabIndex;               //
     private boolean allowBlank;             // может ли поле быть пустым.
     private String emptyText;               // текст отображаемый в пустом поле ввода.
     private Integer minLength;              // минимально допустимая длина текста.
@@ -56,13 +55,6 @@ public abstract class AbstractTextField extends AbstractField {
      */
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public Integer getTabIndex() {
-        return tabIndex;
-    }
-    public void setTabIndex(final Integer tabIndex) {
-        this.tabIndex = tabIndex;
     }
 
     /**
@@ -212,8 +204,6 @@ public abstract class AbstractTextField extends AbstractField {
     protected void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
         out.writeProperty("name", name);
-        if (tabIndex != null)
-            out.writeProperty("tabIndex", tabIndex);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);
         if (emptyText != null)

@@ -32,6 +32,7 @@ Ext.preg("Ext.ux.wui.plugins.FormPanel", Ext.ux.wui.plugins.FormPanel);
 
 /**
  * Данный плагин добавляет поддержку конфигурационного свойства <code>activeError</code> в полях формы.
+ * TODO: не работает если в компоненте изначально установлено непустое значение.
  */
 Ext.ux.wui.plugins.Field = Ext.extend(Ext.util.Observable, {
     init: function(field) {
@@ -43,3 +44,29 @@ Ext.ux.wui.plugins.Field = Ext.extend(Ext.util.Observable, {
     }
 });
 Ext.preg("Ext.ux.wui.plugins.Field", Ext.ux.wui.plugins.Field);
+
+/**
+ * Обрабатывает ситуацию с комбобоксом возникающую после загрузки страницы при комбинации следующих условий:
+ * <ol>
+ *   <li> Компонент использует удаленный источник данных (с установленной опцией autoLoad=true).
+ *   <li> Реальное и отображаемое поля в компоненте отличаются.
+ *   <li> Компонент имеет значение не равное <code>null</code>.
+ * </ol>
+ * В описанном случае если не принимать специальных мер то после загрузки страницы в поле ввода будет
+ * отображаться реальное значение компонента а не то что должно отображаться пользователю.
+ */
+Ext.ux.wui.plugins.ComboBox = Ext.extend(Ext.util.Observable, {
+    init: function(field) {
+        var val = field.getValue(),
+            handler = function() {
+              field.setValue(val);
+              this.un("load", handler);
+            };
+        if (field.store!=null && field.store.autoLoad && !field.store.lastOptions &&
+            field.valueField!==field.displayField && val!==undefined) {
+          //field.clearValue();
+          field.store.on("load", handler);
+        }
+    }
+});
+Ext.preg("Ext.ux.wui.plugins.ComboBox", Ext.ux.wui.plugins.ComboBox);

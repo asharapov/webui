@@ -33,7 +33,6 @@ public class ComboBox extends AbstractField {
         ALL, QUERY
     }
 
-    private Integer tabIndex;               //
     private boolean allowBlank;             // может ли поле быть пустым.
     private String emptyText;               // текст отображаемый в пустом поле ввода.
     private String name;                    // имя параметра в котором будет на сервер отправлено значение поля.
@@ -50,6 +49,7 @@ public class ComboBox extends AbstractField {
     private boolean typeAhead;              // разрешить предугадывание вводимого значения.
     private boolean editable;               // может ли пользователь руками набирать текст в поле.
     private boolean resizable;              // может ли пользователь изменять размеры выпадающего списка.
+    private boolean hideTrigger;            // скрыть переключатель справа от поля ввода.
     private String title;                   // строка отображаемая в выпадающем списке над предлагаемыми значениями.
     private String listEmptyText;           // строка отображаемая в выпадающем списке если он пустой.
 
@@ -62,13 +62,6 @@ public class ComboBox extends AbstractField {
         mode = Mode.REMOTE;
         triggerAction = TriggerAction.QUERY;
         editable = true;
-    }
-
-    public Integer getTabIndex() {
-        return tabIndex;
-    }
-    public void setTabIndex(final Integer tabIndex) {
-        this.tabIndex = tabIndex;
     }
 
     /**
@@ -424,6 +417,22 @@ public class ComboBox extends AbstractField {
     }
 
     /**
+     * Возвращает <code>true</code> если переключатель выпадающего списка должен быть скрыть от пользователя.
+     * @return <code>true</code> если переключатель выпадающего списка должен быть скрыть от пользователя.
+     *  Значение свойства по умолчанию: <code>false</code>.
+     */
+    public boolean isHideTrigger() {
+        return hideTrigger;
+    }
+    /**
+     * Дает возможность скрыть от пользователя переключатель выпадающего списка.
+     * @param hideTrigger <code>true</code> если переключатель выпадающего списка должен быть скрыть от пользователя.
+     */
+    public void setHideTrigger(final boolean hideTrigger) {
+        this.hideTrigger = hideTrigger;
+    }
+
+    /**
      * Возвращает строку текста которая будет отображаться во всплывающем списке над предлагаемыми к выбору элементами.
      * @return строка текста которая будет отображаться во всплывающем списке над предлагаемыми к выбору элементами
      *      или <code>null</code> если над элементами ничего отображаться не должно.
@@ -481,13 +490,12 @@ public class ComboBox extends AbstractField {
 
     @Override
     protected void renderContent(final JsonWriter out) throws Exception {
+        addPlugin("Ext.ux.wui.plugins.ComboBox");
         super.renderContent(out);
         out.writeProperty("hiddenName", name);
         if (value!=null)
             out.writeProperty("value", value);
 
-        if (tabIndex != null)
-            out.writeProperty("tabIndex", tabIndex);
         if (!allowBlank)
             out.writeProperty("allowBlank", false);
         if (emptyText != null)
@@ -522,6 +530,8 @@ public class ComboBox extends AbstractField {
             out.writeProperty("editable", false);
         if (resizable)
             out.writeProperty("resizable", true);
+        if (hideTrigger)
+            out.writeProperty("hideTrigger", true);
         if (title!=null)
             out.writeProperty("title", title);
         if (listEmptyText!=null)

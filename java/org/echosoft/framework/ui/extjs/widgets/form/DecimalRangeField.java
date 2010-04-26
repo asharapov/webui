@@ -27,7 +27,6 @@ public class DecimalRangeField extends AbstractField {
     private boolean allowBlank;             // могут ли поля ввода быть пустыми.
     private String vtype;                   // идентификатор валидатора, используемого для валидации обоих полей ввода.
     private JSFunction validator;           // функция используемая для валидации обоих полей ввода.
-    private Integer tabIndex;               //
     private Integer fieldWidth;             // ширина каждого поля ввода.
 
     public DecimalRangeField() {
@@ -164,13 +163,6 @@ public class DecimalRangeField extends AbstractField {
         this.validator = validator;
     }
 
-    public Integer getTabIndex() {
-        return tabIndex;
-    }
-    public void setTabIndex(final Integer tabIndex) {
-        this.tabIndex = tabIndex;
-    }
-
     /**
      * Возвращает ширину обоих полей ввода.
      * @return ширина каждого поля ввода.
@@ -218,6 +210,7 @@ public class DecimalRangeField extends AbstractField {
         super.renderContent(out);
         final ComponentContext ctx = getContext();
         final Theme theme = ctx.getTheme();
+        final Integer tabIndex = getTabIndex();
 
         out.writeProperty("combineErrors", false);
         out.writeComplexProperty("defaults");

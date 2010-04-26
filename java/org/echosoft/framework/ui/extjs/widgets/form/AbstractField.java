@@ -25,6 +25,7 @@ public abstract class AbstractField extends AbstractBoxComponent {
         QTIP, TITLE, UNDER, SIDE
     }
 
+    private Integer tabIndex;               //
     private String invalidText;             // Текст сообщения об ошибке по умолчанию.
     private MsgTarget msgTarget;            // Определяет место в котором будут отображаться сообщения об ошибках.
     private boolean submitValue;            // Отправлять содержимое данного поля на сервер или нет.
@@ -38,6 +39,13 @@ public abstract class AbstractField extends AbstractBoxComponent {
         msgTarget = MsgTarget.QTIP;
         submitValue = true;
         validateOnBlur = true;
+    }
+
+    public Integer getTabIndex() {
+        return tabIndex;
+    }
+    public void setTabIndex(final Integer tabIndex) {
+        this.tabIndex = tabIndex;
     }
 
     /**
@@ -147,6 +155,8 @@ public abstract class AbstractField extends AbstractBoxComponent {
 
         super.renderContent(out);
 
+        if (tabIndex != null)
+            out.writeProperty("tabIndex", tabIndex);
         if (invalidText != null)
             out.writeProperty("invalidText", invalidText);
         if (msgTarget != MsgTarget.QTIP)

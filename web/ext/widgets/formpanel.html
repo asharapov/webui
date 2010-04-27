@@ -149,11 +149,9 @@ Ext.onReady( function() {
             ]
           },
           listeners: {
-            //"render": function(){this.setValue("v4");},
             "select": function(){console.log("onselect: ", arguments);},
             "change": function(){console.log("onchange: ", arguments);}
           },
-          //hiddenValue: "v2",
           value:"v2"
         },{
           xtype: "combo",
@@ -162,28 +160,6 @@ Ext.onReady( function() {
           displayField: "label",
           store: "st1",
           mode: "local"
-        },{
-          xtype: "checkbox",
-          fieldLabel: "Checkbox",
-          checked: true,
-          boxLabel: "box label text",
-          inputValue: "test",
-          handler: function() {console.log("checkbox handler: ",arguments);}
-        },{
-          xtype: "checkboxgroup",
-          fieldLabel: "CheckBox Group",
-          style: "border:1px solid green",
-          columns: [.4, null, .4],
-          vertical: true,
-          items: [
-            {xtype:"checkbox", boxLabel:"item 1", checked:false},
-            {xtype:"checkbox", boxLabel:"item 2", checked:true},
-            {xtype:"checkbox", boxLabel:"item 3", checked:false},
-            {xtype:"checkbox", boxLabel:"item 4", checked:false},
-            {xtype:"checkbox", boxLabel:"item 5", checked:false},
-            {xtype:"checkbox", boxLabel:"item 6", checked:false},
-            {xtype:"checkbox", boxLabel:"item 7", checked:false}
-          ]
         },{
           xtype: "datefield",
           format: "d.m.Y",
@@ -209,7 +185,7 @@ Ext.onReady( function() {
           maxValue: 10,
           value: 1,
           activeError: "Advanced test error",
-        plugins: ["Ext.ux.wui.plugins.Field"]
+          plugins: ["Ext.ux.wui.plugins.Field"]
         }
       ],
       monitorValid: false,
@@ -221,27 +197,9 @@ Ext.onReady( function() {
             xtype:"button",
             text:"submit",
             formBind:true,
-            handler:function(b,e){
-              var fp = b.ownerCt.ownerCt;
-              var f = fp.getForm();
-              console.log("*** before f.submit()");
-              f.submit();
-              console.log("*** after f.submit()");
-              /*
-              f.submit({
-                success: function(form, action) {
-                  console.log("success: ", action);
-                  alert("success");
-                },
-                failure: function(form, action) {
-                  console.log("failure: ", action);
-                  alert("failure");
-                }
-              });
-              */
-            }
+            handler:function(b,e){this.ownerCt.ownerCt.getForm().submit();}
           },
-          {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}},
+          {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}}
         ]
       },
       frame: true,
@@ -249,7 +207,7 @@ Ext.onReady( function() {
       html: "text on the panel",
       plugins: ["Ext.ux.wui.plugins.FormPanel"],
       listeners: {
-        "xclientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);},
+        //clientvalidation" : function(frm, dirty) {console.log("clientvalidation", arguments);},
         "render" : function(){console.log("render 1")}.createSequence(function(){console.log("render 2")})
       }
     }

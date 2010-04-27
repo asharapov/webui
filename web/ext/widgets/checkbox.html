@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/ext-3.2.0/resources/css/ext-all.css"/>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/ext-all-debug.js"></script>
+  <script type="text/javascript" src="http://localhost:8000/ext-3.2.0/src/locale/ext-lang-ru.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL="http://localhost:8000/ext-3.2.0/resources/images/default/s.gif";
+Ext.onReady( function() {
+  Ext.QuickTips.init();
+  viewport = new Ext.Viewport({
+    layout: "auto",
+    items: {
+      xtype: "form",
+      title: "form panel",
+      width: 500,
+      frame: true,
+      //autoHeight: true,
+      url: "/webui/ext/widgets/checkbox.html",
+      method: "GET",
+      standardSubmit: true,
+      items: [{
+          xtype: "checkbox",
+          fieldLabel: "Checkbox",
+          name: "cb1",
+          checked: true,
+          boxLabel: "box label text",
+          inputValue: "C1",
+          handler: function() {console.log("checkbox handler: ",arguments);}
+        },{
+          xtype: "checkbox",
+          fieldLabel: "Checkbox",
+          name: "cb2",
+          checked: true,
+          boxLabel: "box label text",
+          inputValue: "C2",
+          handler: function() {console.log("checkbox handler: ",arguments);}
+        },{
+          xtype: "checkboxgroup",
+          name: "cbg",
+          fieldLabel: "CheckBox Group",
+          style: "border:1px solid green",
+          columns: [.4, null, .4],
+          vertical: true,
+          items: [
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 1", checked:false, inputValue:'true'},
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 2", checked:true,  inputValue:'false'},
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 3", checked:false, inputValue:''},
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 4", checked:false, inputValue:'4c'},
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 5", checked:false, inputValue:'5c'},
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 6", checked:false, inputValue:'6c'},
+            {xtype:"checkbox", name:'cbi', boxLabel:"item 7", checked:false, inputValue:'7c'}
+          ]
+        },{
+          xtype: "radio",
+          fieldLabel: "Radio",
+          name: "rd1",
+          boxLabel: 'item 1',
+          xinputValue: 'R1',
+          checked: true
+        },{
+          xtype: "radio",
+          fieldLabel: "Radio",
+          name: "rd1",
+          boxLabel: 'item 2',
+          xinputValue: 'R2'
+        },{
+          xtype: "radio",
+          fieldLabel: "Radio",
+          name: "rd1",
+          boxLabel: 'item 3',
+          xinputValue: 'R3'
+        },{
+          xtype: "radiogroup",
+          name: "rdg",
+          allowBlank: false,
+          msgTarget: "under",
+          fieldLabel: "Radio Group",
+          style: "border:1px solid blue",
+          columns: [.4, .3, .3],
+          vertical: true,
+          items: [
+            {xtype:"radio", name:'rdi', boxLabel:"item 1", inputValue:'r1'},
+            {xtype:"radio", name:'rdi', boxLabel:"item 2", inputValue:'r2'},
+            {xtype:"radio", name:'rdi', boxLabel:"item 3", inputValue:'r3'},
+            {xtype:"radio", name:'rdi', boxLabel:"item 4", inputValue:'r4'},
+            {xtype:"radio", name:'rdi', boxLabel:"item 5", inputValue:'r5'},
+            {xtype:"radio", name:'rdi', boxLabel:"item 6", inputValue:'r6'},
+            {xtype:"radio", name:'rdi', boxLabel:"item 7", inputValue:'r7'}
+          ]
+        }
+      ],
+      monitorValid: false,
+      monitorPoll: 2000,
+      fbar: {
+        xtype: "toolbar",
+        frame: false,
+        items: [{
+            xtype:"button",
+            text:"submit",
+            formBind:true,
+            handler:function(b,e){this.ownerCt.ownerCt.getForm().submit();}
+          },
+          {xtype:"button", text:"reset", handler:function(){this.ownerCt.ownerCt.getForm().reset();}}
+        ]
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

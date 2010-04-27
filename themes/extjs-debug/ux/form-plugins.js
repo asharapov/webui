@@ -10,22 +10,35 @@ Ext.ns("Ext.ux.wui.plugins");
  */
 Ext.ux.wui.plugins.FormPanel = Ext.extend(Ext.util.Observable, {
     init: function(formPanel) {
-        formPanel.on("render", this.onRender);
+        var form = formPanel.getForm();
+        form.applyExternalParams = this.applyExternalParams.createCallback(formPanel);
+        form.submit = form.submit.createInterceptor( this.onSubmit );
     },
-    onRender: function(fp) {
-        var el = fp.getForm().el.dom;
-        el.submit = el.submit.createInterceptor(
-            function() {
-                var p = Ext.apply({}, fp.baseParams, WUI.params),
-                    n;
-                for (n in p) {
-                    if (!fp.get(n)) {
-                        fp.add({xtype:"hidden", itemId:n, name:n, value:p[n]});
-                    }
+    onSubmit : function(options) {
+        if(this.standardSubmit){
+            options = options || {};
+            var v = options.clientValidation === false || this.isValid();
+            if(v){
+                this.applyExternalParams();
+                var el = this.el.dom;
+                if(this.url && Ext.isEmpty(el.action)){
+                    el.action = this.url;
                 }
-                fp.doLayout();
-                return true;
-            });
+                el.submit();
+            }
+            return false;
+        }
+        return true;
+    },
+    applyExternalParams: function(fp) {
+        var p = Ext.apply({}, fp.baseParams, WUI.params),
+            n;
+        for (n in p) {
+            if (!fp.get(n)) {
+                fp.add({xtype:"hidden", itemId:n, name:n, value:p[n]});
+            }
+        }
+        fp.doLayout();
     }
 });
 Ext.preg("Ext.ux.wui.plugins.FormPanel", Ext.ux.wui.plugins.FormPanel);

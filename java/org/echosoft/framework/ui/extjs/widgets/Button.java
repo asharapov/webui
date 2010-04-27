@@ -41,6 +41,7 @@ public class Button extends AbstractBoxComponent {
     private Align arrowAlign;           // определяет где на кнопке рисовать стрелочки если компонент сопряжен с меню.
     private boolean enableToggle;       // разрешен ли режим в котором кнопка может находиться в двух состояниях (нажата и отжата).
     private boolean handleMouseEvents;  // следует ли компоненту обрабатывать события "onmouseXXX".
+    private boolean formBind;           // автоматически деактивирует кнопку лежащую под формой если хотя бы один элемент ее не валиден.
     private JSFunction handler;         // обработчик события "onclick".
     private String icon;                // путь до иконки которая будет использоваться в качестве фонового изображения.
     private String iconCls;             // CSS класс который должен выставлять для компонента фоновое изображение. Альтернатива icon.
@@ -138,6 +139,30 @@ public class Button extends AbstractBoxComponent {
      */
     public void setHandleMouseEvents(final boolean handleMouseEvents) {
         this.handleMouseEvents = handleMouseEvents;
+    }
+
+    /**
+     * Возвращает <code>true</code> если кнопка должна автоматически активироваться или деактивироваться
+     * в зависимости от состояния формы на которой эта кнопка находится (она должна быть строго в разделе fbar).<br/>
+     * <strong>Внимание!</strong> Данное свойство работает только для кнопок расположенных в нижней панели
+     * инструментов формы.
+     * @return <code>true</code> если кнопка должна автоматически активироваться или деактивироваться
+     * в зависимости от состояния формы на которой эта кнопка находится (она должна быть строго в разделе fbar).
+     * Значение свойства по умолчанию: <code>false</code>.
+     */
+    public boolean isFormBind() {
+        return formBind;
+    }
+    /**
+     * Данное свойство позволяет автоматически активировать или деактивировать кнопки расположенные в нижней панели
+     * инструментов формы (fbar) в зависимости от состояния последней.<br/>
+     * <strong>Внимание!</strong> Данное свойство работает только для кнопок расположенных в нижней панели
+     * инструментов формы.
+     * @param formBind <code>true</code> если кнопка должна автоматически активироваться или деактивироваться
+     * в зависимости от состояния формы на которой эта кнопка находится (она должна быть строго в разделе fbar).
+     */
+    public void setFormBind(final boolean formBind) {
+        this.formBind = formBind;
     }
 
     /**
@@ -370,6 +395,8 @@ public class Button extends AbstractBoxComponent {
             out.writeProperty("enableToggle", true);
         if (!handleMouseEvents)
             out.writeProperty("handleMouseEvents", false);
+        if (formBind)
+            out.writeProperty("formBind", true);
         if (handler != null)
             out.writeProperty("handler", handler);
         if (icon != null) {

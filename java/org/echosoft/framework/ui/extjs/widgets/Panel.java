@@ -327,6 +327,10 @@ public class Panel extends AbstractContainerComponent {
     public void setTopToolbar(final Toolbar tbar) {
         this.tbar = tbar;
     }
+    public Toolbar assignTopToolbar() {
+        this.tbar = new Toolbar();
+        return tbar;
+    }
     public Toolbar assignTopToolbar(final Toolbar tbar) {
         this.tbar = tbar;
         return tbar;
@@ -346,7 +350,11 @@ public class Panel extends AbstractContainerComponent {
     public void setBottomToolbar(final Toolbar bbar) {
         this.bbar = bbar;
     }
-    public Toolbar assignBottomToolBar(final Toolbar bbar) {
+    public Toolbar assignBottomToolbar() {
+        this.bbar = new Toolbar();
+        return bbar;
+    }
+    public Toolbar assignBottomToolbar(final Toolbar bbar) {
         this.bbar = bbar;
         return bbar;
     }
@@ -364,6 +372,10 @@ public class Panel extends AbstractContainerComponent {
      */
     public void setFooter(final Toolbar fbar) {
         this.fbar = fbar;
+    }
+    public Toolbar assignFooter() {
+        this.fbar = new Toolbar();
+        return fbar;
     }
     public Toolbar assignFooter(final Toolbar fbar) {
         this.fbar = fbar;

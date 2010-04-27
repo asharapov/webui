@@ -118,7 +118,7 @@ public class ComboBox extends AbstractField {
      * @param name имя параметра в запросе где будет сохраняться значение данного компонента.
      */
     public void setName(final String name) {
-        this.name = name;
+        this.name = StringUtil.trim(name);
     }
 
     /**
@@ -474,7 +474,8 @@ public class ComboBox extends AbstractField {
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-        setName( ctx.getClientId() + ".value" );
+        if (getName()==null)
+            setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
             final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
             if (svalue!=null) {

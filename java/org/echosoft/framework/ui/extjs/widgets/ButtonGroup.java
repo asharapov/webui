@@ -95,10 +95,6 @@ public class ButtonGroup extends AbstractContainerComponent {
         super.renderContent(out);
         if (title != null)
             out.writeProperty("title", title);
-
-        final ComponentContext ctx = getContext();
-        if (ctx != null)
-            ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-toolbars.js", false));
     }
 
     @Override

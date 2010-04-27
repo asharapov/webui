@@ -54,7 +54,7 @@ public abstract class AbstractTextField extends AbstractField {
      * @param name имя параметра в запросе где будет сохраняться значение данного компонента.
      */
     public void setName(final String name) {
-        this.name = name;
+        this.name = StringUtil.trim(name);
     }
 
     /**

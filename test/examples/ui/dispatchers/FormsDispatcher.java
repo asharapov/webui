@@ -55,6 +55,7 @@ public class FormsDispatcher implements Dispatcher {
         fp1.setHeight(600);
         fp1.setFrame(true);
         fp1.setUrl("/examples/forms");
+        fp1.setMonitorValid(true);
         fp1.setStandardSubmit(true);
         fp1.setMethod(FormPanel.Method.POST);
 
@@ -164,8 +165,9 @@ public class FormsDispatcher implements Dispatcher {
         rng4.setStateful(true);
         rng4.setMsgTarget( AbstractField.MsgTarget.UNDER );
 
-        final Toolbar fbar1 = fp1.assignFooter( new Toolbar(ctx.getChild("fb1")) );
+        final Toolbar fbar1 = fp1.assignFooter();
         final Button bt11 = fbar1.addButton("submit 1");
+        bt11.setFormBind(true);
         bt11.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().submit()") );
         final Button bt12 = fbar1.addButton("cancel 1");
         bt12.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().reset()") );
@@ -213,17 +215,15 @@ public class FormsDispatcher implements Dispatcher {
         cbg1.append( new CheckBox(ctx.getChild("cbi6")) ).setBoxLabel("item 6");
         cbg1.append( new CheckBox(ctx.getChild("cbi7")) ).setBoxLabel("item 7");
 
-        final Toolbar fbar2 = fp2.assignFooter( new Toolbar(ctx.getChild("fb2")) );
+        final Toolbar fbar2 = fp2.assignFooter();
         final Button bt21 = fbar2.addButton("submit 2");
+        bt21.setFormBind(true);
         bt21.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().submit()") );
         final Button bt31 = fbar2.addButton("cancel 2");
         bt31.setHandler( new JSFunction(null,"this.ownerCt.ownerCt.getForm().reset()") );
 
-        final Toolbar tbar = tabs.assignTopToolbar( new Toolbar(ctx.getChild("tb1")) );
-        final ButtonGroup bg1 = new ButtonGroup(ctx.getChild("bg1"));
-        bg1.setTitle("My Actions");
-        bg1.setColumns(2);
-        tbar.append( bg1 );
+        final Toolbar tbar = tabs.assignTopToolbar();
+        final ButtonGroup bg1 = tbar.addButtonGroup("My Actions", 2);
         final Button bt2 = bg1.addButton("Action 1");
         final Button bt3 = bg1.addButton("Action 2");
 

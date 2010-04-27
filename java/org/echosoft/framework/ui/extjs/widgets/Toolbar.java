@@ -151,10 +151,6 @@ public class Toolbar extends AbstractContainerComponent {
             out.writeProperty("buttonAlign", buttonAlign);
         if (enableOverflow)
             out.writeProperty("enableOverflow", true);
-
-        final ComponentContext ctx = getContext();
-        if (ctx != null)
-            ctx.getResources().attachScript(ctx.encodeThemeURL("/pkgs/pkg-toolbars.js", false));
     }
 
     @Override

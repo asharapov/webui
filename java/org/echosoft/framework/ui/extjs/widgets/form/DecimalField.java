@@ -94,7 +94,8 @@ public class DecimalField extends AbstractTextField {
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-        setName( ctx.getClientId() + ".value" );
+        if (getName()==null)
+            setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
             final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
             if (svalue!=null) {

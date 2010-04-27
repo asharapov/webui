@@ -177,17 +177,19 @@ public class FormsDispatcher implements Dispatcher {
 
 
         final CheckBox chb1 = fp2.append( new CheckBox(ctx.getChild("chb1")) );
-        chb1.setFieldLabel("CheckBox");
+        chb1.setFieldLabel("CheckBox 1");
         chb1.setBoxLabel("something <b>text</b> for checkbox.");
         chb1.setTristate(true);
         chb1.setStateful(true);
+        chb1.addListener("check", new JSFunction(null,"console.log('check1: ', arguments, this.getValue());"));
 
         final CheckBox chb2 = fp2.append( new CheckBox(ctx.getChild("chb2")) );
-        chb2.setFieldLabel("CheckBox");
+        chb2.setFieldLabel("CheckBox 2");
         chb2.setBoxLabel("something text for 2nd checkbox.");
         chb2.setTristate(true);
         chb2.setChecked(true);
         chb2.setStateful(true);
+        chb2.addListener("check", new JSFunction(null,"console.log('check2: ', arguments, this.getValue());"));
 
         final Radio rad1 = fp2.append( new Radio(ctx.getChild("rad1")) );
         rad1.setFieldLabel("Radio");

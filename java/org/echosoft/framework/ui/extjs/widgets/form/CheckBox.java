@@ -3,6 +3,7 @@ package org.echosoft.framework.ui.extjs.widgets.form;
 import java.util.Set;
 
 import org.echosoft.common.json.JsonWriter;
+import org.echosoft.common.types.Types;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.Scope;
@@ -101,9 +102,9 @@ public class CheckBox extends AbstractField {
         final ComponentContext ctx = getContext();
         setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
-            final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
+            final String svalue = (String)ctx.getAttribute("value", Scope.PR_ST);
             if (svalue!=null) {
-                checked = "on".equals(svalue);
+                checked = Types.BOOLEAN.decode(svalue);
             }
             ctx.setAttribute("value", svalue, Scope.STATE);
         }

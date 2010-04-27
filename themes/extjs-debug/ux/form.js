@@ -10,7 +10,7 @@ Ext.ns("Ext.ux.wui.form");
 /**
  * @class Ext.ux.wui.form.Checkbox
  * @extends Ext.form.Field
- * Single checkbox field.  Can be used as a direct replacement for traditional checkbox fields.
+ * Single checkbox field with tristate support. Can be used as a direct replacement for traditional checkbox fields.
  * @constructor
  * Creates a new Checkbox
  * @param {Object} config Configuration options
@@ -40,9 +40,6 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
     defaultAutoCreate : { tag: 'input', type: 'checkbox', autocomplete: 'off'},
     /**
      * @cfg {String} boxLabel The text that appears beside the checkbox
-     */
-    /**
-     * @cfg {String} inputValue The value that should go into the generated input element's value attribute
      */
     /**
      * @cfg {Function} handler A function called when the {@link #checked} value changes (can be used instead of
@@ -88,7 +85,6 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
         this.mon(this.el, {
             scope: this,
             click: this.onClick
-            //xchange: this.onClick
         });
     },
 
@@ -108,6 +104,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
     // private
     onRender : function(ct, position){
         Ext.form.Checkbox.superclass.onRender.call(this, ct, position);
+        this.el.dom.removeAttribute('name');
         if(this.inputValue !== undefined){
             this.el.dom.value = this.inputValue;
         }
@@ -115,11 +112,11 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
         if(this.boxLabel){
             this.wrap.createChild({tag: 'label', htmlFor: this.el.id, cls: 'x-form-cb-label', html: this.boxLabel});
         }
+        this.valueEl = this.el.insertSibling({tag:'input', type:'hidden', autocomplete:'off'}, 'after', false);
+        if (this.submitValue !== false)
+            this.valueEl.dom.setAttribute('name', this.name || this.id);
 
         this.setValue(this.checked);
-        if (this.tristate && this.submitValue) {
-            //TODO: make hidden field.
-        }
 
         // Need to repaint for IE, otherwise positioning is broken
         if(Ext.isIE){
@@ -139,13 +136,17 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
         this.originalValue = this.getValue();
     },
 
+    getRawValue : function() {
+        return this.rendered ? this.valueEl.value : this.checked!==null ? ""+this.checked : "";
+    },
+
     /**
      * Returns the checked state of the checkbox.
      * @return {Boolean} True if checked, else false
      */
     getValue : function(){
         if(this.rendered){
-            return this.el.dom.checked;
+            return this.el.dom.indeterminate ? null : this.el.dom.checked;
         }
         return this.checked;
     },
@@ -179,10 +180,11 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
             if (this.checked==null) {
                 this.el.dom.checked = false;
                 this.el.dom.indeterminate = true;
+                this.valueEl.dom.value = "";
             } else {
                 this.el.dom.indeterminate = false;
                 this.el.dom.checked = this.checked;
-                this.el.dom.defaultChecked = this.checked;
+                this.valueEl.dom.value = this.checked;
             }
         }
         if(checked !== this.checked){

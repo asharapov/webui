@@ -1,18 +1,23 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
+import java.util.Set;
+
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.ComponentContext;
-import org.echosoft.framework.ui.core.Scope;
 
 /**
  * @author Anton Sharapov
  */
 public class Radio extends AbstractField {
 
+    public static final Set<String> EVENTS =
+            StringUtil.asUnmodifiableSet(AbstractField.EVENTS, "check");
+
     private String name;                    // имя параметра в котором будет на сервер отправлено значение поля.
-    private boolean checked;                // значение компонента.
     private String boxLabel;                // текст расположенный справа от переключателя.
+    private String inputValue;              // значение отправляемое на сервер когда данный переключатель выбран.
+    private boolean checked;                // выбран ли данный переключатель.
 
     public Radio() {
         this(null);
@@ -45,21 +50,6 @@ public class Radio extends AbstractField {
     }
 
     /**
-     * Возвращает значение данного поля.
-     * @return  значение данного поля.
-     */
-    public boolean isChecked() {
-        return checked;
-    }
-    /**
-     * Указывает текст отображаемый в данном поле.
-     * @param checked значение данного поля.
-     */
-    public void setChecked(final boolean checked) {
-        this.checked = checked;
-    }
-
-    /**
      * Возвращает текст, отображаемый справа от переключателя.
      * @return текст, отображаемый справа от переключателя.
      */
@@ -74,17 +64,41 @@ public class Radio extends AbstractField {
         this.boxLabel = boxLabel;
     }
 
+    /**
+     * Значение отправляемое компонентом на сервер в случае помещения данного переключателя в положение "включено".
+     * @return значение отправляемое компонентом на сервер в случае помещения данного переключателя в положение "включено".
+     */
+    public String getInputValue() {
+        return inputValue;
+    }
+    /**
+     * Указывает значение отправляемое компонентом на сервер в случае помещения данного переключателя в положение "включено".
+     * @param inputValue значение отправляемое компонентом на сервер в случае помещения данного переключателя в положение "включено".
+     */
+    public void setInputValue(final String inputValue) {
+        this.inputValue = inputValue;
+    }
+
+    /**
+     * Возвращает значение данного поля.
+     * @return  значение данного поля.
+     */
+    public boolean isChecked() {
+        return checked;
+    }
+    /**
+     * Указывает текст отображаемый в данном поле.
+     * @param checked значение данного поля.
+     */
+    public void setChecked(final boolean checked) {
+        this.checked = checked;
+    }
+
     @Override
     public void invoke(final JsonWriter out) throws Exception {
         final ComponentContext ctx = getContext();
-        setName( ctx.getClientId() + ".value" );
-        if (isStateful()) {
-            final String svalue = StringUtil.trim( (String)ctx.getAttribute("value", Scope.PR_ST) );
-            if (svalue!=null) {
-                checked = "true".equals(svalue.toLowerCase());
-            }
-            ctx.setAttribute("value", svalue, Scope.STATE);
-        }
+        if (getName()==null)
+            setName( ctx.getClientId() + ".value" );
         out.beginObject();
         out.writeProperty("xtype", "radio");
         renderContent(out);
@@ -95,8 +109,16 @@ public class Radio extends AbstractField {
     public void renderContent(final JsonWriter out) throws Exception {
         super.renderContent(out);
         out.writeProperty("name", name);
-        out.writeProperty("checked", checked);
         if (boxLabel!=null)
             out.writeProperty("boxLabel", boxLabel);
+        if (inputValue!=null)
+            out.writeProperty("inputValue", inputValue);
+        out.writeProperty("checked", checked);
     }
+
+    @Override
+    protected Set<String> getSupportedEvents() {
+        return Radio.EVENTS;
+    }
+
 }

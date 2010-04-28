@@ -125,7 +125,8 @@ public class CheckBox extends AbstractField {
             out.writeProperty("tristate", true);
             out.writeProperty("checked", checked);
         } else {
-            out.writeProperty("checked", checked!=null && checked);
+            if (checked!=null && checked)
+                out.writeProperty("checked", true);
         }
         final ComponentContext ctx = getContext();
         ctx.getResources().attachScript(ctx.encodeThemeURL("/ux/form.js", false));

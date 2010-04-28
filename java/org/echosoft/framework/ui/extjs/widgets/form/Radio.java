@@ -113,7 +113,8 @@ public class Radio extends AbstractField {
             out.writeProperty("boxLabel", boxLabel);
         if (inputValue!=null)
             out.writeProperty("inputValue", inputValue);
-        out.writeProperty("checked", checked);
+        if (checked)
+            out.writeProperty("checked", true);
     }
 
     @Override

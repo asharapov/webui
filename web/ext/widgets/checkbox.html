@@ -37,7 +37,8 @@ Ext.onReady( function() {
           fieldLabel: "Checkbox",
           name: "cb2",
           checked: true,
-          boxLabel: "box label text",
+          boxLabel: "box label text 2",
+          readOnly: true,
           inputValue: "C2",
           handler: function() {console.log("checkbox handler: ",arguments);}
         },{
@@ -47,6 +48,7 @@ Ext.onReady( function() {
           style: "border:1px solid green",
           columns: [.4, null, .4],
           vertical: true,
+          readOnly: true,
           items: [
             {xtype:"checkbox", name:'cbi', boxLabel:"item 1", checked:false, inputValue:'true'},
             {xtype:"checkbox", name:'cbi', boxLabel:"item 2", checked:true,  inputValue:'false'},

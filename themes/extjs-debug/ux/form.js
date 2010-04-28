@@ -16,7 +16,7 @@ Ext.ns("Ext.ux.wui.form");
  * @param {Object} config Configuration options
  * @xtype tri-checkbox
  */
-Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
+Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field, {
     /**
      * @cfg {String} focusClass The CSS class to use when the checkbox receives focus (defaults to undefined)
      */
@@ -25,6 +25,10 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
      * @cfg {String} fieldClass The default CSS class for the checkbox (defaults to 'x-form-field')
      */
     fieldClass : 'x-form-field',
+    /**
+     * @cfg {Boolean} tristate <tt>true</tt> if the checkbox support <tt>indeterminated</tt> state (defaults to <tt>false</tt>)
+     */
+    tristate : false,
     /**
      * @cfg {Boolean} checked <tt>true</tt> if the checkbox should render initially checked (defaults to <tt>false</tt>)
      */
@@ -37,7 +41,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
      * @cfg {String/Object} autoCreate A DomHelper element spec, or true for a default element spec (defaults to
      * {tag: 'input', type: 'checkbox', autocomplete: 'off'})
      */
-    defaultAutoCreate : { tag: 'input', type: 'checkbox', autocomplete: 'off'},
+    defaultAutoCreate : {tag: 'input', type: 'checkbox', autocomplete: 'off'},
     /**
      * @cfg {String} boxLabel The text that appears beside the checkbox
      */
@@ -45,7 +49,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
      * @cfg {Function} handler A function called when the {@link #checked} value changes (can be used instead of
      * handling the check event). The handler is passed the following parameters:
      * <div class="mdetail-params"><ul>
-     * <li><b>checkbox</b> : Ext.form.Checkbox<div class="sub-desc">The Checkbox being toggled.</div></li>
+     * <li><b>checkbox</b> : Ext.ux.wui.form.Checkbox<div class="sub-desc">The Checkbox being toggled.</div></li>
      * <li><b>checked</b> : Boolean<div class="sub-desc">The new checked state of the checkbox.</div></li>
      * </ul></div>
      */
@@ -59,7 +63,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
 
 	// private
     initComponent : function(){
-        Ext.form.Checkbox.superclass.initComponent.call(this);
+        Ext.ux.wui.form.Checkbox.superclass.initComponent.call(this);
         this.addEvents(
             /**
              * @event check
@@ -73,7 +77,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
 
     // private
     onResize : function(){
-        Ext.form.Checkbox.superclass.onResize.apply(this, arguments);
+        Ext.ux.wui.form.Checkbox.superclass.onResize.apply(this, arguments);
         if(!this.boxLabel && !this.fieldLabel){
             this.el.alignTo(this.wrap, 'c-c');
         }
@@ -81,7 +85,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
 
     // private
     initEvents : function(){
-        Ext.form.Checkbox.superclass.initEvents.call(this);
+        Ext.ux.wui.form.Checkbox.superclass.initEvents.call(this);
         this.mon(this.el, {
             scope: this,
             click: this.onClick
@@ -103,11 +107,8 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
 
     // private
     onRender : function(ct, position){
-        Ext.form.Checkbox.superclass.onRender.call(this, ct, position);
+        Ext.ux.wui.form.Checkbox.superclass.onRender.call(this, ct, position);
         this.el.dom.removeAttribute('name');
-        if(this.inputValue !== undefined){
-            this.el.dom.value = this.inputValue;
-        }
         this.wrap = this.el.wrap({cls: 'x-form-check-wrap'});
         if(this.boxLabel){
             this.wrap.createChild({tag: 'label', htmlFor: this.el.id, cls: 'x-form-cb-label', html: this.boxLabel});
@@ -128,7 +129,7 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
     // private
     onDestroy : function(){
         Ext.destroy(this.wrap);
-        Ext.form.Checkbox.superclass.onDestroy.call(this);
+        Ext.ux.wui.form.Checkbox.superclass.onDestroy.call(this);
     },
 
     // private
@@ -152,8 +153,10 @@ Ext.ux.wui.form.Checkbox = Ext.extend(Ext.form.Field,  {
     },
 
 	// private
-    onClick : function(e,t,o){
-        //o.stopEvent = true;
+    onClick : function(){
+        if (this.readOnly) {
+            this.setValue( this.checked );
+        } else
         if (this.tristate) {
             var v = this.checked==null ? false : (this.checked ? null : true);
             this.setValue(v);

@@ -16,6 +16,7 @@ import org.echosoft.framework.ui.extjs.widgets.Toolbar;
 import org.echosoft.framework.ui.extjs.widgets.form.AbstractField;
 import org.echosoft.framework.ui.extjs.widgets.form.CheckBox;
 import org.echosoft.framework.ui.extjs.widgets.form.CheckBoxGroup;
+import org.echosoft.framework.ui.extjs.widgets.form.CompositeField;
 import org.echosoft.framework.ui.extjs.widgets.form.DateField;
 import org.echosoft.framework.ui.extjs.widgets.form.DateRangeField;
 import org.echosoft.framework.ui.extjs.widgets.form.DecimalField;
@@ -183,6 +184,7 @@ public class FormsDispatcher implements Dispatcher {
         chb1.setBoxLabel("something <b>text</b> for checkbox.");
         chb1.setTristate(true);
         chb1.setStateful(true);
+        chb1.setReadOnly(true);
         chb1.addListener("check", new JSFunction(null,"console.log('check1: ', arguments, this.getValue());"));
 
         final CheckBox chb2 = fp2.append( new CheckBox(ctx.getChild("chb2")) );
@@ -193,11 +195,17 @@ public class FormsDispatcher implements Dispatcher {
         chb2.setStateful(true);
         chb2.addListener("check", new JSFunction(null,"console.log('check2: ', arguments, this.getValue());"));
 
-        final Radio rad1 = fp2.append( new Radio(ctx.getChild("rad1")) );
-        rad1.setFieldLabel("Radio");
-        rad1.setBoxLabel("something <b>text</b> for radio.");
+        final CompositeField cmp1 = fp2.append( new CompositeField(ctx.getChild("cmp1")) );
+        cmp1.setFieldLabel("Composite with Radio");
+        final Radio rad1 = cmp1.append( new Radio(ctx.getChild("rad1")) );
+        rad1.setName("rd");
+        rad1.setBoxLabel("1st choice");
+        rad1.setInputValue("1");
         rad1.setChecked(true);
-        rad1.setStateful(true);
+        final Radio rad2 = cmp1.append( new Radio(ctx.getChild("rad2")) );
+        rad2.setName("rd");
+        rad2.setBoxLabel("2nd choice");
+        rad2.setInputValue("2");
 
         final CheckBoxGroup cbg1 = fp2.append( new CheckBoxGroup(ctx.getChild("cbg1")) );
         cbg1.setFieldLabel("CheckBoxGroup");

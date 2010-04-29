@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding='UTF-8'?>
-<core:page
-    xmlns:core="http://echosoft.org/webui/core"
-    viewId="list" viewRank="1" cleanStrategy="rank" title="List of entities" layout="border">
-  <!--
-  <ext-layout:border region="west" height="30">
-  </ext-layout:border>
-  <layout:border region="center">
-    <ext:panel title="My panel" frame="true">
-      <ext-layout:form labelWidth="70" />
-      <ext-form:textfield id="f1" fieldLabel="Field 1" emptyText="enter you value" />
-    </ext:panel>
-    <core:forEach items="@{request:users}" var="user">
-      <ext:box tpl="Hello, {name}! You are {state}." data="@{page:user}" />
-    </core:forEach>
-  </ext-layout:border>
-  -->
+<core:page  xmlns:core="http://echosoft.org/webui/core"
+            xmlns:wui="http://echosoft.org/webui/ui"
+            viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
 
+  <core:html id="html-snippet-1">
+    This is a <b>static</b> html snippet.
+  </core:html>
+
+  <core:javascript>
+    function myFunction(x,y) {
+      return x + y;
+    }
+    var menuRoot = {
+      nodeType: "async",
+      draggable: false,
+      children: [
+        {text:"Item 1", leaf:true},
+        {text:"Item 2", leaf:true}
+      ]
+    };
+  </core:javascript>
+
+  <wui:box region="NORTH" html="My <u>Page</u> Header">
+  </wui:box>
+
+  <wui:panel region="SOUTH" contentEl="html-snippet-1">
+  </wui:panel>
+
+  <wui:treepanel region="WEST" collapseMode="MINI" split="true" width="150"
+                 rootVisible="false" lines="false" useArrows="true" rootRef="menuRoot">
+    <core:event name="change" args="e,n,o">
+      console.log("current node was changed from ",o," to ",n);
+      myFunction(e,n,1);
+    </core:event>
+  </wui:treepanel>
+
+  <wui:form-panel region="CENTER" title="Main Info" standardSubmit="true" url="/pages/info" method="POST">
+    <wui:tab-panel activeItem="emp-cp">
+      <wui:panel itemId="emp-cp" title="Common" tabTip="common information" layout="form" labelWidth="100">
+        <wui:text id="name" fieldLabel="Name" allowBlank="false" value="@{request:employee.name}" maxLength="30" />
+        <wui:date id="born" fieldLabel="Born Date" allowBlank="false" value="@{request:employee.bornDate}" maxValue="today" />
+      </wui:panel>
+      <wui:panel itemId="emp-ep" title="Extended" tabTip="additional information" layout="form" rendered="@{request:show-ext}">
+        <wui:fieldset title="awards" collapsible="true">
+          <stl:foreach items="{@request:employee.awards}" item="award">
+          <wui:text id="awrd-@{page:award.id}" text="@{page:award.text}" readOnly="true" />
+          </stl:foreach>
+        </wui:fieldset>
+      </wui:panel>
+    </wui:tab-panel>
+  </wui:form>
 </core:page>
 
+<-- set sw=2 ts=2  -->

@@ -1,10 +1,7 @@
 package org.echosoft.framework.ui.extjs.widgets.form;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.echosoft.common.json.JsonWriter;
 import org.echosoft.common.utils.StringUtil;
@@ -13,10 +10,10 @@ import org.echosoft.framework.ui.core.Scope;
 import org.echosoft.framework.ui.extjs.model.ChoiceItem;
 
 /**
- * Группа элементов выбора, в которой можно отмечать одновременно произвольное количество опций.
+ * Группа элементов выбора, в которой выбранной в единицу времени может быть только одна опция.
  * @author Anton Sharapov
  */
-public class CheckBoxGroup extends AbstractField {
+public class RadioGroup extends AbstractField {
 
     private String name;                    // имя параметра в котором будет на сервер отправлено значение поля.
     private boolean allowBlank;             // может ли поле быть пустым.
@@ -24,16 +21,15 @@ public class CheckBoxGroup extends AbstractField {
     private Integer columnsCount;           // количество колонок на которые разбито все содержимое группы.
     private Number[] columnsWidth;          // кол-во колонок равно кол-ву элементов массива, каждый из которых - ширина соотв. колонки.
     private List<ChoiceItem> items;         // описания всех элементов выбора в группе.
-    private Set<String> value;              // массив из идентификаторов отмеченных элементов.
+    private String value;                   // идентификатор выбранного элемента в группе.
 
-    public CheckBoxGroup() {
+    public RadioGroup() {
         this(null);
     }
-    public CheckBoxGroup(final ComponentContext ctx) {
+    public RadioGroup(final ComponentContext ctx) {
         super(ctx);
         allowBlank = true;
         items = new ArrayList<ChoiceItem>();
-        value = new HashSet<String>();
     }
 
     /**
@@ -155,32 +151,18 @@ public class CheckBoxGroup extends AbstractField {
     }
 
     /**
-     * Возвращает множество идентификаторов выбранных элементов.
-     * @return идентификаторы отмеченных элементов выбора.
+     * Возвращает идентификатор выбранного элемента.
+     * @return идентификатор отмеченного элемента выбора или <code>null</code>.
      */
-    public Set<String> getValue() {
+    public String getValue() {
         return value;
     }
     /**
-     * Указывает множество идентификаторов элементов выбора в компоненте которые должны быть отмечены как выбранные.
-     * @param value множество, содержащее идентификаторы тех элементов выбора которые должны быть отмечены как выбранные.
+     * Указывает идентификатор выбранного элемента.
+     * @param value идентификатор выбранного элемента.
      */
-    public void setValue(final Set<String> value) {
-        if (value==this.value)
-            return;
-        this.value.clear();
-        if (value!=null)
-            this.value.addAll( value );
-    }
-    /**
-     * Указывает множество идентификаторов элементов выбора в компоненте которые должны быть отмечены как выбранные.
-     * @param value множество, содержащее идентификаторы тех элементов выбора которые должны быть отмечены как выбранные.
-     */
-    public void setValue(final String... value) {
-        this.value.clear();
-        if (value.length>0) {
-            this.value.addAll( Arrays.asList(value) );
-        }
+    public void setValue(final String value) {
+        this.value = value!=null ? value : "";
     }
 
 
@@ -190,14 +172,14 @@ public class CheckBoxGroup extends AbstractField {
         if (getName()==null)
             setName( ctx.getClientId() + ".value" );
         if (isStateful()) {
-            final String svalues[] = ctx.getAttribute("value", Scope.PRV_ST);
-            if (svalues!=null) {
-                setValue(svalues);
+            final String svalue = ctx.getAttribute("value", Scope.PR_ST);
+            if (svalue!=null) {
+                value = svalue;
             }
-            ctx.setAttribute("value", svalues, Scope.STATE);
+            ctx.setAttribute("value", svalue, Scope.STATE);
         }
         out.beginObject();
-        out.writeProperty("xtype", "checkboxgroup");
+        out.writeProperty("xtype", "radiogroup");
         renderContent(out);
         out.endObject();
     }
@@ -225,7 +207,7 @@ public class CheckBoxGroup extends AbstractField {
             out.beginObject();
             out.writeProperty("inputValue", item.getValue());
             out.writeProperty("boxLabel", item.getLabel());
-            if (value.contains(item.getValue()))
+            if (value!=null && value.equals(item.getValue()))
                 out.writeProperty("checked", true);
             out.endObject();
         }

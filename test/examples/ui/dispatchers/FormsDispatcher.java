@@ -28,6 +28,7 @@ import org.echosoft.framework.ui.extjs.widgets.form.IntegerRangeField;
 import org.echosoft.framework.ui.extjs.widgets.form.LongField;
 import org.echosoft.framework.ui.extjs.widgets.form.LongRangeField;
 import org.echosoft.framework.ui.extjs.widgets.form.Radio;
+import org.echosoft.framework.ui.extjs.widgets.form.RadioGroup;
 import org.echosoft.framework.ui.extjs.widgets.form.TextAreaField;
 import org.echosoft.framework.ui.extjs.widgets.form.TextField;
 
@@ -215,13 +216,32 @@ public class FormsDispatcher implements Dispatcher {
         cbg1.setStateful(true);
         cbg1.setStyle("border:1px dotted green");
         cbg1.setMsgTarget(AbstractField.MsgTarget.UNDER);
-        cbg1.append( new CheckBox(ctx.getChild("cbi1")) ).setBoxLabel("item 1");
-        cbg1.append( new CheckBox(ctx.getChild("cbi2")) ).setBoxLabel("item 2");
-        cbg1.append( new CheckBox(ctx.getChild("cbi3")) ).setBoxLabel("item 3");
-        cbg1.append( new CheckBox(ctx.getChild("cbi4")) ).setBoxLabel("item 4");
-        cbg1.append( new CheckBox(ctx.getChild("cbi5")) ).setBoxLabel("item 5");
-        cbg1.append( new CheckBox(ctx.getChild("cbi6")) ).setBoxLabel("item 6");
-        cbg1.append( new CheckBox(ctx.getChild("cbi7")) ).setBoxLabel("item 7");
+        cbg1.addItem("", "Empty");
+        cbg1.addItem("i1", "Item 1");
+        cbg1.addItem("i2", "Item 2");
+        cbg1.addItem("i3", "Item 3");
+        cbg1.addItem("i4", "Item 4");
+        cbg1.addItem("i5", "Item 5");
+        cbg1.addItem("i6", "Item 6");
+        cbg1.addItem("i7", "Item 7");
+        cbg1.addListener("change", new JSFunction(null,"console.log('cbg onchange: ',arguments);"));
+
+        final RadioGroup rdg1 = fp2.append( new RadioGroup(ctx.getChild("rdg1")) );
+        rdg1.setFieldLabel("RadioGroup");
+        rdg1.setVertical(true);
+        rdg1.setAllowBlank(false);
+        rdg1.setColumnsCount(3);
+        rdg1.setStateful(true);
+        rdg1.setStyle("border:1px dotted green");
+        rdg1.setMsgTarget(AbstractField.MsgTarget.UNDER);
+        rdg1.addItem("", "Empty");
+        rdg1.addItem("i1", "Item 1");
+        rdg1.addItem("i2", "Item 2");
+        rdg1.addItem("i3", "Item 3");
+        rdg1.addItem("i4", "Item 4");
+        rdg1.addItem("i5", "Item 5");
+        rdg1.addItem("i6", "Item 6");
+        rdg1.addItem("i7", "Item 7");
 
         final Toolbar fbar2 = fp2.assignFooter();
         final Button bt21 = fbar2.addButton("submit 2");

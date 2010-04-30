@@ -32,6 +32,15 @@
     <url-pattern>/ajax/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>WuiServlet</servlet-name>
+    <servlet-class>org.echosoft.framework.ui.core.web.WUIServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WuiServlet</servlet-name>
+    <url-pattern>*.wui</url-pattern>
+  </servlet-mapping>
+
 
   <servlet>
     <servlet-name>FrontControllerServlet</servlet-name>

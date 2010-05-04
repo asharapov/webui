@@ -202,10 +202,9 @@ Implementation-Version: ${built.revision}
       <depend srcdir="@{srcdir}" destdir="@{to}" closure="yes">
         <include name="**/*.java"/>
       </depend>
-      <javac srcdir="@{srcdir}" destdir="@{to}" classpathref="@{build.classpath}"
-             deprecation="${build.deprecation}" optimize="${build.optimized}" nowarn="${build.nowarn}"
-             debug="${build.debug}" debugLevel="${build.debug.level}" encoding="${build.encoding}"
-             executable="${jdk.home}/bin/javac" fork="true" includeAntRuntime="false">
+      <javac srcdir="@{srcdir}" destdir="@{to}" classpathref="build.classpath" encoding="${build.encoding}"
+             source="${build.source}" target="${build.target}" deprecation="${build.deprecation}" nowarn="${build.nowarn}"
+             debug="${build.debug}" debugLevel="${build.debug.level}" includeAntRuntime="false">
       </javac>
       <copy todir="@{to}">
         <fileset dir="@{envsrcdir}">

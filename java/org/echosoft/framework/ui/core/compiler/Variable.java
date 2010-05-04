@@ -18,20 +18,20 @@ public class Variable {
      * Требуется ли указание полного имени класса (вместе с пакетом) при объявлении переменной.
      * Ситуация возникает когда в числе импортируемых пэкеджей уже есть такой что содержит класс с подобным именем.
      */
-    public final boolean qualified;
+    public final boolean shouldBeQualified;
     /**
-     * Указывает область видимости данной переменной в методе.
+     * Указывает область определения данной переменной в методе.
      */
-    public Integer visibilityLevel;
+    public final int declareLevel;
     /**
      * Определяет возможно ли уже повторное использование данной переменной или она еще используется в коде.
      */
-    public boolean used;
+    public Integer useLevel;
 
-    public Variable(final String name, final Class cls, final boolean qualified, final int visibilityLevel) {
+    public Variable(final String name, final Class cls, final boolean shouldBeQualified, final int declareLevel) {
         this.name = name;
         this.cls = cls;
-        this.qualified = qualified;
-        this.visibilityLevel = visibilityLevel;
+        this.shouldBeQualified = shouldBeQualified;
+        this.declareLevel = declareLevel;
     }
 }

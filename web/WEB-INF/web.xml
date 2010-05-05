@@ -35,6 +35,10 @@
   <servlet>
     <servlet-name>WuiServlet</servlet-name>
     <servlet-class>org.echosoft.framework.ui.core.web.WUIServlet</servlet-class>
+    <init-param>
+      <param-name>mode</param-name>
+      <param-value>development</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>WuiServlet</servlet-name>

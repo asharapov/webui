@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import org.echosoft.common.utils.StringUtil;
+
 /**
  * Содержит всю собранную информацию о транслируемом классе, его структуре и зависимостях.
  * @author Anton Sharapov
@@ -48,25 +50,18 @@ public class TranslationContext {
 
     /**
      * Выполняет трансляцию .wui Файла в соответствующий ему .java файл.
-     * @param baseDir  каталог под которым расположена вся иерархия проектных .wui файлов
-     * и соответствующих им сервлетов. Практически, это корневой каталог веб приложения на сервере.
-     * @param filePath  путь к транслируемому .wui файлу относительно базового каталога.
+     * @param uri  относительный путь до данного ресурса на сервере. Декодируется в имя класса и пакет java.
+     * @param options  конфигурационные параметры.
      * @throws IOException  в случае проблем с получением канонической версии пути к требуемому файлу.
      */
-    public TranslationContext(File baseDir, String filePath) throws IOException {
-        baseDir = baseDir.getCanonicalFile();
-        int p;
-        srcFile = new File(baseDir, filePath). getCanonicalFile();
-        if (!srcFile.isFile())
-            throw new IllegalArgumentException("Source file not finded");
-        if (!srcFile.getPath().startsWith(baseDir.getPath()))
-            throw new IllegalArgumentException("Source path doesn't belongs to base directory");
-        p = srcFile.getPath().lastIndexOf('.');
-        dstFile = new File( srcFile.getPath().substring(0,p)+".java" );
+    public TranslationContext(final String uri, final Options options) throws IOException {
+        srcFile = new File(options.rootSrcDir, uri);
+        String path = '/' + StringUtil.replace(options.basePkgName,".","/") + uri;
+        int p = path.lastIndexOf('.');
+        dstFile = new File( options.rootDstDir, path.substring(0,p)+".java" );
+        pkgName = Utils.getPackageNameByPath(path);
         p = srcFile.getName().lastIndexOf('.');
         clsName = srcFile.getName().substring(0,p);
-        filePath = srcFile.getPath().substring(baseDir.getPath().length());
-        pkgName = Utils.getPackageNameByPath(filePath);
         imports = new TreeSet<Class>(CLS_COMPARATOR);
         methods = new ArrayList<MethodContext>();
     }

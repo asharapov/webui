@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.compiler;
+package org.echosoft.framework.ui.core.web.wui;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -47,9 +47,9 @@ public class RuntimeContext {
     }
 
     /**
-     * Возвращает конфигурацию сервлета {@link org.echosoft.framework.ui.core.web.WUIServlet}, которая будет использоваться
+     * Возвращает конфигурацию сервлета {@link org.echosoft.framework.ui.core.web.wui.WUIServlet}, которая будет использоваться
      * для конфигурирования всех динамически создаваемых сервлетов.
-     * @return конфигурация {@link org.echosoft.framework.ui.core.web.WUIServlet}
+     * @return конфигурация {@link org.echosoft.framework.ui.core.web.wui.WUIServlet}
      */
     public ServletConfig getServletConfig() {
         return servletConfig;

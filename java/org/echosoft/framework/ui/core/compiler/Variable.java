@@ -27,11 +27,17 @@ public class Variable {
      * Определяет возможно ли уже повторное использование данной переменной или она еще используется в коде.
      */
     public Integer useLevel;
+    /**
+     * Была ли данная переменная уже объявлена в коде (при повторном использовании всегда true).
+     */
+    public boolean alreadyDeclared;
 
-    public Variable(final String name, final Class cls, final boolean shouldBeQualified, final int declareLevel) {
-        this.name = name;
+    public Variable(final MethodContext mc, final Class cls, final String name) {
         this.cls = cls;
-        this.shouldBeQualified = shouldBeQualified;
-        this.declareLevel = declareLevel;
+        this.name = name;
+        this.shouldBeQualified = !mc.tc.ensureClassImported(cls);
+        this.declareLevel = mc.getLevel();
+        this.alreadyDeclared = false;
     }
+
 }

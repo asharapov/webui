@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.web;
+package org.echosoft.framework.ui.core.web.wui;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -9,9 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.echosoft.common.utils.StringUtil;
-import org.echosoft.framework.ui.core.compiler.Options;
-import org.echosoft.framework.ui.core.compiler.Resource;
-import org.echosoft.framework.ui.core.compiler.RuntimeContext;
 
 /**
  * Отвечает за трансляцию .wui файлов в сервлеты в которых выполняеются соответствующие вызовы компонентов.

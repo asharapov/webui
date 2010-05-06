@@ -20,22 +20,24 @@ public class MethodContext {
     public final FastStringWriter content;
     public final Class resultType;
     public final String name;
-    public final Variable[] args;
     public final Map<String, Variable> vars;
     private int vLevel;
 
-    public MethodContext(final TranslationContext tc, final Class resultType, final String name, final Variable... args) {
+    public MethodContext(final TranslationContext tc, final Class resultType, final String name) {
         this.tc = tc;
         this.content = new FastStringWriter(512);
         this.resultType = resultType!=null ? resultType : Void.class;
         this.name = name;
-        this.args = args;
         this.vars = new HashMap<String,Variable>();
-        for (Variable arg : args) {
-            arg.useLevel = arg.declareLevel;
-            this.vars.put(arg.name, arg);
-        }
         this.vLevel = 0;
+        tc.methods.add( this );
+    }
+
+    /**
+     * @return уровень вложенности текущего (обрабатываемого в настоящее время) блока кода в методе.
+     */
+    public int getLevel() {
+        return vLevel;
     }
 
     /**
@@ -67,6 +69,14 @@ public class MethodContext {
         }
     }
 
+    public Variable addArgument(final Class cls, final String name) {
+        final Variable v = new Variable(this, cls, name);
+        v.alreadyDeclared = true;
+        v.useLevel = 0;
+        vars.put(v.name, v);
+        return v;
+    }
+
     /**
      * Находит неиспользуемую локальную переменную требуемого типа и помечает ее как используемую или
      * регистрирует запись о новой переменной в методе.
@@ -85,8 +95,7 @@ public class MethodContext {
         if (StringUtil.isJavaIdentifier(desiredName) && !vars.containsKey(desiredName)) {
             // создаем новую переменную ...
             //   убедимся что соответствующий класс переменной перечислен в конструкции "import" ...
-            final boolean shouldBeQualified = !tc.ensureClassImported(cls);
-            result = new Variable(desiredName, cls, shouldBeQualified, vLevel);
+            result = new Variable(this, cls, desiredName);
         } else {
             // ищем подходящую переменную из уже объявленных но в данный момент не используемых переменных...
             for (Variable v : vars.values()) {
@@ -102,7 +111,7 @@ public class MethodContext {
             while (vars.containsKey(prefix+suffix)) suffix++;
             //   убедимся что соответствующий класс переменной перечислен в конструкции "import" ...
             final boolean qualified = !tc.ensureClassImported(cls);
-            result = new Variable(prefix+suffix, cls, qualified, vLevel);
+            result = new Variable(this, cls, prefix+suffix);
         }
         result.useLevel = vLevel;
         vars.put(result.name, result);

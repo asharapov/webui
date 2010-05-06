@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.compiler;
+package org.echosoft.framework.ui.core.web.wui;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import org.echosoft.framework.ui.core.compiler.Translator;
 
 /**
  * Описывает отдельно взятый .wui ресурс.

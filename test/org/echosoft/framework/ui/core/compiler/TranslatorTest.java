@@ -3,6 +3,9 @@ package org.echosoft.framework.ui.core.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.echosoft.framework.ui.core.web.wui.Options;
+import org.echosoft.framework.ui.core.web.wui.Resource;
+import org.echosoft.framework.ui.core.web.wui.RuntimeContext;
 import org.junit.Test;
 
 /**

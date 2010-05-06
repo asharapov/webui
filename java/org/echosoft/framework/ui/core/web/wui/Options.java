@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.compiler;
+package org.echosoft.framework.ui.core.web.wui;
 
 import javax.servlet.ServletConfig;
 import java.io.File;
@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.echosoft.common.utils.StringUtil;
+import org.echosoft.framework.ui.core.compiler.Utils;
 
 /**
  * Структура с конфигурационными параметрами модуля трансляции .wui файлов в соответствующие java сервлеты.
@@ -43,7 +44,7 @@ public final class Options implements Serializable {
 
     /**
      * Предназначен для вызова из приложения запущенного под сервером приложений (основной режим).
-     * @param config  конфигурация сервлета {@link org.echosoft.framework.ui.core.web.WUIServlet}.
+     * @param config  конфигурация сервлета {@link org.echosoft.framework.ui.core.web.wui.WUIServlet}.
      */
     public Options(final ServletConfig config) {
         rootSrcDir = new File( config.getServletContext().getRealPath("/") );

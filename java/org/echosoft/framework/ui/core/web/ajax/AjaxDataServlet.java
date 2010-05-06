@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.web;
+package org.echosoft.framework.ui.core.web.ajax;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -8,9 +8,6 @@ import java.net.URLEncoder;
 
 import org.echosoft.common.io.FastStringWriter;
 import org.echosoft.framework.ui.core.Application;
-import org.echosoft.framework.ui.core.web.ajax.AjaxRequest;
-import org.echosoft.framework.ui.core.web.ajax.DataProviderAjaxRequest;
-import org.echosoft.framework.ui.core.web.ajax.SimpleAjaxRequest;
 
 /**
  * Данный сервлет предназначен для отдачи клиенту данных в формате JSON.

@@ -1,16 +1,27 @@
 package org.echosoft.framework.ui.core.compiler;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import org.echosoft.framework.ui.core.web.wui.Options;
+
 /**
  * Содержит всю собранную информацию о транслируемом классе, его структуре и зависимостях.
  * @author Anton Sharapov
  */
 public class TranslationContext {
+    /**
+     * Конфигурация модуля трансляции .wui файлов в сервлеты.
+     */
+    public Options options;
     /**
      * Путь до исходного .wui файла заданный в канонической форме.
      */
@@ -47,12 +58,12 @@ public class TranslationContext {
             };
 
     /**
-     * Выполняет трансляцию .wui Файла в соответствующий ему .java файл.
      * @param uri  относительный путь до данного ресурса на сервере. Декодируется в имя класса и пакет java.
      * @param options  конфигурационные параметры.
      * @throws IOException  в случае проблем с получением канонической версии пути к требуемому файлу.
      */
     public TranslationContext(final String uri, final Options options) throws IOException {
+        this.options = options;
         srcFile = new File(options.rootSrcDir, uri);
         int p;
         String path = (p=uri.lastIndexOf('.')) >= 0 ? uri.substring(0,p) : uri; // убрали расширение исходного файла
@@ -69,6 +80,12 @@ public class TranslationContext {
         }
         imports = new TreeSet<Class>(CLS_COMPARATOR);
         methods = new ArrayList<MethodContext>();
+        ensureClassImported(IOException.class);
+        ensureClassImported(ServletException.class);
+        ensureClassImported(HttpServlet.class);
+        ensureClassImported(HttpSession.class);
+        ensureClassImported(HttpServletRequest.class);
+        ensureClassImported(HttpServletResponse.class);
     }
 
     /**

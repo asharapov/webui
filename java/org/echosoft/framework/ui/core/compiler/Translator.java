@@ -63,7 +63,7 @@ public class Translator {
             out.write("        timestamp = new Date();\n");
             out.write("        System.out.println(\"initialized = \"+timestamp);\n");
             out.write("    }\n");
-            out.write("    public void destroy() throws ServletException {\n");
+            out.write("    public void destroy() {\n");
             out.write("        timestamp = null;\n");
             out.write("        System.out.println(\"destroyed = \"+timestamp);\n");
             out.write("    }\n");

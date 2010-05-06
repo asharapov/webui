@@ -1,6 +1,7 @@
 package org.echosoft.framework.ui.core.compiler;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -9,21 +10,17 @@ import org.junit.Test;
  */
 public class TranslatorTest {
 
-    private static final File base = new File("w:/webui/web");
-
     @Test
     public void testTranslate() throws Exception {
-//        // транслируем ...
-//        final File file = Translator.translate(base, "/wui/page1.wui");
-//        // компилируем ...
-//        final JavaCompiler jc = ToolProvider.getSystemJavaCompiler();
-//        final StandardJavaFileManager sjfm = jc.getStandardFileManager(null, null, null);
-//        final Iterable<? extends JavaFileObject> files = sjfm.getJavaFileObjects(file);
-//        final JavaCompiler.CompilationTask task = jc.getTask(null, sjfm, null, null, null, files);
-//        boolean result = task.call();
-//        System.out.println("result = " + result);
-//
-//        // Add more compilation tasks
-//        sjfm.close();
+        final Map<String,String> env = new HashMap<String,String>();
+        env.put("src-dir", "w:/webui/web");
+        env.put("dst-dir", "w:/webui/build");
+        env.put("target-package", "wuifiles");
+        env.put("classpath", "");
+        env.put("mode", "development");
+        final Options opts = new Options(env);
+        final RuntimeContext rctx = new RuntimeContext(opts, null);
+        final Resource resource = rctx.getResource("/wui/page1.wui");
+        resource.service(null,null);
     }
 }

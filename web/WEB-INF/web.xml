@@ -39,6 +39,10 @@
       <param-name>mode</param-name>
       <param-value>development</param-value>
     </init-param>
+    <init-param>
+      <param-name>target-package</param-name>
+      <param-value>org.echosoft.wuifiles</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>WuiServlet</servlet-name>
@@ -49,10 +53,6 @@
   <servlet>
     <servlet-name>FrontControllerServlet</servlet-name>
     <servlet-class>examples.ui.FrontControllerServlet</servlet-class>
-    <init-param>
-      <param-name>keepalive</param-name>
-      <param-value>xxx</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>FrontControllerServlet</servlet-name>

@@ -1,16 +1,12 @@
 package org.echosoft.framework.ui.core.compiler;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import org.echosoft.common.utils.StringUtil;
 
 /**
  * Описывает отдельно взятый .wui ресурс.
@@ -18,13 +14,17 @@ import org.echosoft.common.utils.StringUtil;
  */
 public class Resource {
     /**
-     * Относительный путь до ресурса.
+     * Глобальный контекст
+     */
+    private final RuntimeContext rctx;
+    /**
+     * Относительный путь до .wui ресурса.
      */
     private final String uri;
     /**
-     * Глобальные конфигурационные параметры модуля.
+     * Полное имя класса сервлета который должен быть сгенерирован на основе данного .wui файла.
      */
-    private final Options options;
+    private final String className;
     /**
      * Исходный .wui Файл который требуется транслировать в .java а затем скомпилировать в .class
      */
@@ -37,27 +37,45 @@ public class Resource {
      * Результат компиляции оттранслированного .java файла в соответствующий .class файл.
      */
     private final File classFile;
-    /**
-     * Если <code>true</code> то ресурс должен быть в принудительном порядке перекомпилирован.
-     */
-    private boolean reload;
 
-    public static Resource getResource(final String uri, final Options options) {
-        final File file = new File(options.rootSrcDir, uri);
+    /**
+     * Экземпляр сервлета скомпилированного на основе .wui файла.
+     */
+    private HttpServlet servlet;
+
+
+    public static Resource getResource(final RuntimeContext rctx, final String uri) {
+        final File file = new File(rctx.getOptions().rootSrcDir, uri);
         return file.isFile()
-                ? new Resource(uri, options)
+                ? new Resource(rctx, uri)
                 : null;
     }
 
-    private Resource(final String uri, final Options options) {
+    private Resource(final RuntimeContext rctx, final String uri) {
+        this.rctx = rctx;
         this.uri = uri;
-        this.options = options;
+        final Options options = rctx.getOptions();
+        String path = uri.substring(0, uri.lastIndexOf('.'));   // "/p1/p2/myclass.wui"  =>  "/p1/p2/myclass"
+        if (options.basePkgName!=null) {
+            this.className = options.basePkgName + path.replace('/','.');
+            path = '/' + options.basePkgName.replace('.','/') + path;
+        } else {
+            this.className = path.replace('/','.');
+        }
         this.wuiFile = new File(options.rootSrcDir, uri);
-        final String path = '/' + StringUtil.replace(options.basePkgName,".","/") + uri;
-        final int p = path.lastIndexOf('.');
-        this.javaFile = new File( options.rootDstDir, path.substring(0,p)+".java" );
-        this.classFile = new File( options.rootDstDir, path.substring(0,p)+".class" );
-        this.reload = options.development || classFile.lastModified()<wuiFile.lastModified();
+        this.javaFile = new File( options.rootDstDir, path+".java" );
+        this.classFile = new File( options.rootDstDir, path+".class" );
+
+        if (classFile.lastModified()>=wuiFile.lastModified()) {
+            // вроде бы файл с сервлетом есть и он валиден. Попробуем сразу создать экземпляр сервлета...
+            try {
+                final Class cls = rctx.getWUIClassLoader().loadClass(className);
+                this.servlet = (HttpServlet)cls.newInstance();
+                this.servlet.init(rctx.getServletConfig());
+            } catch (Exception e) {
+                // это был какой-то неправильный класс...
+            }
+        }
     }
 
     /**
@@ -79,85 +97,90 @@ public class Resource {
     }
 
     /**
-     * <p>Проверяет ресурс на доступность, определяет требуется ли компиляция сервлета генерируемого на
-     * основе исходного .wui Файла (определяется сравниванием дат последнего изменения соответствующих .wui и .class файлов).</p>
-     * <p>В случае успешного завершения данного метода для данного ресурса уже имеется актуальная версия соответствующего .class файла
-     * (сам класс еще может быть не не загружен в JVM).</p> 
-     * @throws ServletException в случае каких-либо проблем при компиляции сервлета.
-     * @throws IOException в случае каких-либо проблем с вводом-выводом (ресурс не найден).
-     */
-    public void invalidate() throws ServletException, IOException {
-        if (options.development) {
-            // цель данной стратегии - как можно более своевременная перекомпиляция устаревших классов.
-            final long tstamp = wuiFile.lastModified();
-            if (reload || classFile.lastModified()<tstamp)  // время изменения отсутствующего файла всегда 0.
-                compile(tstamp);
-        } else {
-            // цель данной стратегии - как можно меньше операций с io.
-            if (reload)
-                compile(wuiFile.lastModified());
-        }
-        reload = false;
-    }
-
-    /**
-     * Выполняет вызов к сервлету являющемуся результатом компиляции соответствующего .wui файла.
+     * Валидирует состояние данного ресурса, при необходимости компилирует соответствующий сервлет и
+     * выполняет вызов к сервлету являющемуся результатом компиляции соответствующего .wui файла.
      * @param request  пользовательский запрос
      * @param response ответ системы на пользовательский запрос.
      * @throws ServletException в случае каких-либо проблем при вызове сервлета.
      * @throws IOException в случае каких-либо проблем с вводом-выводом.
+     * @throws java.io.FileNotFoundException в случае когда соответствующий .wui файл отсутствует (был удален).
      */
     public void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        // TODO: при необходимости загружаем класс в JVM и создаем новый экземпдяр сервлета.
-        // TODO: выполняем метод service(request,response) у этого сервлета.
+        try {
+            invalidate();
+        } catch (IOException e) {
+            throw new FileNotFoundException("Resource not found: "+uri);
+        }
+        servlet.service(request, response);
     }
 
+
+    /**
+     * <p>Проверяет ресурс на доступность, определяет требуется ли компиляция сервлета генерируемого на
+     * основе исходного .wui Файла (определяется сравниванием дат последнего изменения соответствующих .wui и .class файлов).</p>
+     * <p>В случае успешного завершения данного метода для данного ресурса уже имеется актуальная версия соответствующего .class файла
+     * (сам класс еще может быть не не загружен в JVM).</p>
+     * @throws ServletException в случае каких-либо проблем при компиляции сервлета.
+     * @throws IOException в случае каких-либо проблем с вводом-выводом (ресурс не найден).
+     */
+    protected void invalidate() throws ServletException, IOException {
+        if (rctx.getOptions().development) {
+            // цель данной стратегии - как можно более своевременная перекомпиляция устаревших классов.
+            final long tstamp = wuiFile.lastModified();
+            if (tstamp==0) {
+                throw new FileNotFoundException("Resource not found");
+            }
+            if (servlet==null || classFile.lastModified()<tstamp) {
+                synchronized (this) {
+                    if (servlet==null || classFile.lastModified()<tstamp)
+                        compile();
+                }
+            }
+        } else {
+            // цель данной стратегии - как можно меньше операций с io.
+            if (servlet==null) {
+                synchronized (this) {
+                    if (servlet==null)
+                        compile();
+                }
+            }
+        }
+    }
 
     /**
      * Данный метод вызывается когда требуется перекомпилировать оттранслированный java класc
      * (а заодно и проверить его на актуальность)
-     * @param tstamp время последнего изменения .wui файла.
      * @throws ServletException в случае каких-либо проблем при компиляции сервлета.
      * @throws IOException в случае каких-либо проблем с вводом-выводом (ресурс не найден).
      */
-    protected void compile(final long tstamp) throws ServletException, IOException {
+    protected void compile() throws ServletException, IOException {
+        // зачистка старых результатов компиляции ...
+        if (javaFile.isFile() && !javaFile.delete())
+            throw new IOException("Unable to delete file: "+classFile.getAbsolutePath());
         if (classFile.isFile() && !classFile.delete())
             throw new IOException("Unable to delete file: "+classFile.getAbsolutePath());
-        if (options.development) {
-            if (reload || javaFile.lastModified()<tstamp)   // время изменения отсутствующего файла всегда 0.
-                translate();
-        } else {
-            if (reload)
-                translate();
+        if (servlet!=null) {
+            servlet.destroy();
+            servlet = null;
         }
-        // собственно компиляция .java -> .class
-        final JavaCompiler jc = ToolProvider.getSystemJavaCompiler();
-        final StandardJavaFileManager sjfm = jc.getStandardFileManager(null, null, null);
-        final Iterable<? extends JavaFileObject> files = sjfm.getJavaFileObjects(javaFile);
-        final JavaCompiler.CompilationTask task = jc.getTask(null, sjfm, null, null, null, files);
-        if (!task.call())
-            throw new ServletException("Unable to compile resource");
-        // TODO: загрузка класса и инициализация сервлета ...
+        // проверим существование каталога ... todo: перенести в транслятор!
+        final File dir = javaFile.getParentFile();
+        if (!dir.exists() && !dir.mkdirs())
+            throw new IOException("Unable to create directory: "+dir.getAbsolutePath());
+        // трансляция .wui -> .java ...
+        Translator.translate(uri, rctx.getOptions());
+        // собственно компиляция и загрузка сервлета...
+        rctx.compile(javaFile);
+        try {
+            final Class cls = rctx.getWUIClassLoader().loadClass(className);
+            servlet = (HttpServlet)cls.newInstance();
+            servlet.init(rctx.getServletConfig());
+        } catch (Exception e) {
+            servlet = null;
+            throw new ServletException(e.getMessage(), e);
+        }
     }
 
-    /**
-     * Вызывается когда надо преобразовать .wui файл в соответствующий ему .java класс.
-     * @throws ServletException в случае каких-либо проблем при трансляции сервлета.
-     * @throws IOException в случае каких-либо проблем с вводом-выводом (ресурс не найден).
-     */
-    protected void translate() throws ServletException, IOException {
-        if (javaFile.isFile()) {
-            if (!javaFile.delete())
-                throw new IOException("Unable to delete file: "+javaFile.getAbsolutePath());
-        } else {
-            final File dir = javaFile.getParentFile();
-            if (!dir.exists() && !dir.mkdirs())
-                throw new IOException("Unable to create directory: "+dir.getAbsolutePath());
-        }
-        // TODO: выполняем трансляцию .wui -> .java здесь ...
-        // пока заглушка ...
-        Translator.translate(uri, options);
-    }
 
     @Override
     public int hashCode() {

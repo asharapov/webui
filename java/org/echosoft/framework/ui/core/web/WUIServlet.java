@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.echosoft.common.utils.StringUtil;
@@ -25,7 +26,7 @@ public class WUIServlet extends HttpServlet {
         super.init(config);
         try {
             final Options options = new Options(config);
-            rctx = new RuntimeContext( options );
+            rctx = new RuntimeContext(options, config);
         } catch (Exception e) {
             log("WUIServlet fatal error: "+e.getMessage());
             throw new ServletException(e.getMessage(), e);
@@ -61,26 +62,10 @@ public class WUIServlet extends HttpServlet {
             return;
         }
         try {
-            resource.invalidate();
-        } catch (IOException e) {
+            resource.service(request, response);
+        } catch (FileNotFoundException e) {
             handleMissingResource(request, response, uri);
-            return;
         }
-        resource.service(request, response);
-//        final File root = new File( getServletContext().getRealPath("/") ).getCanonicalFile();
-//        final File wuiFile = new File( getServletContext().getRealPath(request.getServletPath()) ).getCanonicalFile();
-//        // транслируем ...
-//        final File javaFile = Translator.translate(root, request.getServletPath());
-//        // компилируем ...
-//        final JavaCompiler jc = ToolProvider.getSystemJavaCompiler();
-//        final StandardJavaFileManager sjfm = jc.getStandardFileManager(null, null, null);
-//        final Iterable<? extends JavaFileObject> files = sjfm.getJavaFileObjects(javaFile);
-//        final JavaCompiler.CompilationTask task = jc.getTask(null, sjfm, null, null, null, files);
-//        boolean result = task.call();
-//
-//        response.getWriter().write("\n wui file: " + wuiFile);
-//        response.getWriter().write("\n wui java: " + javaFile);
-//        response.getWriter().flush();
     }
 
 

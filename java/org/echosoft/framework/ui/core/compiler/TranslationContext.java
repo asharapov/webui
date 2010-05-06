@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import org.echosoft.common.utils.StringUtil;
-
 /**
  * Содержит всю собранную информацию о транслируемом классе, его структуре и зависимостях.
  * @author Anton Sharapov
@@ -56,12 +54,19 @@ public class TranslationContext {
      */
     public TranslationContext(final String uri, final Options options) throws IOException {
         srcFile = new File(options.rootSrcDir, uri);
-        String path = '/' + StringUtil.replace(options.basePkgName,".","/") + uri;
-        int p = path.lastIndexOf('.');
-        dstFile = new File( options.rootDstDir, path.substring(0,p)+".java" );
-        pkgName = Utils.getPackageNameByPath(path);
-        p = srcFile.getName().lastIndexOf('.');
-        clsName = srcFile.getName().substring(0,p);
+        int p;
+        String path = (p=uri.lastIndexOf('.')) >= 0 ? uri.substring(0,p) : uri; // убрали расширение исходного файла
+        if (options.basePkgName!=null)
+            path = '/' + options.basePkgName.replace('.','/') + path;
+        dstFile = new File( options.rootDstDir, path+".java" );
+        p = path.lastIndexOf('/');
+        if (p>0) {
+            pkgName = path.substring(1,p).replace('/','.');
+            clsName = path.substring(p+1);
+        } else {
+            pkgName = "";
+            clsName = path.substring(1);
+        }
         imports = new TreeSet<Class>(CLS_COMPARATOR);
         methods = new ArrayList<MethodContext>();
     }

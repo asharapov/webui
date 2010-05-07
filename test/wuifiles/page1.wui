@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<core:page  xmlns:core="http://echosoft.org/webui/core"
+            viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
+
+  <!-- simple comment -->
+
+  <core:html>
+    <![CDATA[Diagram:
+    <div id="html-snippet-1">
+      This is a <b>static</b> html snippet.
+    </div>
+    ]]>
+  </core:html>
+
+  <core:javascript>
+    function myFunction(x,y) {
+      return x + y;
+    }
+    var menuRoot = {
+      nodeType: "async",
+      draggable: false,
+      children: [
+        {text:"Item 1", leaf:true},
+        {text:"Item 2", leaf:true}
+      ]
+    };
+  </core:javascript>
+
+</core:page>

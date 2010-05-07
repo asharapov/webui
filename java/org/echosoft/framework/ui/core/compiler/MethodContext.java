@@ -1,5 +1,6 @@
 package org.echosoft.framework.ui.core.compiler;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -69,10 +70,11 @@ public class MethodContext {
         }
     }
 
-    public Variable addArgument(final Class cls, final String name) {
-        final Variable v = new Variable(this, cls, name);
-        v.alreadyDeclared = true;
-        v.useLevel = 0;
+    public Variable addIdentifier(final Class cls, final String name, final boolean reusable) {
+        if (vars.containsKey(name))
+            throw new IllegalStateException("Identifier "+name+" already declared in method");
+        final Variable v = new Variable(this, cls, name, reusable);
+        v.useLevel = vLevel;
         vars.put(v.name, v);
         return v;
     }
@@ -116,6 +118,17 @@ public class MethodContext {
         result.useLevel = vLevel;
         vars.put(result.name, result);
         return result;
+    }
+
+
+    /**
+     * Записывает в буфер серию символов ' ' для обозначения текущего уровня отступа в строке.
+     */
+    public FastStringWriter indent() {
+        final char[] buf = new char[(vLevel+2) * 4];
+        Arrays.fill(buf, ' ');
+        content.write(buf);
+        return content;
     }
 
 }

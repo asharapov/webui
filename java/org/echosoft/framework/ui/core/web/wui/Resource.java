@@ -62,7 +62,7 @@ public class Resource {
             this.className = options.basePkgName + path.replace('/','.');
             path = '/' + options.basePkgName.replace('.','/') + path;
         } else {
-            this.className = path.replace('/','.');
+            this.className = path.substring(1).replace('/','.');
         }
         this.wuiFile = new File(options.rootSrcDir, uri);
         this.javaFile = new File( options.rootDstDir, path+".java" );

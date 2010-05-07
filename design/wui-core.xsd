@@ -16,6 +16,10 @@
         Описывает свойства страницы в целом.
       </xs:documentation>
     </xs:annotation>
+    <xs:sequence>
+      <xs:element name="html" type="xs:string" />
+      <xs:element name="javascript" type="xs:string" />
+    </xs:sequence>
     <xs:attribute name="title" type="xs:string">
       <xs:annotation>
         <xs:documentation>Название страницы которое будет отображаться в заголовке страницы.</xs:documentation>

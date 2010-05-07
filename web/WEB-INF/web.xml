@@ -43,6 +43,10 @@
       <param-name>target-package</param-name>
       <param-value>org.echosoft.wuifiles</param-value>
     </init-param>
+    <init-param>
+      <param-name>charset</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>WuiServlet</servlet-name>

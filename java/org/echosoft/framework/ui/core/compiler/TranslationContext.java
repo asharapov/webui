@@ -95,12 +95,14 @@ public class TranslationContext {
      *   <code>false</code> если в секции "import" уже имеется класс с таким именем но находящийся в другом пакете.
      *   В этом случае все переменные указанного класса требуется при объявлении указывать вместе с пакетом.
      */
-    public boolean ensureClassImported(final Class cls) {
-        final String name = cls.isArray() ? cls.getClass().getName() : cls.getName();
+    public boolean ensureClassImported(Class cls) {
+        if (cls.isArray())
+            cls = cls.getComponentType();
         if (imports.contains(cls))
             return true;
+        final String name = cls.getSimpleName();
         for (Class cn : imports) {
-            if (cn.getName().equals(name)) {
+            if (cn.getSimpleName().equals(name)) {
                 return false;
             }
         }

@@ -16,7 +16,7 @@ public interface TagHandler {
      * @param ctx  контекст трансляции.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void open(String uri, String name, Attributes attrs, TranslationContext ctx) throws SAXException;
+    public void start(String uri, String name, Attributes attrs, TranslationContext ctx) throws SAXException;
 
     /**
      * Вызывается при обработке закрывающего тега.
@@ -25,7 +25,7 @@ public interface TagHandler {
      * @param ctx  контекст трансляции.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void close(String uri, String name, TranslationContext ctx) throws SAXException;
+    public void end(String uri, String name, TranslationContext ctx) throws SAXException;
 
     /**
      * Вызывается при обработке фрагмента текста внутри в теле тега.

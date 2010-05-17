@@ -59,7 +59,7 @@ public class ThemeManager {
      * Устанавливает тему по умолчанию. Тема с указанным в аргументе логическим именем уже должна быть доступна для приложения,
      * в противном случае метод поднимает исключительну ситуацию.
      * @param themeName  логическое имя новой темы по умолчанию. В системе уже должна быть к этому времени зарегистрирована тема с таким именем.
-     * @throws org.echosoft.framework.ui.core.UIException  поднимается в случае когда в система ничего не знает про указанную в аргументе тему.
+     * @throws UIException  поднимается в случае когда в система ничего не знает про указанную в аргументе тему.
      */
     public void setDefaultTheme(final String themeName) {
         if (!themes.containsKey(themeName))
@@ -82,15 +82,19 @@ public class ThemeManager {
      * @param locale  локаль, для которой возвращается тема.
      * @param themeName  логическое имя темы. Если <code>null</code> то используется тема по умолчанию.
      * @return  экземпляр темы с указанным именем.
-     * @throws org.echosoft.framework.ui.core.UIException  поднимается в случае когда тема с указанным идентификатором не доступна в системе.
+     * @throws UIException  поднимается в случае когда тема с указанным идентификатором не доступна в системе.
      */
     public Theme getTheme(final Locale locale, String themeName) {
         if (themeName==null)
             themeName = defaultTheme;
         final ThemeInfo ti = themes.get(themeName);
-        if (ti==null)
+        if (ti!=null) {
+            return ti.getTheme(locale);
+        } else
+        if (themeName==null) {
+            return null;
+        } else
             throw new UIException("Theme ["+themeName+"] not found in classpath");
-        return ti.getTheme(locale);
     }
 
 

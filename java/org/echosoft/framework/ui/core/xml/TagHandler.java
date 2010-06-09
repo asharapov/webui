@@ -1,5 +1,6 @@
-package org.echosoft.framework.ui.core.compiler;
+package org.echosoft.framework.ui.core.xml;
 
+import org.echosoft.framework.ui.core.compiler.TranslationContext;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

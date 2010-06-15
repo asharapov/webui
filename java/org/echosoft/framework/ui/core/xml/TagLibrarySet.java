@@ -11,6 +11,11 @@ public class TagLibrarySet {
 
     private final Map<String,TagLibrary> libraries;
 
+    public static TagLibrarySet findLibariesInClasspath() {
+        final TagLibrarySet result = new TagLibrarySet();
+        return result;
+    }
+
     public TagLibrarySet() {
         this.libraries = new HashMap<String,TagLibrary>();
     }

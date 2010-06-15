@@ -2,9 +2,12 @@ package org.echosoft.framework.ui.core.compiler;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -15,6 +18,11 @@ import org.echosoft.framework.ui.core.Application;
  */
 public class Utils {
 
+    /**
+     * На основании информации предоставляемой текущим загрузчиком классов восстанавливаем значение переменной CLASSPATH.
+     * @param sctx  контекст сервлета
+     * @return строка состоящая из путей ко всем .jar файлам которые доступны в рантайме нашего java процесса. 
+     */
     public static String resolveClassPath(final ServletContext sctx) {
         final Set<String> paths = new LinkedHashSet<String>();
         for (ClassLoader loader=Thread.currentThread().getContextClassLoader(); loader!=null; loader=loader.getParent()) {
@@ -53,5 +61,20 @@ public class Utils {
             out.append(path);
         }
         return out.toString();
+    }
+
+    public static Set<URL> search(final String prefix, final String suffix) throws IOException {
+        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        final Set<URL> result = new HashSet<URL>();
+        for (Enumeration<URL> e = cl.getResources(prefix); e.hasMoreElements(); )  {
+            final URL url = e.nextElement();
+            System.out.println(url);
+        }
+        return result;
+    }
+
+    public static void main(String args[]) throws Exception {
+        Set<URL> set = search("META-INF/", ".taglib.xml");
+
     }
 }

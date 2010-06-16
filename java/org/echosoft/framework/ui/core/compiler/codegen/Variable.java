@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.compiler;
+package org.echosoft.framework.ui.core.compiler.codegen;
 
 /**
  * Описывает информацию по отдельной переменной в методе транслируемого класса.

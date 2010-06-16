@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.echosoft.framework.ui.core.compiler.Translator;
+import org.echosoft.framework.ui.core.compiler.codegen.Translator;
 
 /**
  * Описывает отдельно взятый .wui ресурс.

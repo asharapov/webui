@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.xml;
+package org.echosoft.framework.ui.core.compiler.xml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

@@ -1,7 +1,16 @@
-package org.echosoft.framework.ui.core.xml;
+package org.echosoft.framework.ui.core.compiler.xml;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import org.echosoft.common.utils.XMLUtil;
+import org.echosoft.framework.ui.core.Application;
+import org.echosoft.framework.ui.core.compiler.utils.ClasspathUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Содержит ссылки на все загруженные библиотеки тегов.
@@ -11,8 +20,38 @@ public class TagLibrarySet {
 
     private final Map<String,TagLibrary> libraries;
 
-    public static TagLibrarySet findLibariesInClasspath() {
+    /**
+     * Осуществляет поиск и загрузку информации обо всех библиотеках тегов которые доступны
+     * текущему загрузчику классов в JVM.
+     * @return  коллекция найденных библиотек тегов.
+     * @throws IOException  в случае каких-либо проблем.
+     */
+    public static TagLibrarySet findLibariesInClasspath() throws IOException {
         final TagLibrarySet result = new TagLibrarySet();
+        for (URL url : ClasspathUtils.search("META-INF/", ".taglib.xml")) {
+            try {
+                final Document doc = XMLUtil.loadDocument(url);
+                final Element root = doc.getDocumentElement();
+                final String uri = root.getAttribute("uri");
+                if (!root.getTagName().equals("taglib") || uri.isEmpty()) {
+                    Application.log.warn("Incorrect taglib definition: "+url);
+                    continue;
+                }
+                final TagLibrary taglib = result.ensureLibraryExists( uri );
+                for (Iterator<Element> it = XMLUtil.getChildElements(root,"tag"); it.hasNext(); ) {
+                    final Element elem = it.next();
+                    final String tagName = elem.getAttribute("name");
+                    final String className = elem.getAttribute("handler");
+                    if (tagName.isEmpty() || className.isEmpty()) {
+                        Application.log.warn("Illegal tag definition ("+tagName+"): "+url);
+                        continue;
+                    }
+                    taglib.addTagHandler(tagName, className);
+                }
+            } catch (Exception e) {
+                Application.log.warn("An error occurs while processing tags library \""+url+"\": "+e.getMessage(), e);
+            }
+        }
         return result;
     }
 

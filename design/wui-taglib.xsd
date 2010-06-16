@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="0.8">
+  <xs:annotation>
+   <xs:documentation>
+     Определяет основные элементы языка разметки webui.
+  </xs:documentation>
+ </xs:annotation>
+
+  <xs:element name="taglib" type="TTagLibrary" />
+
+  <xs:complexType name="TTagLibrary">
+    <xs:annotation>
+      <xs:documentation>
+        Содержит описание библиотеки тегов, используемых для описания форм UI.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tag" type="TTag" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>Идентификатор библиотеки тегов.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="TTag">
+    <xs:annotation>
+      <xs:documentation>
+        Определяет отдельный тег библиотеки, служащий для описания форм UI.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:ID" use="required">
+      <xs:annotation>
+        <xs:documentation>Имя тега</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="handler" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>Имя класса - обработчика</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+</xs:schema>

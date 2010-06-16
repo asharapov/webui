@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.compiler;
+package org.echosoft.framework.ui.core.compiler.codegen;
 
 import java.util.Arrays;
 import java.util.HashMap;

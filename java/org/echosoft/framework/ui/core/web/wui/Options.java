@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.echosoft.common.utils.StringUtil;
-import org.echosoft.framework.ui.core.compiler.Utils;
+import org.echosoft.framework.ui.core.compiler.utils.ClasspathUtils;
 
 /**
  * Структура с конфигурационными параметрами модуля трансляции .wui файлов в соответствующие java сервлеты.
@@ -78,7 +78,7 @@ public final class Options implements Serializable {
         } else {
             basePkgName = DEFAULT_BASE_PACKAGE;
         }
-        classpath = Utils.resolveClassPath(config.getServletContext());
+        classpath = ClasspathUtils.resolveClassPath(config.getServletContext());
         charset = StringUtil.trim(config.getInitParameter("charset"));
         development = "development".equalsIgnoreCase(config.getInitParameter("mode"));
     }
@@ -99,7 +99,7 @@ public final class Options implements Serializable {
         } else {
             basePkgName = DEFAULT_BASE_PACKAGE;
         }
-        classpath = Utils.resolveClassPath(null);
+        classpath = ClasspathUtils.resolveClassPath(null);
         charset = StringUtil.trim(env.get("charset"));
         development = "development".equalsIgnoreCase(env.get("mode"));
     }

@@ -2,12 +2,9 @@ package org.echosoft.framework.ui.core.compiler;
 
 import javax.servlet.ServletContext;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -63,18 +60,12 @@ public class Utils {
         return out.toString();
     }
 
-    public static Set<URL> search(final String prefix, final String suffix) throws IOException {
-        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        final Set<URL> result = new HashSet<URL>();
-        for (Enumeration<URL> e = cl.getResources(prefix); e.hasMoreElements(); )  {
-            final URL url = e.nextElement();
-            System.out.println(url);
-        }
-        return result;
-    }
 
     public static void main(String args[]) throws Exception {
-        Set<URL> set = search("META-INF/", ".taglib.xml");
+        Set<URL> set = ClasspathUtils.search("META-INF/", ".taglib.xml");
+        for (URL url : set) {
+            System.out.println(url);
+        }
 
     }
 }

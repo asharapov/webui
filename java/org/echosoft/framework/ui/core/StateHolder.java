@@ -84,7 +84,7 @@ public class StateHolder {
 
     /**
      * Возвращает состояние текущей страницы.
-     * @return  состояние текущей страницы
+     * @return  состояние текущей страницы.
      * @throws NullPointerException  если ни одна страница в менеджере не была помечена как текущая.
      */
     public Map<String,Object> getCurrentState() {
@@ -94,7 +94,7 @@ public class StateHolder {
 
     /**
      * Удаляет информацию о состояниях страниц которые более не представляют интереса.
-     * @param strategy  выбранная стратегия сборки мусора.
+     * @param strategy  используемая стратегия сборки мусора.
      */
     public void clean(final CleanStrategy strategy) {
         for (Iterator<Map.Entry<ViewStateDescriptor,Map<String,Object>>> it=states.entrySet().iterator(); it.hasNext(); ) {

@@ -121,7 +121,7 @@ public interface RequestContext {
 
     /**
      * Возвращает информацию по всем заголовкам запроса. Для каждого заголовка указано его название (ключ) и массив всех его значений (значение).
-     * @return  информацию по всем заголовкам запроса.
+     * @return  информация по всем заголовкам запроса.
      */
     public Map<String,String[]> getRequestHeaders();
 
@@ -161,14 +161,14 @@ public interface RequestContext {
     /**
      * Включает содержимое указанного ресурса в заданный поток.<br/>
      * <strong>Важно!</strong> Метод работает только с текстовыми ресурсами.
-     * @param url  URL ресурса содержимое которого должно быть включено в выходной поток
+     * @param url  URL ресурса содержимое которого должно быть включено в выходной поток.
      * @param out  выходной символьный поток.
      * @throws java.io.IOException в случае каких-либо проблем.
      */
     public void include(String url, Writer out) throws IOException;
 
     /**
-     * Возвращает имя под которым был зарегистрирован пользователь, инициировавшего данный запрос.
+     * Возвращает имя под которым был зарегистрирован пользователь, инициировавший данный запрос.
      * В случае, если пользователь не был аутентифицирован, метод вернет <code>null</code>.
      * @return  имя пользователя инициировавшего данный запрос>
      * @see javax.servlet.http.HttpServletRequest#getRemoteUser()     
@@ -249,7 +249,7 @@ public interface RequestContext {
      * @return  a {@link String}, decoded by the web container, specifying extra path information
      * that comes after the servlet path but before the query string in the request URL; or null
      * if the URL does not have any extra path information.
-     * @see javax.servlet.http.HttpServletRequest#getPathInfo() ()  
+     * @see javax.servlet.http.HttpServletRequest#getPathInfo()
      */
     public String getPathInfo();
 

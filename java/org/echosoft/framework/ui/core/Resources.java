@@ -110,7 +110,7 @@ public class Resources {
     /**
      * Подключает к формируемой странице таблицу стилей доступную по указанной ссылке.
      * @param url  ссылка по которой доступно содержимое подключаемого скрипта, может быть задана либо в абсолютной либо в относительной форме.
-     * @param contentType  язык на котором написан скрипт. По умолчанию (если аргумент равен <code>null</code>) имеет значение <code>text/javascript</code>.
+     * @param contentType  язык на котором описана таблица стилей. По умолчанию (если аргумент равен <code>null</code>) имеет значение <code>text/css</code>.
      * @param media  определяет устройство, для которого предназначена данная таблица стилей.
      */
     public void attachStylesheet(final String url, final String contentType, final String media) {
@@ -150,7 +150,7 @@ public class Resources {
 
     /**
      * Возвращает строковый буфер в котором агрегируются все внедряемые в тело страницы фрагменты HTML.
-     * @param out выходной поток куда будут переписаны все внедряемые в тело страницы фрагменты HTMLю
+     * @param out выходной поток куда будут переписаны все внедряемые в тело страницы фрагменты HTML.
      * @throws IOException  возникает в случае ошибок вывода данных в поток.
      */
     public void writeOutHTML(final Writer out) throws IOException {
@@ -202,7 +202,7 @@ public class Resources {
      * <pre>
      *  final Resources.SavePoint sp = resources.makeSavePoint();
      *  try {
-     *      resources.attach(Resources.Type.Javascript, new URL("http://localhost:8080/myapp/js/utils.js"));
+     *      resources.attachScript( "http://localhost:8080/myapp/js/utils.js" );
      *      // do something ...
      *  } catch (Exception e) {
      *      resources.rollback(sp);

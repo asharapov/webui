@@ -25,6 +25,14 @@ public abstract class ASTNode {
         return parent;
     }
 
+    public ASTNode findParent(final Class cls) {
+        for (ASTNode p=parent; p!=null; p=p.parent) {
+            if (cls.isAssignableFrom(p.getClass()))
+                return p;
+        }
+        return null;
+    }
+
     public List<ASTNode> getChildren() {
         return children;
     }
@@ -53,7 +61,7 @@ public abstract class ASTNode {
         return this;
     }
 
-    public void translate(final Writer out) {
+    public void translate(final Writer out) throws IOException {
     }
 
     public String debugInfo() {

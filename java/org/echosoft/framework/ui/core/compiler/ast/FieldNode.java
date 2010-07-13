@@ -58,9 +58,31 @@ public class FieldNode extends ASTNode {
         return this;
     }
 
+    public ExpressionNode getFieldValue() {
+        return children.isEmpty() ? (ExpressionNode)children.get(0) : null;
+    }
+    public FieldNode setFieldValue(ExpressionNode node) {
+        if (children.size()>0) {
+            if (node!=null) {
+                children.set(0, node);
+            } else {
+                final ASTNode oldNode = children.remove(0);
+                oldNode.parent = null;
+            }
+        } else {
+            if (node!=null)
+                super.append(node);
+        }
+        return this;
+    }
+
     @Override
     public ASTNode append(final ASTNode node) {
-        if (!isLe)
+        if (children.size()>0)
+            throw new IllegalStateException("Field value already specified");
+        if (!(node instanceof ExpressionNode))
+            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
         return super.append(node);
+
     }
 }

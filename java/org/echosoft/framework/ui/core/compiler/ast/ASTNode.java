@@ -3,6 +3,7 @@ package org.echosoft.framework.ui.core.compiler.ast;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -13,6 +14,13 @@ import org.echosoft.common.utils.StringUtil;
  * @author Anton Sharapov
  */
 public abstract class ASTNode {
+    protected static final int INDENT = 4;
+    protected static final int MAX_DEFAULT_LEVEL = 25;
+    protected static final char[] PREFIXES = new char[MAX_DEFAULT_LEVEL * INDENT];
+    static {
+        Arrays.fill(PREFIXES,' ');
+    }
+
     protected ASTNode parent;
     protected final List<ASTNode> children;
 
@@ -80,6 +88,20 @@ public abstract class ASTNode {
         out.append("\n");
         for (ASTNode node : children) {
             node.debugInfo(out);
+        }
+    }
+
+    protected void indent(final Writer out) throws IOException {
+        final int level = getLevel();
+        if (level<=MAX_DEFAULT_LEVEL) {
+            out.write(PREFIXES,0,level*INDENT);
+        } else {
+            int lv = level;
+            while (lv>MAX_DEFAULT_LEVEL) {
+                out.write(PREFIXES);
+                lv -= MAX_DEFAULT_LEVEL;
+            }
+            out.write(PREFIXES,0,lv*INDENT);
         }
     }
 

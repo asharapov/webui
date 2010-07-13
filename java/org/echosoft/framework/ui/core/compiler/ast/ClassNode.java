@@ -2,7 +2,6 @@ package org.echosoft.framework.ui.core.compiler.ast;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -99,21 +98,21 @@ public class ClassNode extends ASTNode {
 
     @Override
     public void translate(final Writer out) throws IOException {
-        final char[] prefix = new char[getLevel()*4];
-        Arrays.fill(prefix, ' ');
         if (pkgName.length()>0) {
-            out.write(prefix);
+            indent(out);
             out.write("package ");
             out.write(pkgName);
             out.write(";\n\n");
         }
 
         for (Class cls : imports) {
+            indent(out);
             out.write("import ");
             out.write(cls.getCanonicalName());
             out.write(";\n");
         }
         out.write('\n');
+        indent(out);
         out.write("public final class ");
 
     }

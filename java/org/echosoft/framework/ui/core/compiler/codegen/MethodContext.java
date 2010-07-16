@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.echosoft.common.io.FastStringWriter;
 import org.echosoft.common.utils.StringUtil;
+import org.echosoft.framework.ui.core.compiler.ast.FileNode;
 
 /**
  * Содержит информацию о всех переменных объявленных в отдельном транслируемом методе.
@@ -17,21 +18,20 @@ import org.echosoft.common.utils.StringUtil;
  */
 public class MethodContext {
 
-    public final TranslationContext tc;
+    public final FileNode tc;
     public final FastStringWriter content;
     public final Class resultType;
     public final String name;
     public final Map<String, Variable> vars;
     private int vLevel;
 
-    public MethodContext(final TranslationContext tc, final Class resultType, final String name) {
+    public MethodContext(final FileNode tc, final Class resultType, final String name) {
         this.tc = tc;
         this.content = new FastStringWriter(512);
         this.resultType = resultType!=null ? resultType : Void.class;
         this.name = name;
         this.vars = new HashMap<String,Variable>();
         this.vLevel = 0;
-        tc.methods.add( this );
     }
 
     /**

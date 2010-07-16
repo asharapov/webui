@@ -14,9 +14,10 @@ import org.echosoft.common.utils.StringUtil;
  * @author Anton Sharapov
  */
 public abstract class ASTNode {
-    protected static final int INDENT = 4;
-    protected static final int MAX_DEFAULT_LEVEL = 25;
-    protected static final char[] PREFIXES = new char[MAX_DEFAULT_LEVEL * INDENT];
+
+    private static final int INDENT = 4;
+    private static final int MAX_DEFAULT_LEVEL = 25;
+    private static final char[] PREFIXES = new char[MAX_DEFAULT_LEVEL * INDENT];
     static {
         Arrays.fill(PREFIXES,' ');
     }
@@ -33,10 +34,19 @@ public abstract class ASTNode {
         return parent;
     }
 
-    public ASTNode findParent(final Class cls) {
+    public ASTNode getRootNode() {
+        ASTNode n = this;
+        while (n.parent!=null) {
+            n = n.parent;
+        }
+        return n;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends ASTNode, E extends T> E findParent(final Class<T> cls) {
         for (ASTNode p=parent; p!=null; p=p.parent) {
             if (cls.isAssignableFrom(p.getClass()))
-                return p;
+                return (E)p;
         }
         return null;
     }
@@ -92,7 +102,9 @@ public abstract class ASTNode {
     }
 
     protected void indent(final Writer out) throws IOException {
-        final int level = getLevel();
+        if (parent==null)
+            return;
+        final int level = getLevel() - 1;
         if (level<=MAX_DEFAULT_LEVEL) {
             out.write(PREFIXES,0,level*INDENT);
         } else {
@@ -103,6 +115,11 @@ public abstract class ASTNode {
             }
             out.write(PREFIXES,0,lv*INDENT);
         }
+    }
+
+    protected void writeClass(final Class cls) {
+        ASTNode node = parent;
+
     }
 
 

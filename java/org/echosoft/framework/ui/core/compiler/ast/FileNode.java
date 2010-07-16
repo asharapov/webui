@@ -1,54 +1,40 @@
-package org.echosoft.framework.ui.core.compiler.codegen;
+package org.echosoft.framework.ui.core.compiler.ast;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.Servlet;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.Writer;
 import java.util.Comparator;
 import java.util.TreeSet;
 
 import org.echosoft.framework.ui.core.web.wui.Options;
 
 /**
- * Содержит всю собранную информацию о транслируемом классе, его структуре и зависимостях.
+ * Содержит всю собранную информацию о транслируемом файле (включая все содержащиеся в нем классы).
  * @author Anton Sharapov
  */
-public class TranslationContext {
+public class FileNode extends ASTNode {
     /**
      * Конфигурация модуля трансляции .wui файлов в сервлеты.
      */
-    public Options options;
-    /**
-     * Путь до исходного .wui файла заданный в канонической форме.
-     */
-    public final File srcFile;
+    public final Options options;
     /**
      * Путь до целевого .java файла заданный в канонической форме.
      */
-    public final File dstFile;
-    /**
-     * Имя транслируемого файла (без расширения)
-     * Производная от него используется в качестве имени генерируемого .java класса.
-     */
-    public final String clsName;
+    private final File dstFile;
     /**
      * Имя пакета в котором находится генерируемый .java класс.
      */
-    public final String pkgName;
+    private final String pkgName;
     /**
      * Множество классов, которые используются в генерируемом классе.
      */
-    public final TreeSet<Class> imports;
-    /**
-     * Информация о транслируемых в настоящий момент методах данного класса.
-     */
-    public final ArrayList<MethodContext> methods;
+    private final TreeSet<Class> imports;
 
-    public MethodContext current;
+    /**
+     * Узел дерева, соответствующий основному классу - сервлету.
+     */
+    private final ClassNode clsnode;
 
     private static final Comparator<Class> CLS_COMPARATOR =
             new Comparator<Class>() {
@@ -62,15 +48,15 @@ public class TranslationContext {
      * @param options  конфигурационные параметры.
      * @throws IOException  в случае проблем с получением канонической версии пути к требуемому файлу.
      */
-    public TranslationContext(final String uri, final Options options) throws IOException {
+    public FileNode(final String uri, final Options options) throws IOException {
         this.options = options;
-        srcFile = new File(options.rootSrcDir, uri);
         int p;
         String path = (p=uri.lastIndexOf('.')) >= 0 ? uri.substring(0,p) : uri; // убрали расширение исходного файла
         if (options.basePkgName!=null)
             path = '/' + options.basePkgName.replace('.','/') + path;
         dstFile = new File( options.rootDstDir, path+".java" );
         p = path.lastIndexOf('/');
+        final String clsName;
         if (p>0) {
             pkgName = path.substring(1,p).replace('/','.');
             clsName = path.substring(p+1);
@@ -79,13 +65,49 @@ public class TranslationContext {
             clsName = path.substring(1);
         }
         imports = new TreeSet<Class>(CLS_COMPARATOR);
-        methods = new ArrayList<MethodContext>();
-        ensureClassImported(IOException.class);
-        ensureClassImported(ServletException.class);
-        ensureClassImported(HttpServlet.class);
-        ensureClassImported(HttpSession.class);
-        ensureClassImported(HttpServletRequest.class);
-        ensureClassImported(HttpServletResponse.class);
+        clsnode = new ClassNode(clsName, Servlet.class);
+        append(clsnode);
+    }
+
+    /**
+     * Возвращает указание в каком месте файловой системы должен быть расположен транслируемый файл.
+     * @return файл в который должно быть сохранено содержимое данного дерева узлов.
+     */
+    public File getDstFile() {
+        return dstFile;
+    }
+
+    /**
+     * Ссылка на узел, соответствующий транслируемому классу - сервлету.
+     * @return узел, соответствующий основному классу в файле (сервлету).
+     */
+    public ClassNode getClassNode() {
+        return clsnode;
+    }
+
+    @Override
+    public ASTNode append(final ASTNode node) {
+        if (!(node instanceof ClassNode))
+            throw new IllegalStateException("ClassNode required");
+        return super.append(node);
+    }
+
+    @Override
+    public void translate(final Writer out) throws IOException {
+        if (!pkgName.isEmpty()) {
+            out.write("package ");
+            out.write(pkgName);
+            out.write(";\n\n");
+        }
+        for (Class cls : imports) {
+            out.write("import ");
+            out.write(cls.getCanonicalName());
+            out.write(";\n");
+        }
+        for (ASTNode node : children) {
+            out.write('\n');
+            node.translate(out);
+        }
     }
 
     /**

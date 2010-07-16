@@ -2,7 +2,6 @@ package org.echosoft.framework.ui.core.compiler.ast;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -11,14 +10,6 @@ import java.util.TreeSet;
  */
 public class ClassNode extends ASTNode {
 
-    private static final Comparator<Class> CLS_COMPARATOR =
-            new Comparator<Class>() {
-                public int compare(final Class o1, final Class o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            };
-
-    private String pkgName;
     private String clsName;
     private boolean abstrct;
     private boolean fin;
@@ -26,22 +17,12 @@ public class ClassNode extends ASTNode {
     private Visibility visibility;
     private Class extended;
     private final TreeSet<Class> implemented;
-    private final TreeSet<Class> imports;
 
-    public ClassNode(String pkgName, String clsName, Class extended) {
-        this.pkgName = pkgName!=null ? pkgName.trim() : "";
+    public ClassNode(final String clsName, final Class extended) {
         this.clsName = clsName;
         this.extended = extended;
         this.visibility = Visibility.PUBLIC;
-        this.implemented = new TreeSet<Class>(CLS_COMPARATOR);
-        this.imports = new TreeSet<Class>(CLS_COMPARATOR);
-    }
-
-    public String getPackageName() {
-        return pkgName;
-    }
-    public void setPackageName(final String pkgName) {
-        this.pkgName = pkgName!=null ? pkgName.trim() : "";
+        this.implemented = new TreeSet<Class>();
     }
 
     public String getClassName() {
@@ -98,22 +79,19 @@ public class ClassNode extends ASTNode {
 
     @Override
     public void translate(final Writer out) throws IOException {
-        if (pkgName.length()>0) {
-            indent(out);
-            out.write("package ");
-            out.write(pkgName);
-            out.write(";\n\n");
-        }
-
-        for (Class cls : imports) {
-            indent(out);
-            out.write("import ");
-            out.write(cls.getCanonicalName());
-            out.write(";\n");
-        }
-        out.write('\n');
         indent(out);
-        out.write("public final class ");
-
+        out.write(visibility.toJavaString());
+        if (stat) {
+            out.write(" static");
+        }
+        if (fin) {
+            out.write(" final");
+        }
+        out.write(" class");
+        out.write(clsName);
+        if (extended!=null) {
+            out.write(' ');
+            
+        }
     }
 }

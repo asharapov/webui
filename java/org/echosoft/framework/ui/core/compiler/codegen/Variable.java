@@ -48,7 +48,7 @@ public class Variable {
         this.mc = mc;
         this.cls = cls;
         this.name = name;
-        this.shouldBeQualified = !mc.tc.ensureClassImported(cls);
+        this.shouldBeQualified = true; //!mc.tc.ensureClassImported(cls);
         this.declareLevel = mc.getLevel();
         this.reusable = reusable;
         this.alreadyDeclared = false;

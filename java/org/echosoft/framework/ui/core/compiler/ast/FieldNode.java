@@ -1,5 +1,8 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
+import java.io.IOException;
+import java.io.Writer;
+
 /**
  * @author Anton Sharapov
  */
@@ -59,30 +62,44 @@ public class FieldNode extends ASTNode {
     }
 
     public ExpressionNode getFieldValue() {
-        return children.isEmpty() ? (ExpressionNode)children.get(0) : null;
+        return hasChildren() ? (ExpressionNode)children.get(0) : null;
     }
     public FieldNode setFieldValue(ExpressionNode node) {
-        if (children.size()>0) {
-            if (node!=null) {
-                children.set(0, node);
-            } else {
-                final ASTNode oldNode = children.remove(0);
-                oldNode.parent = null;
-            }
-        } else {
-            if (node!=null)
-                super.append(node);
+        if (hasChildren()) {
+            children.get(0).excludeFromTree();
         }
+        if (node!=null)
+            super.append(node);
         return this;
     }
 
     @Override
     public ASTNode append(final ASTNode node) {
-        if (children.size()>0)
+        if (hasChildren())
             throw new IllegalStateException("Field value already specified");
         if (!(node instanceof ExpressionNode))
             throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
         return super.append(node);
+    }
 
+    @Override
+    public void translate(final Writer out) throws IOException {
+        indent(out);
+        out.write(visibility.toJavaString());
+        if (stat) {
+            out.write(" static");
+        }
+        if (fin) {
+            out.write(" final");
+        }
+        out.write(' ');
+        out.write( getRoot().ensureClassImported(cls) );
+        out.write(' ');
+        out.write(name);
+        if (hasChildren()) {
+            out.write(" = ");
+            getFieldValue().translate(out);
+        }
+        out.write(";\n");
     }
 }

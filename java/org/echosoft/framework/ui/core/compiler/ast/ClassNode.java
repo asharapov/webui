@@ -2,7 +2,9 @@ package org.echosoft.framework.ui.core.compiler.ast;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -16,66 +18,80 @@ public class ClassNode extends ASTNode {
     private boolean stat;
     private Visibility visibility;
     private Class extended;
-    private final TreeSet<Class> implemented;
+    private final SortedSet<Class> implemented;
 
     public ClassNode(final String clsName, final Class extended) {
         this.clsName = clsName;
         this.extended = extended;
         this.visibility = Visibility.PUBLIC;
-        this.implemented = new TreeSet<Class>();
+        this.implemented = new TreeSet<Class>(ASTNode.CLS_COMPARATOR);
     }
 
     public String getClassName() {
         return clsName;
     }
-    public void setClassName(final String className) {
+    public ClassNode setClassName(final String className) {
         this.clsName = className;
+        return this;
     }
 
     public boolean isAbstract() {
         return abstrct;
     }
-    public void setAbstract(final boolean abstrct) {
+    public ClassNode setAbstract(final boolean abstrct) {
         this.abstrct = abstrct;
+        return this;
     }
 
     public boolean isFinal() {
         return fin;
     }
-    public void setFinal(final boolean fin) {
+    public ClassNode setFinal(final boolean fin) {
         this.fin = fin;
+        return this;
     }
 
     public boolean isStatic() {
         return stat;
     }
-    public void setStatic(final boolean stat) {
+    public ClassNode setStatic(final boolean stat) {
         this.stat = stat;
+        return this;
     }
 
     public Visibility getVisibility() {
         return visibility;
     }
-    public void setVisibility(final Visibility visibility) {
+    public ClassNode setVisibility(final Visibility visibility) {
         this.visibility = visibility;
+        return this;
     }
 
     public Class getExtends() {
         return extended;
     }
-    public void setExtends(final Class extended) {
+    public ClassNode setExtends(final Class extended) {
         this.extended = extended;
+        return this;
     }
 
     public Set<Class> getImplements() {
         return implemented;
     }
-    public void addImplementation(final Class cls) {
+    public ClassNode addImplementation(final Class cls) {
         if (!cls.isInterface())
             throw new IllegalArgumentException("Interface must be specified");
         this.implemented.add( cls );
+        return this;
     }
 
+
+    @Override
+    public ASTNode append(final ASTNode node) {
+        if ( !(node instanceof MethodNode) && !(node instanceof FieldNode) && !(node instanceof ClassNode) )
+            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
+        return super.append(node);
+    }
 
     @Override
     public void translate(final Writer out) throws IOException {
@@ -87,11 +103,26 @@ public class ClassNode extends ASTNode {
         if (fin) {
             out.write(" final");
         }
-        out.write(" class");
+        out.write(" class ");
         out.write(clsName);
         if (extended!=null) {
             out.write(' ');
-            
+            out.write( getRoot().ensureClassImported(extended) );
         }
+        if (implemented.size()>0) {
+            out.write(" implements ");
+            for (Iterator<Class> itcl=implemented.iterator(); itcl.hasNext(); ) {
+                out.write( getRoot().ensureClassImported(itcl.next()) );
+                if (itcl.hasNext()) {
+                    out.write(", ");
+                }
+            }
+        }
+        out.write(" {\n");
+        for (ASTNode node : children) {
+            node.translate(out);
+        }
+        indent(out);
+        out.write("}\n");
     }
 }

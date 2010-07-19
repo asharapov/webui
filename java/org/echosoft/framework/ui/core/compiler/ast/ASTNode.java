@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,6 +16,13 @@ import org.echosoft.common.utils.StringUtil;
  */
 public abstract class ASTNode {
 
+    public static final Comparator<Class> CLS_COMPARATOR =
+            new Comparator<Class>() {
+                public int compare(final Class o1, final Class o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            };
+
     private static final int INDENT = 4;
     private static final int MAX_DEFAULT_LEVEL = 25;
     private static final char[] PREFIXES = new char[MAX_DEFAULT_LEVEL * INDENT];
@@ -22,26 +30,36 @@ public abstract class ASTNode {
         Arrays.fill(PREFIXES,' ');
     }
 
-    protected ASTNode parent;
+    private FileNode root;
+    private ASTNode parent;
     protected final List<ASTNode> children;
 
     public ASTNode() {
+        root = null;
         parent = null;
         children = new ArrayList<ASTNode>();
     }
 
+    /**
+     * Возвращает корневой узел дерева.
+     * @return корневой узел дерева или <code>null</code>.
+     */
+    public FileNode getRoot() {
+        return root;
+    }
+
+    /**
+     * Возвращает родительский узел дерева.
+     * @return родительский узел дерева или <code>null</code>.
+     */
     public ASTNode getParent() {
         return parent;
     }
 
-    public ASTNode getRootNode() {
-        ASTNode n = this;
-        while (n.parent!=null) {
-            n = n.parent;
-        }
-        return n;
-    }
-
+    /**
+     * Осуществляет рекурсивный поиск родительского узла, который соответствует заданному в аргументе классу.
+     * @return искомый узел или <code>null</code>.  
+     */
     @SuppressWarnings("unchecked")
     public <T extends ASTNode, E extends T> E findParent(final Class<T> cls) {
         for (ASTNode p=parent; p!=null; p=p.parent) {
@@ -51,36 +69,80 @@ public abstract class ASTNode {
         return null;
     }
 
+    /**
+     * Возвращает список всех узлов лежащих непосредственно под данным узлом.
+     * @return список дочерних узлов.
+     */
     public List<ASTNode> getChildren() {
         return children;
     }
 
+    /**
+     * Возвращает уровень данного узла относительно корня. Корневой узел имеет уровень 0.
+     * @return уровень вложенности данного узла.
+     */
     public int getLevel() {
         int level = 0;
         for (ASTNode p = parent; p != null; p = p.parent) level++;
         return level;
     }
 
+    /**
+     * @return <code>true</code> если узел не имеет дочерних узлов.
+     */
     public boolean isLeaf() {
         return children.isEmpty();
     }
 
+    /**
+     * @return <code>true</code> если узел имеет хотя бы один дочерний узел.
+     */
     public boolean hasChildren() {
         return children.size()>0;
     }
 
+    /**
+     * Возвращает рекурсивный итератор по всем дочерним узлам относительно данного.
+     * @return  рекурсивный итератор по всем дочерним узлам.
+     */
     public Iterator<ASTNode> traverseChildNodes() {
         return new ASTNodeWalker(this);
     }
 
+    /**
+     * Добавляет дочерний узел.
+     * @param node  узел, который должен быть добавлен в качестве дочернего.
+     * @return  текущий узел.
+     */
     public ASTNode append( final ASTNode node ) {
         node.parent = this;
+        node.root = this.root;
         children.add( node );
         return this;
     }
 
+    /**
+     * Исключает текущий узел из дерева, удаляя информацию о нем из родительского узла.
+     * Ссылка на корень дерева остается без изменения.
+     * @return  текущий узел.
+     */
+    public ASTNode excludeFromTree() {
+        if (parent!=null) {
+            parent.children.remove(this);
+            parent = null;
+        }
+        return this;
+    }
+
+    /**
+     * Осуществляет трансляцию данного узла дерева и всех его дочерних узлов в
+     * соответствующий фрагмент .java файла.
+     * @param out  выходной поток для формируемого .java файла.
+     * @throws IOException  в случае каких-либо проблем с записью в поток.
+     */
     public void translate(final Writer out) throws IOException {
     }
+
 
     public String debugInfo() {
         try {
@@ -115,11 +177,6 @@ public abstract class ASTNode {
             }
             out.write(PREFIXES,0,lv*INDENT);
         }
-    }
-
-    protected void writeClass(final Class cls) {
-        ASTNode node = parent;
-
     }
 
 

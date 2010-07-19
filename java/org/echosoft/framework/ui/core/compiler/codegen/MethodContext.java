@@ -112,7 +112,7 @@ public class MethodContext {
             int suffix = 1;
             while (vars.containsKey(prefix+suffix)) suffix++;
             //   убедимся что соответствующий класс переменной перечислен в конструкции "import" ...
-            final boolean qualified = !tc.ensureClassImported(cls);
+//            final boolean qualified = !tc.ensureClassImported(cls);
             result = new Variable(this, cls, prefix+suffix);
         }
         result.useLevel = vLevel;

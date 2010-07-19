@@ -11,14 +11,14 @@ public class FieldNode extends ASTNode {
     private Class cls;
     private String name;
     private Visibility visibility;
-    private boolean stat;
-    private boolean fin;
+    private boolean statical;
+    private boolean unmodifiable;
 
-    public FieldNode(Class cls, String name, Visibility visibility, boolean stat) {
+    public FieldNode(Class cls, String name, Visibility visibility, boolean statical) {
         this.cls = cls;
         this.name = name;
         this.visibility = visibility;
-        this.stat = stat;
+        this.statical = statical;
     }
 
     public Class getFieldClass() {
@@ -46,18 +46,18 @@ public class FieldNode extends ASTNode {
     }
 
     public boolean isStatic() {
-        return stat;
+        return statical;
     }
-    public FieldNode setStatic(boolean stat) {
-        this.stat = stat;
+    public FieldNode setStatic(boolean statical) {
+        this.statical = statical;
         return this;
     }
 
     public boolean isFinal() {
-        return fin;
+        return unmodifiable;
     }
-    public FieldNode setFinal(boolean fin) {
-        this.fin = fin;
+    public FieldNode setFinal(boolean unmodifiable) {
+        this.unmodifiable = unmodifiable;
         return this;
     }
 
@@ -86,10 +86,10 @@ public class FieldNode extends ASTNode {
     public void translate(final Writer out) throws IOException {
         indent(out);
         out.write(visibility.toJavaString());
-        if (stat) {
+        if (statical) {
             out.write(" static");
         }
-        if (fin) {
+        if (unmodifiable) {
             out.write(" final");
         }
         out.write(' ');

@@ -115,9 +115,15 @@ public abstract class ASTNode {
      * @return  текущий узел.
      */
     public ASTNode append( final ASTNode node ) {
-        node.parent = this;
-        node.root = this.root;
         children.add( node );
+        node.parent = this;
+        if (node.hasChildren() && node.root!=this.root) {
+            for (Iterator<ASTNode> it = node.traverseChildNodes(); it.hasNext(); ) {
+                final ASTNode cn = it.next();
+                cn.root = this.root;
+            }
+        }
+        node.root = this.root;
         return this;
     }
 

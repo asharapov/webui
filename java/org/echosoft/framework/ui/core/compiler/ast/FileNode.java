@@ -1,6 +1,9 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -33,9 +36,9 @@ public class FileNode extends ASTNode {
     private final SortedSet<Class> imports;
 
     /**
-     * Узел дерева, соответствующий основному классу - сервлету.
+     * Узел дерева, соответствующий методу service(...) основного класса - сервлета.
      */
-    private final ClassNode mainClsNode;
+    private final MethodNode serviceNode;
 
     /**
      * @param uri  относительный путь до данного ресурса на сервере. Декодируется в имя класса и пакет java.
@@ -59,8 +62,15 @@ public class FileNode extends ASTNode {
             clsName = path.substring(1);
         }
         imports = new TreeSet<Class>(ASTNode.CLS_COMPARATOR);
-        mainClsNode = new ClassNode(clsName, Servlet.class);
-        append(mainClsNode);
+        final ClassNode clsnode = new ClassNode(clsName, Servlet.class);
+        append(clsnode);
+        serviceNode = new MethodNode(Void.class, "service", Visibility.PUBLIC, false)
+                .setOverrided(true)
+                .addArgument(HttpServletRequest.class, "request", true)
+                .addArgument(HttpServletResponse.class, "response", true)
+                .addException(ServletException.class)
+                .addException(IOException.class);
+        clsnode.append(serviceNode);
     }
 
     /**
@@ -72,11 +82,11 @@ public class FileNode extends ASTNode {
     }
 
     /**
-     * Ссылка на узел, соответствующий транслируемому классу - сервлету.
-     * @return узел, соответствующий основному классу в файле (сервлету).
+     * Ссылка на узел, соответствующий методу service(...) транслируемого основного класса - сервлета.
+     * @return узел, соответствующий методу service(...) транслируемого класса - сервлета.
      */
-    public ClassNode getMainClassNode() {
-        return mainClsNode;
+    public MethodNode getServletService() {
+        return serviceNode;
     }
 
     @Override
@@ -129,6 +139,7 @@ public class FileNode extends ASTNode {
 
 
     public static void main(String args[]) {
+        System.out.println( Throwable.class.isAssignableFrom(Exception.class) );
 //        final TreeSet<String> ss = new TreeSet<String>();
 //        for (TypeVariable tp : ss.getClass().getTypeParameters()) {
 //        }

@@ -14,8 +14,8 @@ public class ClassNode extends ASTNode {
 
     private String clsName;
     private boolean abstrct;
-    private boolean fin;
-    private boolean stat;
+    private boolean unmodifiable;
+    private boolean statical;
     private Visibility visibility;
     private Class extended;
     private final SortedSet<Class> implemented;
@@ -44,18 +44,18 @@ public class ClassNode extends ASTNode {
     }
 
     public boolean isFinal() {
-        return fin;
+        return unmodifiable;
     }
-    public ClassNode setFinal(final boolean fin) {
-        this.fin = fin;
+    public ClassNode setFinal(final boolean unmodifiable) {
+        this.unmodifiable = unmodifiable;
         return this;
     }
 
     public boolean isStatic() {
-        return stat;
+        return statical;
     }
-    public ClassNode setStatic(final boolean stat) {
-        this.stat = stat;
+    public ClassNode setStatic(final boolean statical) {
+        this.statical = statical;
         return this;
     }
 
@@ -97,10 +97,10 @@ public class ClassNode extends ASTNode {
     public void translate(final Writer out) throws IOException {
         indent(out);
         out.write(visibility.toJavaString());
-        if (stat) {
+        if (statical) {
             out.write(" static");
         }
-        if (fin) {
+        if (unmodifiable) {
             out.write(" final");
         }
         out.write(" class ");

@@ -1,4 +1,4 @@
-package org.echosoft.framework.ui.core.compiler.codegen;
+package org.echosoft.framework.ui.core.compiler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,20 +61,20 @@ public class MethodContext {
         vLevel--;
         for (Iterator<Map.Entry<String,Variable>> it=vars.entrySet().iterator(); it.hasNext(); ) {
             final Variable v = it.next().getValue();
-            if (vLevel < v.useLevel) {
-                v.useLevel = null;
-            }
-            if (vLevel < v.declareLevel) {
-                it.remove();
-            }
+//            if (vLevel < v.useLevel) {
+//                v.useLevel = null;
+//            }
+//            if (vLevel < v.declareLevel) {
+//                it.remove();
+//            }
         }
     }
 
     public Variable addIdentifier(final Class cls, final String name, final boolean reusable) {
         if (vars.containsKey(name))
             throw new IllegalStateException("Identifier "+name+" already declared in method");
-        final Variable v = new Variable(this, cls, name, reusable);
-        v.useLevel = vLevel;
+        final Variable v = new Variable(cls, name, reusable);
+//        v.useLevel = vLevel;
         vars.put(v.name, v);
         return v;
     }
@@ -97,14 +97,14 @@ public class MethodContext {
         if (StringUtil.isJavaIdentifier(desiredName) && !vars.containsKey(desiredName)) {
             // создаем новую переменную ...
             //   убедимся что соответствующий класс переменной перечислен в конструкции "import" ...
-            result = new Variable(this, cls, desiredName);
+            result = new Variable(cls, desiredName);
         } else {
             // ищем подходящую переменную из уже объявленных но в данный момент не используемых переменных...
             for (Variable v : vars.values()) {
-                if (v.useLevel==null && cls.equals(v.getClass()) && v.name.startsWith("cmp")) {
-                    v.useLevel = vLevel;
-                    return v;
-                }
+//                if (v.useLevel==null && cls.equals(v.getClass()) && v.name.startsWith("cmp")) {
+//                    v.useLevel = vLevel;
+//                    return v;
+//                }
             }
             // создаем новую переменную ...
             //   подберем неиспользуемое имя ...
@@ -113,9 +113,9 @@ public class MethodContext {
             while (vars.containsKey(prefix+suffix)) suffix++;
             //   убедимся что соответствующий класс переменной перечислен в конструкции "import" ...
 //            final boolean qualified = !tc.ensureClassImported(cls);
-            result = new Variable(this, cls, prefix+suffix);
+            result = new Variable(cls, prefix+suffix);
         }
-        result.useLevel = vLevel;
+//        result.useLevel = vLevel;
         vars.put(result.name, result);
         return result;
     }

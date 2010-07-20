@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding='UTF-8'?>
-<core:page  xmlns:core="http://echosoft.org/webui/core"
+<core:page  xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance"
+            xsd:noNamespaceSchemaLocation="http://echosoft.org/webui/0.8/taglib"
+            xmlns:core="http://echosoft.org/webui/core"
             viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
 
+  <test>ccc</test>
   <!-- simple comment -->
 
   <core:html>

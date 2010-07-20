@@ -11,27 +11,27 @@ public interface TagHandler {
 
     /**
      * Вызывается при обработке открывающего тега.
-     * @param parent  контекст трансляции.
-     * @param attrs  информация о всех аттрибутах для данного тега.
+     * @param tag  описание текущего тега.
+     * @return  узел формируемого синтаксического дерева, под которым 
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void start(ASTNode parent, Attributes attrs) throws SAXException;
+    public ASTNode start(Tag tag) throws SAXException;
 
     /**
      * Вызывается при обработке закрывающего тега.
-     * @param parent  контекст трансляции.
+     * @param tag  описание текущего тега.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void end(ASTNode parent) throws SAXException;
+    public void end(Tag tag) throws SAXException;
 
     /**
      * Вызывается при обработке фрагмента текста внутри в теле тега.
-     * @param parent  контекст трансляции.
+     * @param tag  описание текущего тега.
      * @param ch  массив символов.
      * @param start  индекс первого символа в массиве.
      * @param length  кол-во символов.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void appendText(ASTNode parent, char[] ch, int start, int length) throws SAXException;
+    public void appendText(Tag tag, char[] ch, int start, int length) throws SAXException;
 
 }

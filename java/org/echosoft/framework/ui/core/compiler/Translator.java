@@ -1,10 +1,13 @@
-package org.echosoft.framework.ui.core.compiler.codegen;
+package org.echosoft.framework.ui.core.compiler;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import org.echosoft.framework.ui.core.compiler.ast.FileNode;
+import org.echosoft.framework.ui.core.compiler.xml.TagLibrarySet;
 import org.echosoft.framework.ui.core.web.wui.Options;
 
 /**
@@ -22,12 +25,24 @@ public class Translator {
      */
     public static File translate(final String uri, final Options options) throws IOException {
         final File srcFile = new File(options.rootSrcDir, uri);
+        final TagLibrarySet taglibs = TagLibrarySet.findLibariesInClasspath();
+        final FileNode rootNode = new FileNode(uri, options);
+        final XMLContentHandler handler = new XMLContentHandler(taglibs, rootNode.getServletService());
 
-        final FileNode fn = new FileNode(uri, options);
-        final File file = fn.getDstFile();
+        final SAXParserFactory factory = SAXParserFactory.newInstance();
+        try {
+            factory.setNamespaceAware(true);
+            final SAXParser saxParser = factory.newSAXParser();
+            saxParser.parse(srcFile, handler);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        final File file = rootNode.getDstFile();
         final FileWriter out = new FileWriter( file );
         try {
-            fn.translate(out);
+            rootNode.translate(out);
+            out.flush();
         } finally {
             out.close();
         }

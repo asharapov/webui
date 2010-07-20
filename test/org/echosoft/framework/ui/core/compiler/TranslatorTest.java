@@ -107,7 +107,7 @@ public class TranslatorTest {
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             factory.setNamespaceAware(true);
-            //factory.setValidating(true);
+//            factory.setValidating(true);
             final SAXParser saxParser = factory.newSAXParser();
             saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
             saxParser.parse(file, handler);

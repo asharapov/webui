@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding='UTF-8'?>
-<core:page  xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance"
-            xsd:noNamespaceSchemaLocation="http://echosoft.org/webui/0.8/taglib"
-            xmlns:core="http://echosoft.org/webui/core"
-            viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
+<core:page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xi="http://www.w3.org/2001/XInclude"
+           xmlns:html="http://www.w3.org/1999/xhtml"
+           xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
+           xsi:schemaLocation="http://www.w3.org/2001/XInclude  http://www.w3.org/2001/XInclude.xsd
+                               http://echosoft.org/webui/0.8/taglib/core file://w:/webui/design/wui-core.xsd"
+           title="My first page"
+           viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
+  <!--
+           xsi:schemaLocation="http://www.w3.org/2001/XInclude  http://www.w3.org/2001/XInclude.xsd
+                               http://echosoft.org/webui/0.8/taglib/cor file://w:/webui/design/wui-core.xsd"
+  -->
 
-  <test>ccc</test>
-  <!-- simple comment -->
+  <core:event type="javascript" xml:lang="en">
+    bla bla bla
+  </core:event>
 
-  <core:html>
-    <![CDATA[Diagram:
-    <div id="html-snippet-1">
-      This is a <b>static</b> html snippet.
-    </div>
-    ]]>
-  </core:html>
+  <xi:include href="inclusion.xml">
+    <xi:fallback>failed</xi:fallback>
+  </xi:include>
 
-  <core:javascript>
-    function myFunction(x,y) {
-      return x + y;
-    }
-    var menuRoot = {
-      nodeType: "async",
-      draggable: false,
-      children: [
-        {text:"Item 1", leaf:true},
-        {text:"Item 2", leaf:true}
-      ]
-    };
-  </core:javascript>
+  <core:event type="javascript" xml:lang="en">
+    fuck fuck fuck
+  </core:event>
+  <!--<xi:fuck />-->
 
 </core:page>

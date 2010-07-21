@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema targetNamespace="http://echosoft.org/webui/core"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://echosoft.org/webui/0.8/taglib/core"
+           xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
+           xmlns:xml="http://www.w3.org/XML/1998/namespace"
            version="0.8">
+  <!--
+           xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
+           targetNamespace="http://echosoft.org/webui/0.8/taglib/core"
+  -->
+
   <xs:annotation>
    <xs:documentation>
      Определяет основные элементы языка разметки webui.
   </xs:documentation>
  </xs:annotation>
 
-  <xs:element name="page" type="Page" />
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
 
-  <xs:complexType name="Page">
+  <xs:element name="page" type="core:Page" />
+
+  <xs:element name="event">
+    <xs:complexType mixed="true">
+      <!--<xs:choice minOccurs="0" >-->
+        <!--<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />-->
+      <!--</xs:choice>-->
+      <xs:attribute name="type" type="xs:string" use="required"/>
+      <xs:attributeGroup ref="xml:specialAttrs"/>
+      <!--<xs:anyAttribute namespace="##other" processContents="lax" />-->
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="Page" >
     <xs:annotation>
       <xs:documentation>
         Описывает свойства страницы в целом.
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="html" type="xs:string" />
-      <xs:element name="javascript" type="xs:string" />
+      <xs:element ref="core:event" />
+      <!--<xs:element name="event" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>-->
+      <xs:any namespace="##any" processContents="strict" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
     <xs:attribute name="title" type="xs:string">
       <xs:annotation>
@@ -40,12 +61,12 @@
         <xs:documentation>Ранг состояния для данной страницы.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="cleanStrategy" type="CleanStrategy">
+    <xs:attribute name="cleanStrategy" type="core:CleanStrategy">
       <xs:annotation>
         <xs:documentation>Текущая стратегия удаления состояний форм которые уже не нужны нам для дальнейшей работы.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="layout" type="LayoutId">
+    <xs:attribute name="layout" type="core:LayoutId">
       <xs:annotation>
         <xs:documentation>Идентификатор менеджера компоновки который будет управлять дочерними компонентами.</xs:documentation>
       </xs:annotation>
@@ -58,17 +79,14 @@
   <xs:complexType name="AbstractBoxComponent">
   </xs:complexType>
 
+
+
+
   <xs:simpleType name="CleanStrategy">
-    <xs:annotation>
-      <xs:documentation>Алгоритмы сборки ненужных более состояний форм.</xs:documentation>
-    </xs:annotation>
-    <xs:union memberTypes="CoreCleanStrategy xs:Name" />
-  </xs:simpleType>
-  <xs:simpleType name="CoreCleanStrategy">
     <xs:annotation>
       <xs:documentation>Стандартные алгоритмы сборки ненужных более состояний форм.</xs:documentation>
     </xs:annotation>
-    <xs:restriction base="xs:Name">
+    <xs:restriction base="xs:string">
       <xs:enumeration value="all">
         <xs:annotation>
           <xs:documentation>Удаляет состояния абсолютно всех форм.</xs:documentation>

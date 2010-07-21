@@ -106,7 +106,7 @@ public class ClassNode extends ASTNode {
         out.write(" class ");
         out.write(clsName);
         if (extended!=null) {
-            out.write(' ');
+            out.write(" extends ");
             out.write( getRoot().ensureClassImported(extended) );
         }
         if (implemented.size()>0) {

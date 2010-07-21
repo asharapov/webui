@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 public class TagLibrarySet {
 
     private final Map<String,TagLibrary> libraries;
+    private TagLibrary defaultLibrary;
 
     /**
      * Осуществляет поиск и загрузку информации обо всех библиотеках тегов которые доступны
@@ -75,13 +76,43 @@ public class TagLibrarySet {
     }
 
     /**
+     * Возвращается ссылка на библиотеку тегов по умолчанию.
+     * Она используется в случае когда искомая по uri библиотека не была найдена.
+     * @return библиотека тегов, используемая по умолчанию для всех неизвестных uri
+     *  Возвращает <code>null</code> если библиотека тегов по умолчанию не указана.
+     */
+    public TagLibrary getDefaultLibrary() {
+        return defaultLibrary;
+    }
+
+    /**
+     * Указывает библиотеку тегов, используемую всякий раз когда осуществляется запрос тегов
+     * из неизвестной данному объекту библиотеки тегов.
+     * @param defaultLibrary  библиотека тегов по умолчанию.
+     */
+    public void setDefaultLibrary(final TagLibrary defaultLibrary) {
+        this.defaultLibrary = defaultLibrary;
+    }
+
+    /**
+     * Возвращает <code>true</code> если объект содержит библиотеку тегов, ассоциированную с данным uri.
+     * Библиотека тегов по умолчанию здесь в расчет не берется.
+     * @param uri  URI используемый в качестве уникального идентификатора библиотеки тегов.
+     * @return <code>true</code> если объект содержит библиотеку тегов, ассоциированную с данным uri.
+     */
+    public boolean containsLibrary(final String uri) {
+        return libraries.containsKey(uri);
+    }
+
+    /**
      * Осуществляет поиск библиотеки тегов в списке уже зарегистрированых библиотек.
      * Если таковая в списке не значится то метод возвращает <code>null</code>.
      * @param uri  URI используемый в качестве уникального идентификатора библиотеки тегов.
      * @return  описание указаной библиотеки или <code>null</code> если таковая еще не зарегистрирована.
      */
     public TagLibrary getLibrary(final String uri) {
-        return libraries.get(uri);
+        final TagLibrary result = libraries.get(uri);
+        return result!=null ? result : defaultLibrary;
     }
 
     /**
@@ -92,7 +123,7 @@ public class TagLibrarySet {
      * библиотеке информации по указанному тегу.
      */
     public TagHandler getTagHandler(final String uri, final String tagName) {
-        final TagLibrary library = libraries.get(uri);
+        final TagLibrary library = getLibrary(uri);
         return library!=null ? library.getTagHandler(tagName) : null;
     }
 }

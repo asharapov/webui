@@ -49,7 +49,9 @@ public class TranslatorTest {
         final File file = new File("w:/webui/test/wuifiles/page1.wui");
         final DefaultHandler handler =
                 new DefaultHandler() {
+                    Locator locator = null;
                     public void setDocumentLocator(Locator locator) {
+                        this.locator = locator;
                         System.err.println("[locator]: "+locator);
                     }
                     public void notationDecl(String name, String publicId, String systemId) throws SAXException {
@@ -107,6 +109,7 @@ public class TranslatorTest {
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             factory.setNamespaceAware(true);
+            factory.setXIncludeAware(true);
 //            factory.setValidating(true);
             final SAXParser saxParser = factory.newSAXParser();
             saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);

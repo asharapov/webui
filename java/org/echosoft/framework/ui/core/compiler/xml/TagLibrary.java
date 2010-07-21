@@ -15,6 +15,7 @@ public class TagLibrary {
 
     private final String uri;
     private final Map<String,TagHandler> tags;
+    private TagHandler defaultHandler;
 
     public TagLibrary(final String uri) {
         this.uri = StringUtil.trim(uri);
@@ -45,11 +46,30 @@ public class TagLibrary {
     }
 
     /**
+     * Возвращает обработчик тегов по умолчанию.
+     * Он используется в случаях когда не представляется возможным иными средствами определить обработчик по имени тега.
+     * @return обработчик тегов по умолчанию или <code>null</code>.
+     */
+    public TagHandler getDefaultHandler() {
+        return defaultHandler;
+    }
+
+    /**
+     * Указывает обработчик тегов по умолчанию.
+     * @param defaultHandler обработчик тегов по умолчанию.
+     */
+    public void setDefaultHandler(final TagHandler defaultHandler) {
+        this.defaultHandler = defaultHandler;
+    }
+
+    /**
      * Возвращает обработчик тега по его имени.
      * @param tagName  имя тега (чуствительно к регистру).
-     * @return  экземпляр класса {@link TagHandler} или <code>null</code> если указанный тег не зарегистрирован в библиотеке.
+     * @return  экземпляр класса {@link TagHandler} или
+     * <code>null</code> если указанный тег не зарегистрирован в библиотеке и ранее не был указан обработчик тегов по умолчанию.
      */
     public TagHandler getTagHandler(final String tagName) {
-        return tags.get(tagName);
+        final TagHandler result = tags.get(tagName);
+        return result!=null ? result : defaultHandler;
     }
 }

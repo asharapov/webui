@@ -35,7 +35,6 @@ public abstract class ASTNode {
     protected final List<ASTNode> children;
 
     public ASTNode() {
-        root = null;
         parent = null;
         children = new ArrayList<ASTNode>();
     }
@@ -117,13 +116,13 @@ public abstract class ASTNode {
     public ASTNode append( final ASTNode node ) {
         children.add( node );
         node.parent = this;
-        if (node.hasChildren() && node.root!=this.root) {
+        if (node.hasChildren() && node.getRoot()!=this.getRoot()) {
             for (Iterator<ASTNode> it = node.traverseChildNodes(); it.hasNext(); ) {
                 final ASTNode cn = it.next();
-                cn.root = this.root;
+                cn.root = this.getRoot();
             }
         }
-        node.root = this.root;
+        node.root = this.getRoot();
         return this;
     }
 

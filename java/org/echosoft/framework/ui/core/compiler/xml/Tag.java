@@ -8,14 +8,23 @@ import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.xml.sax.Attributes;
 
 /**
+ * Содержит всю информацию используемую при обработке отдельного xml тега из исходного .wui файла.
  * @author Anton Sharapov
  */
 public class Tag implements Serializable {
 
     /**
+     * Ссылка на описание родительского тега в исходном xml документе.
+     */
+    public final Tag parent;
+    /**
      * Идентификатор пространства имен для данного тега.
      */
     public final String uri;
+    /**
+     * Полное имя тега. Включает идентификатор адресного пространства и локальное имя тега.
+     */
+    public final String qname;
     /**
      * Локальное имя тега.
      */
@@ -25,17 +34,17 @@ public class Tag implements Serializable {
      */
     public final Attributes attrs;
     /**
-     * Ссылка на описание родительского тега в исходном xml документе.
+     * Обработчик данного тега.
      */
-    public final Tag parent;
+    public final TagHandler handler;
     /**
-     * Родительский узел синтаксического дерева, под которым будут добавляться узлы, соответствующие данному xml тегу.
+     * Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие данному xml тегу.
      */
-    public final ASTNode parentContainer;
+    public final ASTNode container;
     /**
      * Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие дочерним xml тегам.
      */
-    public ASTNode childContainer;
+    public ASTNode childrenContainer;
     /**
      * Результатом работы абсолютного большинства обработчиков тегов является конструирование какого-либо одного объекта
      * некоторого класса и последующая установка его свойств:
@@ -63,12 +72,24 @@ public class Tag implements Serializable {
      */
     public Object data;
 
-    public Tag(final String uri, final String name, final Attributes attrs, final Tag parent, final ASTNode parentContainer) {
+    public Tag(final Tag parent, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
+        this.parent = parent;
+        this.container = parent.childrenContainer;
         this.uri = uri;
+        this.qname = qname;
         this.name = name;
         this.attrs = attrs;
-        this.parentContainer = parentContainer;
-        this.parent = parent;
+        this.handler = handler;
+    }
+
+    public Tag(final ASTNode rootContainer, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
+        this.parent = null;
+        this.container = rootContainer;
+        this.uri = uri;
+        this.qname = name;
+        this.name = name;
+        this.attrs = attrs;
+        this.handler = handler;
     }
 
     /**

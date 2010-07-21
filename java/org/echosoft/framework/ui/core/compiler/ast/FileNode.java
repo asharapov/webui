@@ -1,7 +1,7 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -62,9 +62,9 @@ public class FileNode extends ASTNode {
             clsName = path.substring(1);
         }
         imports = new TreeSet<Class>(ASTNode.CLS_COMPARATOR);
-        final ClassNode clsnode = new ClassNode(clsName, Servlet.class);
+        final ClassNode clsnode = new ClassNode(clsName, HttpServlet.class);
         append(clsnode);
-        serviceNode = new MethodNode(Void.class, "service", Visibility.PUBLIC, false)
+        serviceNode = new MethodNode(null, "service", Visibility.PUBLIC, false)
                 .setOverrided(true)
                 .addArgument(HttpServletRequest.class, "request", true)
                 .addArgument(HttpServletResponse.class, "response", true)
@@ -90,6 +90,11 @@ public class FileNode extends ASTNode {
     }
 
     @Override
+    public FileNode getRoot() {
+        return this;
+    }
+
+    @Override
     public ASTNode append(final ASTNode node) {
         if (!(node instanceof ClassNode))
             throw new IllegalStateException("ClassNode required");
@@ -100,7 +105,7 @@ public class FileNode extends ASTNode {
     public void translate(final Writer out) throws IOException {
         final FastStringWriter buf = new FastStringWriter(4096);
         for (ASTNode node : children) {
-            out.write('\n');
+            buf.write('\n');
             node.translate(buf);
         }
 
@@ -137,17 +142,4 @@ public class FileNode extends ASTNode {
         return cls.getSimpleName();
     }
 
-
-    public static void main(String args[]) {
-        System.out.println( Throwable.class.isAssignableFrom(Exception.class) );
-//        final TreeSet<String> ss = new TreeSet<String>();
-//        for (TypeVariable tp : ss.getClass().getTypeParameters()) {
-//        }
-        final Class[] classes = {TreeSet.class, TreeSet[].class};
-        for (Class cls : classes) {
-            System.out.println("short:  "+cls.getSimpleName());
-            System.out.println("full:  "+cls.getCanonicalName());
-            System.out.println();
-        }
-    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taglib xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-        xs:noNamespaceSchemaLocation="http://echosoft.org/webui/0.8/taglib"
+<taglib xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://echosoft.org/webui/0.8/taglib"
         uri="http://echosoft.org/webui/0.8/taglib/core">
   <description>Содержит перечень основополагающих тегов для описания форм UI</description>
   <tag name="page" handler="org.echosoft.framework.ui.core.compiler.tags.MockTagHandler" />

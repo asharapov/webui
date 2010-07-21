@@ -130,7 +130,7 @@ public class MethodNode extends ASTNode {
             out.write(" final");
         }
         out.write(' ');
-        out.write( getRoot().ensureClassImported(cls) );
+        out.write( cls!=null ? getRoot().ensureClassImported(cls) : "void" );
         out.write(' ');
         out.write(name);
         out.write('(');

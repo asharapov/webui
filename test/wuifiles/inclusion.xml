@@ -1,0 +1,4 @@
+<core:event xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
+            type="javascript">
+  test test test
+</core:event>

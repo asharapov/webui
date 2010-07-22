@@ -11,7 +11,6 @@ import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.echosoft.framework.ui.core.compiler.ast.FileNode;
 import org.echosoft.framework.ui.core.compiler.xml.Tag;
 import org.echosoft.framework.ui.core.compiler.xml.TagHandler;
-import org.echosoft.framework.ui.core.compiler.xml.TagLibrary;
 import org.echosoft.framework.ui.core.compiler.xml.TagLibrarySet;
 import org.echosoft.framework.ui.core.web.wui.Options;
 import org.xml.sax.SAXException;
@@ -24,7 +23,7 @@ public class Translator {
 
     private static final TagHandler DEFAULT_HTML_TAG_HANDLER = new TagHandler() {
         @Override
-        public ASTNode start(final Tag tag) throws SAXException {
+        public ASTNode doStartTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(64);
             buf.write('<');
             buf.write(tag.qname);
@@ -37,21 +36,21 @@ public class Translator {
             }
             buf.write('>');
             final char[] c = buf.toString().toCharArray();
-            tag.parent.handler.appendText(tag.parent, c, 0, c.length);
+            tag.parent.handler.doBodyText(tag.parent, c, 0, c.length);
             return null;
         }
         @Override
-        public void end(final Tag tag) throws SAXException {
+        public void doEndTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(10);
             buf.write("</");
             buf.write(tag.qname);
             buf.write('>');
             final char[] c = buf.toString().toCharArray();
-            tag.parent.handler.appendText(tag.parent, c, 0, c.length);
+            tag.parent.handler.doBodyText(tag.parent, c, 0, c.length);
         }
         @Override
-        public void appendText(final Tag tag, final char[] ch, final int start, final int length) throws SAXException {
-            tag.parent.handler.appendText(tag.parent, ch, start, length);
+        public void doBodyText(final Tag tag, final char[] ch, final int start, final int length) throws SAXException {
+            tag.parent.handler.doBodyText(tag.parent, ch, start, length);
         }
     };
     private static TagLibrarySet instance;

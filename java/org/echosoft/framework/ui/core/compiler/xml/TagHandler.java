@@ -4,6 +4,7 @@ import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.xml.sax.SAXException;
 
 /**
+ * Обработчик отдельно взятого тега из исходного .wui файла.
  * @author Anton Sharapov
  */
 public interface TagHandler {
@@ -14,14 +15,14 @@ public interface TagHandler {
      * @return  узел синтаксического дерева, под которым будут создаваться узлы, генерируемые на основе дочених тегов исходного файла.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public ASTNode start(Tag tag) throws SAXException;
+    public ASTNode doStartTag(Tag tag) throws SAXException;
 
     /**
      * Вызывается при обработке закрывающего тега.
      * @param tag  описание текущего тега.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void end(Tag tag) throws SAXException;
+    public void doEndTag(Tag tag) throws SAXException;
 
     /**
      * Вызывается при обработке фрагмента текста внутри в теле тега.
@@ -31,6 +32,6 @@ public interface TagHandler {
      * @param length  кол-во символов.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public void appendText(Tag tag, char[] ch, int start, int length) throws SAXException;
+    public void doBodyText(Tag tag, char[] ch, int start, int length) throws SAXException;
 
 }

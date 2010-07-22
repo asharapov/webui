@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://echosoft.org/webui/0.8/taglib/core"
            xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
            xmlns:xml="http://www.w3.org/XML/1998/namespace"
+           targetNamespace="http://echosoft.org/webui/0.8/taglib/core"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
            version="0.8">
   <!--
            xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
@@ -21,9 +23,11 @@
 
   <xs:element name="event">
     <xs:complexType mixed="true">
-      <!--<xs:choice minOccurs="0" >-->
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:any namespace="##other" processContents="lax"/>
+        <xs:any namespace="##local" processContents="lax"/>
         <!--<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />-->
-      <!--</xs:choice>-->
+      </xs:choice>
       <xs:attribute name="type" type="xs:string" use="required"/>
       <xs:attributeGroup ref="xml:specialAttrs"/>
       <!--<xs:anyAttribute namespace="##other" processContents="lax" />-->
@@ -36,11 +40,13 @@
         Описывает свойства страницы в целом.
       </xs:documentation>
     </xs:annotation>
-    <xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element ref="core:event" />
+      <xs:element name="section" type="xs:string" />
+      <xs:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="1"/>
       <!--<xs:element name="event" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>-->
-      <xs:any namespace="##any" processContents="strict" minOccurs="0" maxOccurs="1"/>
-    </xs:sequence>
+      <!--<xs:any namespace="##any" processContents="strict" minOccurs="0" maxOccurs="1"/>-->
+    </xs:choice>
     <xs:attribute name="title" type="xs:string">
       <xs:annotation>
         <xs:documentation>Название страницы которое будет отображаться в заголовке страницы.</xs:documentation>

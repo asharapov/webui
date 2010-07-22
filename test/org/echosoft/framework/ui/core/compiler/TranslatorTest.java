@@ -52,7 +52,7 @@ public class TranslatorTest {
                     Locator locator = null;
                     public void setDocumentLocator(Locator locator) {
                         this.locator = locator;
-                        System.err.println("[locator]: "+locator);
+                        System.err.println("[locator]: "+locator+"\n    systemId:"+locator.getSystemId()+"\n    publicId:"+locator.getPublicId());
                     }
                     public void notationDecl(String name, String publicId, String systemId) throws SAXException {
                         System.err.println("[decl]: "+name+",  "+publicId+",  "+systemId);

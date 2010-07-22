@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding='UTF-8'?>
 <core:page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xmlns:xi="http://www.w3.org/2001/XInclude"
-           xmlns:html="http://www.w3.org/1999/xhtml"
+           xmlns="http://www.w3.org/1999/xhtml"
            xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
            xsi:schemaLocation="http://www.w3.org/2001/XInclude  http://www.w3.org/2001/XInclude.xsd
                                http://echosoft.org/webui/0.8/taglib/core file://w:/webui/design/wui-core.xsd"
@@ -13,14 +13,19 @@
   -->
 
   <core:event type="javascript" xml:lang="en">
+    test
+    <test xsi:type="Length">10</test>
     bla bla bla
   </core:event>
+  
+  <core:section>ccc</core:section>
 
   <xi:include href="inclusion.xml">
     <xi:fallback>failed</xi:fallback>
   </xi:include>
 
   <core:event type="javascript" xml:lang="en">
+    <test>xxx</test>
     fuck fuck fuck
   </core:event>
   <!--<xi:fuck />-->

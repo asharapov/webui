@@ -11,16 +11,16 @@ import org.xml.sax.SAXException;
 public class MockTagHandler implements TagHandler {
 
     @Override
-    public ASTNode start(Tag tag) throws SAXException {
+    public ASTNode doStartTag(Tag tag) throws SAXException {
         return null;
     }
 
     @Override
-    public void end(Tag tag) throws SAXException {
+    public void doEndTag(Tag tag) throws SAXException {
     }
 
     @Override
-    public void appendText(Tag tag, char[] ch, int start, int length) throws SAXException {
+    public void doBodyText(Tag tag, char[] ch, int start, int length) throws SAXException {
     }
 
 }

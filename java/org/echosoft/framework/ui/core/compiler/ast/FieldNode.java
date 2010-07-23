@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
+ * Содержит описание поля класса.
  * @author Anton Sharapov
  */
 public class FieldNode extends ASTNode {
@@ -13,8 +14,10 @@ public class FieldNode extends ASTNode {
     private Visibility visibility;
     private boolean statical;
     private boolean unmodifiable;
+    private String expr;
 
     public FieldNode(Class cls, String name, Visibility visibility, boolean statical) {
+        super();
         this.cls = cls;
         this.name = name;
         this.visibility = visibility;
@@ -61,25 +64,17 @@ public class FieldNode extends ASTNode {
         return this;
     }
 
-    public ExpressionNode getFieldValue() {
-        return hasChildren() ? (ExpressionNode)children.get(0) : null;
+    public String getFieldValue() {
+        return expr;
     }
-    public FieldNode setFieldValue(ExpressionNode node) {
-        if (hasChildren()) {
-            children.get(0).excludeFromTree();
-        }
-        if (node!=null)
-            super.append(node);
+    public FieldNode setFieldValue(String expr) {
+        this.expr = expr;
         return this;
     }
 
     @Override
-    public ASTNode append(final ASTNode node) {
-        if (hasChildren())
-            throw new IllegalStateException("Field value already specified");
-        if (!(node instanceof ExpressionNode))
-            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
-        return super.append(node);
+    public FieldNode append(final ASTNode node) {
+        throw new IllegalArgumentException("Field is a leaf node");
     }
 
     @Override
@@ -96,9 +91,9 @@ public class FieldNode extends ASTNode {
         out.write( getRoot().ensureClassImported(cls) );
         out.write(' ');
         out.write(name);
-        if (hasChildren()) {
+        if (expr!=null) {
             out.write(" = ");
-            getFieldValue().translate(out);
+            out.write(expr);
         }
         out.write(";\n");
     }

@@ -8,6 +8,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
+ * Содержит описание отдельного класса.
  * @author Anton Sharapov
  */
 public class ClassNode extends ASTNode {
@@ -21,6 +22,7 @@ public class ClassNode extends ASTNode {
     private final SortedSet<Class> implemented;
 
     public ClassNode(final String clsName, final Class extended) {
+        super();
         this.clsName = clsName;
         this.extended = extended;
         this.visibility = Visibility.PUBLIC;
@@ -87,10 +89,10 @@ public class ClassNode extends ASTNode {
 
 
     @Override
-    public ASTNode append(final ASTNode node) {
+    public ClassNode append(final ASTNode node) {
         if ( !(node instanceof MethodNode) && !(node instanceof FieldNode) && !(node instanceof ClassNode) )
             throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
-        return super.append(node);
+        return (ClassNode)super.append(node);
     }
 
     @Override

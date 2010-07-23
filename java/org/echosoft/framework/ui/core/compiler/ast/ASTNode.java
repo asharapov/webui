@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.echosoft.common.utils.StringUtil;
-
 /**
  * @author Anton Sharapov
  */
@@ -57,10 +55,11 @@ public abstract class ASTNode {
 
     /**
      * Осуществляет рекурсивный поиск родительского узла, который соответствует заданному в аргументе классу.
+     * @param cls  указывает на интерфейс или класс экземпляром которого должен быть искомый узел.
      * @return искомый узел или <code>null</code>.  
      */
     @SuppressWarnings("unchecked")
-    public <T extends ASTNode, E extends T> E findParent(final Class<T> cls) {
+    public <T, E extends T> E findParent(final Class<T> cls) {
         for (ASTNode p=parent; p!=null; p=p.parent) {
             if (cls.isAssignableFrom(p.getClass()))
                 return (E)p;
@@ -109,32 +108,49 @@ public abstract class ASTNode {
     }
 
     /**
-     * Добавляет дочерний узел.
+     * Добавляет дочерний узел. По возможности устанавливает этому узлу (и всем его дочерним рекурсивно)
+     * ссылку на корневой узел дерева.
      * @param node  узел, который должен быть добавлен в качестве дочернего.
      * @return  текущий узел.
      */
     public ASTNode append( final ASTNode node ) {
+        if (node.parent!=null)
+            throw new IllegalStateException("Node already has parent");
         children.add( node );
         node.parent = this;
-        if (node.hasChildren() && node.getRoot()!=this.getRoot()) {
-            for (Iterator<ASTNode> it = node.traverseChildNodes(); it.hasNext(); ) {
-                final ASTNode cn = it.next();
-                cn.root = this.getRoot();
+        final FileNode root = this.getRoot();
+        if (root!=null) {
+            node.root = root;
+            node.resetState();
+            if (node.hasChildren()) {
+                for (Iterator<ASTNode> it = node.traverseChildNodes(); it.hasNext(); ) {
+                    final ASTNode n = it.next();
+                    n.root = root;
+                    n.resetState();
+                }
             }
         }
-        node.root = this.getRoot();
         return this;
     }
 
     /**
      * Исключает текущий узел из дерева, удаляя информацию о нем из родительского узла.
-     * Ссылка на корень дерева остается без изменения.
+     * Ссылка на корень дерева у данного узла и всех его дочерних узлов устанавливается в null.
      * @return  текущий узел.
      */
     public ASTNode excludeFromTree() {
-        if (parent!=null) {
+        if (parent != null) {
             parent.children.remove(this);
             parent = null;
+            root = null;
+            resetState();
+            if (this.hasChildren()) {
+                for (Iterator<ASTNode> it = this.traverseChildNodes(); it.hasNext(); ) {
+                    final ASTNode node = it.next();
+                    node.root = null;
+                    node.resetState();
+                }
+            }
         }
         return this;
     }
@@ -142,6 +158,7 @@ public abstract class ASTNode {
     /**
      * Осуществляет трансляцию данного узла дерева и всех его дочерних узлов в
      * соответствующий фрагмент .java файла.
+     * Метод должен перекрываться в узлах-потомках.
      * @param out  выходной поток для формируемого .java файла.
      * @throws IOException  в случае каких-либо проблем с записью в поток.
      */
@@ -149,23 +166,32 @@ public abstract class ASTNode {
     }
 
 
+    /**
+     * Используется для отладочной печати структуры дерева.
+     * @return строка, отображающая иерархию узлов, начиная от данного узла.
+     */
     public String debugInfo() {
-        try {
-            final StringBuilder out = new StringBuilder(512);
-            debugInfo(out);
-            return out.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        final StringBuilder out = new StringBuilder(512);
+        final int startLevel = getLevel();
+        out.append(this.toString());
+        for (Iterator<ASTNode> it = this.traverseChildNodes(); it.hasNext();) {
+            final ASTNode node = it.next();
+            final char[] buf = new char[2*(node.getLevel()-startLevel)];
+            Arrays.fill(buf, ' ');
+            out.append('\n');
+            out.append(buf);
+            out.append(node.toString());
         }
+        out.append('\n');
+        return out.toString();
     }
-    public void debugInfo(final Appendable out) throws IOException {
-        final String prefix = StringUtil.leadLeft("", ' ', getLevel() * 2);
-        out.append(prefix);
-        out.append( this.toString() );
-        out.append("\n");
-        for (ASTNode node : children) {
-            node.debugInfo(out);
-        }
+
+    /**
+     * Вызывается при добавлении или исключению узла из дерева.
+     * Метод перекрывается в классах-потомках для своевременного сброса своего внутреннего состояния,
+     * зависящего от положения узла в дереве.
+     */
+    protected void resetState() {
     }
 
     protected void indent(final Writer out) throws IOException {
@@ -182,6 +208,10 @@ public abstract class ASTNode {
             }
             out.write(PREFIXES,0,lv*INDENT);
         }
+    }
+
+    public String toString() {
+        return "["+this.getClass().getSimpleName()+"{hash:"+System.identityHashCode(this)+"}]"; 
     }
 
 

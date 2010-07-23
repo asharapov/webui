@@ -1,30 +1,24 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.echosoft.common.utils.StringUtil;
+import org.echosoft.framework.ui.core.compiler.Variable;
+
 /**
+ * Содержит описание метода класса.
  * @author Anton Sharapov
  */
-public class MethodNode extends ASTNode {
-
-    private static final class Argument implements Serializable {
-        private final Class cls;
-        private final String name;
-        private final boolean unmodifiable;
-        private Argument(Class cls, String name, boolean unmodifiable) {
-            this.cls = cls;
-            this.name = name;
-            this.unmodifiable = unmodifiable;
-        }
-    }
+public class MethodNode extends ASTNode implements LocalVariablesManager {
 
     private Class cls;
     private String name;
@@ -32,16 +26,21 @@ public class MethodNode extends ASTNode {
     private boolean statical;
     private boolean unmodifiable;
     private boolean overrided;
-    private final List<Argument> args;
+    private final List<Variable> args;
     private final SortedSet<Class> exceptions;
+    private final Map<String,Variable> accessibleVars;
+    private final Map<String,Variable> allocatedVars;
 
     public MethodNode(Class cls, String name, Visibility visibility, boolean statical) {
+        super();
         this.cls = cls;
         this.name = name;
         this.visibility = visibility;
         this.statical = statical;
-        this.args = new ArrayList<Argument>();
+        this.args = new ArrayList<Variable>();
         this.exceptions = new TreeSet<Class>(ASTNode.CLS_COMPARATOR);
+        this.accessibleVars = new HashMap<String,Variable>();
+        this.allocatedVars = new HashMap<String,Variable>();
     }
 
     public Class getType() {
@@ -92,11 +91,17 @@ public class MethodNode extends ASTNode {
         return this;
     }
 
-    public List<Argument> getArguments() {
+    public List<Variable> getArguments() {
         return args;
     }
-    public MethodNode addArgument(final Class cls, final String name, final boolean unmodifiable) {
-        args.add( new Argument(cls, name, unmodifiable) );
+    public MethodNode addArgument(final Class cls, final String name, final boolean modifiable) {
+        if (!StringUtil.isJavaIdentifier(name))
+            throw new IllegalArgumentException("Illegal argument name");
+        if (accessibleVars.containsKey(name))
+            throw new IllegalArgumentException("Argument "+name+" already exists.");
+        final Variable v = new Variable(cls, name, modifiable, false);
+        args.add( v );
+        accessibleVars.put(name, v);
         return this;
     }
 
@@ -111,12 +116,16 @@ public class MethodNode extends ASTNode {
     }
 
     @Override
-    public ASTNode append(final ASTNode node) {
-        return super.append(node);
+    public MethodNode append(final ASTNode node) {
+        if (!(node instanceof StatementNode))
+            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
+        return (MethodNode)super.append(node);
+
     }
 
     @Override
     public void translate(final Writer out) throws IOException {
+        out.write('\n');
         if (overrided) {
             indent(out);
             out.write("@Override\n");
@@ -134,9 +143,9 @@ public class MethodNode extends ASTNode {
         out.write(' ');
         out.write(name);
         out.write('(');
-        for (Iterator<Argument> itar=args.iterator(); itar.hasNext(); ) {
-            final Argument arg = itar.next();
-            if (arg.unmodifiable)
+        for (Iterator<Variable> itar=args.iterator(); itar.hasNext(); ) {
+            final Variable arg = itar.next();
+            if (!arg.modifiable)
                 out.write("final ");
             out.write( getRoot().ensureClassImported(arg.cls) );
             out.write(' ');
@@ -163,4 +172,44 @@ public class MethodNode extends ASTNode {
         out.write("}\n");
     }
 
+
+
+    @Override
+    public Map<String, Variable> getAccessibleVariables() {
+        return accessibleVars;
+    }
+
+    @Override
+    public Variable defineVariable(final Class cls, final String expectedName, final boolean modifiable, final boolean reusable) {
+        final String name = findUnusedVariableName(expectedName);
+        final Variable v = new Variable(cls, name, modifiable, reusable);
+        allocatedVars.put(name, v);
+        accessibleVars.put(name, v);
+        return v;
+    }
+
+    @Override
+    public Variable findUnusedVariable(final Class cls) {
+        for (Variable v : allocatedVars.values()) {
+            if (!v.used && v.cls==cls)
+                return v;
+        }
+        return null;
+    }
+
+    @Override
+    public String findUnusedVariableName(final String expectedName) {
+        final Map<String,Variable> accessible = getAccessibleVariables();
+        String name = StringUtil.isJavaIdentifier(expectedName) ? expectedName : "cmp";
+        int counter = 1;
+        while (accessible.containsKey(name)) {
+            name += ++counter;
+        }
+        return name;
+    }
+
+
+    @Override
+    protected void resetState() {
+    }
 }

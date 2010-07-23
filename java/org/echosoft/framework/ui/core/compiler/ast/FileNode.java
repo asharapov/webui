@@ -46,6 +46,7 @@ public class FileNode extends ASTNode {
      * @throws IOException  в случае проблем с получением канонической версии пути к требуемому файлу.
      */
     public FileNode(final String uri, final Options options) throws IOException {
+        super();
         this.options = options;
         int p;
         String path = (p=uri.lastIndexOf('.')) >= 0 ? uri.substring(0,p) : uri; // убрали расширение исходного файла
@@ -62,15 +63,31 @@ public class FileNode extends ASTNode {
             clsName = path.substring(1);
         }
         imports = new TreeSet<Class>(ASTNode.CLS_COMPARATOR);
-        final ClassNode clsnode = new ClassNode(clsName, HttpServlet.class);
-        append(clsnode);
+
         serviceNode = new MethodNode(null, "service", Visibility.PUBLIC, false)
                 .setOverrided(true)
-                .addArgument(HttpServletRequest.class, "request", true)
-                .addArgument(HttpServletResponse.class, "response", true)
+                .addArgument(HttpServletRequest.class, "request", false)
+                .addArgument(HttpServletResponse.class, "response", false)
                 .addException(ServletException.class)
-                .addException(IOException.class);
-        clsnode.append(serviceNode);
+                .addException(IOException.class)
+                .append( new RawStatementNode("System.out.println(\"Hello world!\")") );
+
+        final IfNode in = new IfNode();
+        in.setExpressionNode( new RawExpressionNode("true") );
+        in.getThenNode().append( new RawStatementNode("System.out.println(\"then statement\")") );
+        //serviceNode.append(in);
+        System.out.println(in.debugInfo());
+
+        this.append(
+            new ClassNode(clsName, HttpServlet.class)
+            .setFinal(true)
+            .append(
+                new FieldNode(long.class, "counter", Visibility.PUBLIC, true)
+                .setFinal(true)
+                .setFieldValue("System.currentTimeMillis()")
+            )
+            .append(serviceNode)
+        );
     }
 
     /**
@@ -95,10 +112,10 @@ public class FileNode extends ASTNode {
     }
 
     @Override
-    public ASTNode append(final ASTNode node) {
+    public FileNode append(final ASTNode node) {
         if (!(node instanceof ClassNode))
             throw new IllegalStateException("ClassNode required");
-        return super.append(node);
+        return (FileNode)super.append(node);
     }
 
     @Override
@@ -130,7 +147,7 @@ public class FileNode extends ASTNode {
      */
     public String ensureClassImported(final Class cls) {
         final Class normcls = cls.isArray() ? cls.getComponentType() : cls;
-        if (imports.contains(normcls))
+        if (cls.getPackage()==null || imports.contains(normcls))
             return cls.getSimpleName();
         final String name = normcls.getSimpleName();
         for (Class cn : imports) {

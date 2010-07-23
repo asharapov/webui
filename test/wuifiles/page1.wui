@@ -18,7 +18,7 @@
     bla bla bla
   </core:event>
   
-  <core:section>ccc</core:section>
+  <!--<core:section>ccc</core:section>-->
 
   <xi:include href="inclusion.xml">
     <xi:fallback>failed</xi:fallback>

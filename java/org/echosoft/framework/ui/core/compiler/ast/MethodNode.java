@@ -117,10 +117,7 @@ public class MethodNode extends ASTNode implements LocalVariablesManager {
 
     @Override
     public MethodNode append(final ASTNode node) {
-        if (!(node instanceof StatementNode))
-            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
         return (MethodNode)super.append(node);
-
     }
 
     @Override
@@ -208,8 +205,9 @@ public class MethodNode extends ASTNode implements LocalVariablesManager {
         return name;
     }
 
-
     @Override
-    protected void resetState() {
+    protected void checkCandidateToChild(final ASTNode node) {
+        if (!(node instanceof StatementNode))
+            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
     }
 }

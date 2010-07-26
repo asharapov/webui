@@ -87,11 +87,8 @@ public class ClassNode extends ASTNode {
         return this;
     }
 
-
     @Override
     public ClassNode append(final ASTNode node) {
-        if ( !(node instanceof MethodNode) && !(node instanceof FieldNode) && !(node instanceof ClassNode) )
-            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
         return (ClassNode)super.append(node);
     }
 
@@ -126,5 +123,11 @@ public class ClassNode extends ASTNode {
         }
         indent(out);
         out.write("}\n");
+    }
+
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        if ( !(node instanceof MethodNode) && !(node instanceof FieldNode) && !(node instanceof ClassNode) )
+            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
     }
 }

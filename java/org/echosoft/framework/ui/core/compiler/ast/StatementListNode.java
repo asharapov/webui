@@ -30,8 +30,6 @@ public class StatementListNode extends StatementNode implements LocalVariablesMa
 
     @Override
     public StatementListNode append(final ASTNode node) {
-        if (!(node instanceof StatementNode))
-            throw new IllegalArgumentException("Attempt to append illegal node to expression: "+node);
         return (StatementListNode)super.append(node);
     }
 
@@ -45,7 +43,9 @@ public class StatementListNode extends StatementNode implements LocalVariablesMa
             node.translate(out);
         }
         indent(out);
-        out.write("}\n");
+        out.write("}");
+        if (leadIndent)
+            out.write('\n');
     }
 
 
@@ -99,6 +99,12 @@ public class StatementListNode extends StatementNode implements LocalVariablesMa
         if (!allocatedVars.isEmpty())
             throw new IllegalStateException("Unable to reset state for nodes ");
         accessibleVars = null;
+    }
+
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        if (!(node instanceof StatementNode))
+            throw new IllegalArgumentException("Attempt to attach illegal node: "+node);
     }
 
 }

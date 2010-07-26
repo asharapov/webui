@@ -73,11 +73,6 @@ public class FieldNode extends ASTNode {
     }
 
     @Override
-    public FieldNode append(final ASTNode node) {
-        throw new IllegalArgumentException("Field is a leaf node");
-    }
-
-    @Override
     public void translate(final Writer out) throws IOException {
         indent(out);
         out.write(visibility.toJavaString());
@@ -96,5 +91,10 @@ public class FieldNode extends ASTNode {
             out.write(expr);
         }
         out.write(";\n");
+    }
+
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        throw new IllegalArgumentException("Field is a leaf node");
     }
 }

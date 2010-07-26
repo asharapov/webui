@@ -73,9 +73,18 @@ public class FileNode extends ASTNode {
                 .append( new RawStatementNode("System.out.println(\"Hello world!\")") );
 
         final IfNode in = new IfNode();
-        in.setExpressionNode( new RawExpressionNode("true") );
-        in.getThenNode().append( new RawStatementNode("System.out.println(\"then statement\")") );
-        //serviceNode.append(in);
+        in.append(
+                new RawExpressionNode("true")
+        ).append(
+                new StatementListNode()
+                        .noLeadIndent()
+                        .append(
+                        new RawStatementNode("System.out.println(\"then statement\")")
+                )
+        ).append(
+                new RawStatementNode("System.out.println(\"else statement\")")
+        );
+        serviceNode.append(in);
         System.out.println(in.debugInfo());
 
         this.append(
@@ -113,8 +122,6 @@ public class FileNode extends ASTNode {
 
     @Override
     public FileNode append(final ASTNode node) {
-        if (!(node instanceof ClassNode))
-            throw new IllegalStateException("ClassNode required");
         return (FileNode)super.append(node);
     }
 
@@ -159,4 +166,9 @@ public class FileNode extends ASTNode {
         return cls.getSimpleName();
     }
 
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        if (!(node instanceof ClassNode))
+            throw new IllegalStateException("ClassNode required");
+    }
 }

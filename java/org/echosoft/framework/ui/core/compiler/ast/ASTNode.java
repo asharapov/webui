@@ -115,7 +115,8 @@ public abstract class ASTNode {
      */
     public ASTNode append( final ASTNode node ) {
         if (node.parent!=null)
-            throw new IllegalStateException("Node already has parent");
+            throw new IllegalStateException("An attempt to attach already attached node");
+        checkCandidateToChild(node);
         children.add( node );
         node.parent = this;
         final FileNode root = this.getRoot();
@@ -192,6 +193,15 @@ public abstract class ASTNode {
      * зависящего от положения узла в дереве.
      */
     protected void resetState() {
+    }
+
+    /**
+     * Метод автоматически вызывается всякий раз перед добавлением очередного дочернего элемента.
+     * Задача метода - проверка допустимости добавления указанного в аргументе узла в качестве дочернего для текущего узла.
+     * @param node узел, добавляемый в список дочерних для данного узла.
+     * @throws RuntimeException  в случае если указанный узел не может быть добавлен.
+     */
+    protected void checkCandidateToChild(final ASTNode node) {
     }
 
     protected void indent(final Writer out) throws IOException {

@@ -5,4 +5,10 @@ package org.echosoft.framework.ui.core.compiler.ast;
  * @author Anton Sharapov
  */
 public abstract class StatementNode extends ASTNode {
+
+    @Override
+    public StatementNode append(final ASTNode node) {
+        return (StatementNode)super.append(node);
+    }
+
 }

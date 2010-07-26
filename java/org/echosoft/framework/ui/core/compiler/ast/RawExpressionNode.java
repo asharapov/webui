@@ -24,13 +24,14 @@ public class RawExpressionNode extends ExpressionNode {
     }
 
     @Override
-    public ExpressionNode append(final ASTNode node) {
-        throw new IllegalStateException("RawExpression node can't have any children");
-    }
-
-    @Override
     public void translate(final Writer out) throws IOException {
         if (expr!=null)
             out.write(expr);
     }
+
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        throw new IllegalStateException("RawExpression node can't have any children");
+    }
+
 }

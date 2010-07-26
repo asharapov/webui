@@ -10,31 +10,22 @@ public class IfNode extends StatementListNode {
 
     public IfNode() {
         super();
-        append( new RawExpressionNode(null) );
-        append( new StatementListNode().noLeadIndent() );
-        append( new StatementListNode().noLeadIndent() );
     }
 
     public ExpressionNode getExpressionNode() {
-        return (ExpressionNode)children.get(0);
-    }
-    public IfNode setExpressionNode(ExpressionNode exprNode) {
-        children.set(0, exprNode);
-        return this;
+        return children.size()>0 ? (ExpressionNode)children.get(0) : null;
     }
 
-    public StatementListNode getThenNode() {
-        return (StatementListNode)children.get(1);
+    public StatementNode getThenNode() {
+        return children.size()>1 ? (StatementNode)children.get(1) : null;
     }
 
-    public StatementListNode getElseNode() {
-        return (StatementListNode)children.get(2);
+    public StatementNode getElseNode() {
+        return children.size()>2 ? (StatementNode)children.get(2) : null;
     }
 
     @Override
     public IfNode append(final ASTNode node) {
-        if (getChildren().size()>2)
-            throw new IllegalArgumentException("Only 3 child nodes supported");
         return (IfNode)super.append(node);
     }
 
@@ -46,10 +37,34 @@ public class IfNode extends StatementListNode {
         out.write("if ( ");
         getExpressionNode().translate(out);
         out.write(" ) ");
-        getThenNode().translate(out);
-        if (!getElseNode().isLeaf()) {
-            out.write(" else ");
-            getElseNode().translate(out);
+        final StatementNode tn = getThenNode(), en = getElseNode();
+        if (!(tn instanceof StatementListNode))
+            out.write('\n'); 
+        tn.translate(out);
+        if (en!=null) {
+            if (tn instanceof StatementListNode)
+                out.write(' ');
+            else {
+                indent(out);
+            }
+            out.write("else ");
+            if (!(en instanceof StatementListNode))
+                out.write('\n');
+            en.translate(out);
         }
+    }
+
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        final int size = getChildren().size();
+        if (size==0) {
+            if (!(node instanceof ExpressionNode))
+                throw new IllegalArgumentException("Attempt to attach illegal node: "+node);
+        } else
+        if (size<3) {
+            if (!(node instanceof StatementNode))
+                throw new IllegalArgumentException("Attempt to attach illegal node: "+node);
+        } else
+            throw new IllegalArgumentException("Only 3 child nodes supported");
     }
 }

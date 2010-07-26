@@ -23,17 +23,17 @@ public class RawStatementNode extends StatementNode {
     }
 
     @Override
-    public StatementNode append(final ASTNode node) {
-        throw new IllegalStateException("RawStatement node can't have any children");
-    }
-
-    @Override
     public void translate(final Writer out) throws IOException {
         if (stmt!=null) {
             indent(out);
             out.write(stmt);
             out.write(";\n");
         }
+    }
+
+    @Override
+    protected void checkCandidateToChild(final ASTNode node) {
+        throw new IllegalStateException("RawStatement node can't have any children");
     }
 
 }

@@ -1,8 +1,6 @@
-package org.echosoft.framework.ui.core.compiler.tags;
+package org.echosoft.framework.ui.core.compiler.xml;
 
 import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
-import org.echosoft.framework.ui.core.compiler.xml.Tag;
-import org.echosoft.framework.ui.core.compiler.xml.TagHandler;
 import org.xml.sax.SAXException;
 
 /**

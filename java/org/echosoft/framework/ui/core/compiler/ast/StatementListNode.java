@@ -48,6 +48,10 @@ public class StatementListNode extends StatementNode implements LocalVariablesMa
             out.write('\n');
     }
 
+    @Override
+    protected int getIndentLevel() {
+        return leadIndent ? super.getIndentLevel() : getParent().getIndentLevel();
+    }
 
 
     @Override

@@ -119,6 +119,34 @@ public abstract class ASTNode {
         checkCandidateToChild(node);
         children.add( node );
         node.parent = this;
+        // установим в добавляемом узле и всех его дочерних узлах (если они есть) ссылку на корневой узел дерева...
+        final FileNode root = this.getRoot();
+        if (root!=null) {
+            node.root = root;
+            node.resetState();
+            if (node.hasChildren()) {
+                for (Iterator<ASTNode> it = node.traverseChildNodes(); it.hasNext(); ) {
+                    final ASTNode n = it.next();
+                    n.root = root;
+                    n.resetState();
+                }
+            }
+        }
+        return this;
+    }
+
+    public ASTNode replace( final ASTNode node, int position ) {
+        if (node.parent!=null)
+            throw new IllegalStateException("An attempt to attach already attached node");
+        if (children.size()<=position)
+            throw new IllegalStateException("An attempt to replace non existent node");
+        checkCandidateToChild(node);
+
+        final ASTNode oldnode = children.get(position);
+        oldnode.excludeFromTree();
+        children.set(position, node);
+        node.parent = this;
+        // установим в добавляемом узле и всех его дочерних узлах (если они есть) ссылку на корневой узел дерева...
         final FileNode root = this.getRoot();
         if (root!=null) {
             node.root = root;
@@ -207,7 +235,7 @@ public abstract class ASTNode {
     protected void indent(final Writer out) throws IOException {
         if (parent==null)
             return;
-        final int level = getLevel() - 1;
+        final int level = getIndentLevel();
         if (level<=MAX_DEFAULT_LEVEL) {
             out.write(PREFIXES,0,level*INDENT);
         } else {
@@ -218,6 +246,10 @@ public abstract class ASTNode {
             }
             out.write(PREFIXES,0,lv*INDENT);
         }
+    }
+
+    protected int getIndentLevel() {
+        return parent==null || parent.parent==null ? 0 : parent.getIndentLevel() + 1;
     }
 
     public String toString() {

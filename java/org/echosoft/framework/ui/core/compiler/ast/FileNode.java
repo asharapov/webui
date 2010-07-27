@@ -64,38 +64,23 @@ public class FileNode extends ASTNode {
         }
         imports = new TreeSet<Class>(ASTNode.CLS_COMPARATOR);
 
+        final String charset = options.charset;
         serviceNode = new MethodNode(null, "service", Visibility.PUBLIC, false)
                 .setOverrided(true)
                 .addArgument(HttpServletRequest.class, "request", false)
                 .addArgument(HttpServletResponse.class, "response", false)
                 .addException(ServletException.class)
-                .addException(IOException.class)
-                .append( new RawStatementNode("System.out.println(\"Hello world!\")") );
-
-        final IfNode in = new IfNode();
-        in.append(
-                new RawExpressionNode("true")
-        ).append(
-                new StatementListNode()
-                        .noLeadIndent()
-                        .append(
-                        new RawStatementNode("System.out.println(\"then statement\")")
-                )
-        ).append(
-                new RawStatementNode("System.out.println(\"else statement\")")
-        );
-        serviceNode.append(in);
-        System.out.println(in.debugInfo());
-
+                .addException(IOException.class);
+        if (charset!=null) {
+            serviceNode.append( new RawStatementNode("request.setCharacterEncoding(\""+charset+"\")") );
+            serviceNode.append( new RawStatementNode("response.setContentType(\"text/html; charset="+charset+"\")") );
+        } else {
+            serviceNode.append( new RawStatementNode("response.setContentType(\"text/html\")") );
+        }
         this.append(
-            new ClassNode(clsName, HttpServlet.class)
-            .setFinal(true)
-            .append(
-                new FieldNode(long.class, "counter", Visibility.PUBLIC, true)
-                .setFinal(true)
-                .setFieldValue("System.currentTimeMillis()")
-            )
-            .append(serviceNode)
+                new ClassNode(clsName, HttpServlet.class)
+                        .setFinal(true)
+                        .append(serviceNode)
         );
     }
 

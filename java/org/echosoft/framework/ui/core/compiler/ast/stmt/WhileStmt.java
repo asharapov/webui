@@ -46,19 +46,21 @@ public final class WhileStmt extends VariablesRegistryStmt {
     public Expression getCondition() {
         return condition;
     }
-    public void setCondition(final Expression condition) {
+    public <T extends Expression> T setCondition(final T condition) {
         this.condition = condition;
         if (condition!=null)
             condition.setParent(this);
+        return condition;
     }
 
     public Statement getBody() {
         return body;
     }
-    public void setBody(final Statement body) {
+    public <T extends Statement> T setBody(final T body) {
         this.body = body;
         if (body!=null)
             body.setParent(this);
+        return body;
     }
 
     @Override

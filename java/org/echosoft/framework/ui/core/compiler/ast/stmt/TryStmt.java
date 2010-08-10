@@ -29,7 +29,7 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  * @author Julio Vilmar Gesser
  * @author Anton Sharapov
  */
-public final class TryStmt extends Statement {
+public final class TryStmt extends VariablesRegistryStmt {
 
     private BlockStmt tryBlock;
     private List<CatchClause> catchs;
@@ -43,10 +43,11 @@ public final class TryStmt extends Statement {
     public BlockStmt getTryBlock() {
         return tryBlock;
     }
-    public void setTryBlock(final BlockStmt tryBlock) {
+    public BlockStmt setTryBlock(final BlockStmt tryBlock) {
         this.tryBlock = tryBlock;
         if (tryBlock!=null)
             tryBlock.setParent(this);
+        return tryBlock;
     }
 
     public Iterable<CatchClause> getCatchs() {
@@ -63,10 +64,11 @@ public final class TryStmt extends Statement {
     public BlockStmt getFinallyBlock() {
         return finallyBlock;
     }
-    public void setFinallyBlock(final BlockStmt finallyBlock) {
+    public BlockStmt setFinallyBlock(final BlockStmt finallyBlock) {
         this.finallyBlock = finallyBlock;
         if (finallyBlock!=null)
             finallyBlock.setParent(this);
+        return finallyBlock;
     }
 
     @Override

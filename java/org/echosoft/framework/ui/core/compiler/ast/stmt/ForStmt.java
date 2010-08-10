@@ -51,10 +51,11 @@ public final class ForStmt extends VariablesRegistryStmt {
     public Expression getCompare() {
         return compare;
     }
-    public void setCompare(final Expression compare) {
+    public <T extends Expression> T setCompare(final T compare) {
         this.compare = compare;
         if (compare!=null)
             compare.setParent(this);
+        return compare;
     }
 
     public Iterable<Expression> getUpdate() {
@@ -71,10 +72,11 @@ public final class ForStmt extends VariablesRegistryStmt {
     public Statement getBody() {
         return body;
     }
-    public void setBody(final Statement body) {
+    public <T extends Statement> T setBody(final T body) {
         this.body = body;
         if (body!=null)
             body.setParent(this);
+        return body;
     }
 
     @Override

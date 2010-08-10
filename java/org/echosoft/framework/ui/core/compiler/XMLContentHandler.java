@@ -68,18 +68,18 @@ public class XMLContentHandler extends DefaultHandler {
         current = current==null
                 ? new Tag(rootNode, uri, qName, localName, attrs, handler)
                 : new Tag(current, uri, qName, localName, attrs, handler);
-        final BlockStmt node = current.handler.doStartTag(current);
-        current.childrenContainer = node!=null ? node : current.container;
+        final BlockStmt node = current.getHandler().doStartTag(current);
+        current.setChildrenContainer(node!=null ? node : current.getContainer());
     }
 
     @Override
     public void endElement(String uri, String localName, String qname) throws SAXException {
-        current.handler.doEndTag(current);
-        current = current.parent;
+        current.getHandler().doEndTag(current);
+        current = current.getParent();
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        current.handler.doBodyText(current, ch, start, length);
+        current.getHandler().doBodyText(current, ch, start, length);
     }
 }

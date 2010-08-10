@@ -51,19 +51,21 @@ public final class SynchronizedStmt extends Statement {
     public Expression getExpr() {
         return expr;
     }
-    public void setExpr(final Expression expr) {
+    public <T extends Expression> T setExpr(final T expr) {
         this.expr = expr;
         if (expr!=null)
             expr.setParent(this);
+        return expr;
     }
 
     public BlockStmt getBlock() {
         return block;
     }
-    public void setBlock(final BlockStmt block) {
+    public BlockStmt setBlock(final BlockStmt block) {
         this.block = block;
         if (block!=null)
             block.setParent(this);
+        return block;
     }
 
     @Override

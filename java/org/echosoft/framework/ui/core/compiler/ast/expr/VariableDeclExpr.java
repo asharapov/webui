@@ -31,24 +31,24 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  * @author Julio Vilmar Gesser
  * @author Anton Sharapov
  */
-public final class VariableDeclarationExpr extends Expression {
+public final class VariableDeclExpr extends Expression {
 
     private List<AnnotationExpr> annotations;
     private int modifiers;
     private Type type;
     private List<VariableDecl> vars;
 
-    public VariableDeclarationExpr() {
+    public VariableDeclExpr() {
     }
 
-    public VariableDeclarationExpr(final int modifiers, final Type type) {
+    public VariableDeclExpr(final int modifiers, final Type type) {
         this.modifiers = modifiers;
         this.type = type;
         if (type!=null)
             type.setParent(this);
     }
 
-    public VariableDeclarationExpr(final int modifiers, final Type type, final String name, final Expression initValue) {
+    public VariableDeclExpr(final int modifiers, final Type type, final String name, final Expression initValue) {
         this.modifiers = modifiers;
         this.type = type;
         if (type!=null)

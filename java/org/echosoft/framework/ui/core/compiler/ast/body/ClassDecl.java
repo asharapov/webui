@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
@@ -91,6 +92,28 @@ public final class ClassDecl extends TypeDeclaration {
         type.setParent( this );
         implTypes.add( type );
         return type;
+    }
+
+
+    public String findUnusedMethodName(String expectedName) {
+        if (!StringUtil.isJavaIdentifier(expectedName))
+            expectedName = "method";
+        String name = expectedName;
+        int cnt = 1;
+        while (methodExists(name)) {
+            name = expectedName + (++cnt);
+        }
+        return name;
+    }
+    private boolean methodExists(final String name) {
+        for (BodyDeclaration member : getMembers()) {
+            if (member instanceof MethodDecl) {
+                final MethodDecl method = (MethodDecl)member;
+                if (method.getName().equals(name))
+                    return true;
+            }
+        }
+        return false;
     }
 
 

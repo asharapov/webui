@@ -820,7 +820,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getValue().accept(this, arg);
     }
 
-    public void visit(final VariableDeclarationExpr node, final Object arg) {
+    public void visit(final VariableDeclExpr node, final Object arg) {
         printAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);

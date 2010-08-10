@@ -165,7 +165,7 @@ public interface GenericVisitor<R, A> {
 
     public R visit(AssignExpr node, A arg);
 
-    public R visit(VariableDeclarationExpr node, A arg);
+    public R visit(VariableDeclExpr node, A arg);
 
     public R visit(ObjectCreationExpr node, A arg);
 

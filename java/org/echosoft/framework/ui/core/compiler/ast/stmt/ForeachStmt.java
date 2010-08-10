@@ -60,19 +60,21 @@ public final class ForeachStmt extends VariablesRegistryStmt {
     public Expression getIterable() {
         return iterable;
     }
-    public void setIterable(final Expression iterable) {
+    public <T extends Expression> T setIterable(final T iterable) {
         this.iterable = iterable;
         if (iterable!=null)
             iterable.setParent(this);
+        return iterable;
     }
 
     public Statement getBody() {
         return body;
     }
-    public void setBody(final Statement body) {
+    public <T extends Statement> T setBody(final T body) {
         this.body = body;
         if (body!=null)
             body.setParent(this);
+        return body;
     }
 
     @Override

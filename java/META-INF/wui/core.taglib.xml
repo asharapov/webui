@@ -3,6 +3,6 @@
         xsi:noNamespaceSchemaLocation="http://echosoft.org/webui/0.8/taglib"
         uri="http://echosoft.org/webui/0.8/taglib/core">
   <description>Содержит перечень основополагающих тегов для описания форм UI</description>
-  <tag name="page" handler="org.echosoft.framework.ui.core.compiler.xml.MockTagHandler" />
+  <tag name="page" handler="org.echosoft.framework.ui.extjs.compiler.tags.core.PageTag" />
   <tag name="event" handler="org.echosoft.framework.ui.core.compiler.xml.MockTagHandler" />
 </taglib>

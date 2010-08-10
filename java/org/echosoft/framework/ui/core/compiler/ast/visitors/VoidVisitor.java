@@ -166,7 +166,7 @@ public interface VoidVisitor<A> {
 
     public void visit (AssignExpr node, A arg);
 
-    public void visit (VariableDeclarationExpr node, A arg);
+    public void visit (VariableDeclExpr node, A arg);
 
     public void visit (ObjectCreationExpr node, A arg);
 

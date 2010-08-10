@@ -107,16 +107,26 @@ public final class ConstructorDecl extends BodyDeclaration implements VariablesC
     public BlockStmt getBody() {
         return body;
     }
-    public void setBody(final BlockStmt body) {
+    public BlockStmt setBody(final BlockStmt body) {
         this.body = body;
         if (body!=null)
             body.setParent( this );
+        return body;
     }
 
     @Override
-    public boolean containsVariable(final String name) {
+    public boolean containsVariable(final String name, final boolean findInParents) {
         for (Parameter param : parameters) {
             if (param.getName().equals(name))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+        for (Parameter param : parameters) {
+            if (param.getName().equals(name) && param.getType().equals(type))
                 return true;
         }
         return false;

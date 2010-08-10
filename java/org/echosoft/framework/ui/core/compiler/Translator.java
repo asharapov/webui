@@ -41,31 +41,31 @@ public class Translator {
         public BlockStmt doStartTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(64);
             buf.write('<');
-            buf.write(tag.qname);
-            for (int i=0,l=tag.attrs.getLength(); i<l; i++) {
+            buf.write(tag.getQname());
+            for (int i=0,l= tag.getAttrs().getLength(); i<l; i++) {
                 buf.write(' ');
-                buf.write(tag.attrs.getQName(i));
+                buf.write(tag.getAttrs().getQName(i));
                 buf.write("=\"");
-                buf.write(tag.attrs.getValue(i));
+                buf.write(tag.getAttrs().getValue(i));
                 buf.write('\"');
             }
             buf.write('>');
             final char[] c = buf.toString().toCharArray();
-            tag.parent.handler.doBodyText(tag.parent, c, 0, c.length);
+            tag.getParent().getHandler().doBodyText(tag.getParent(), c, 0, c.length);
             return null;
         }
         @Override
         public void doEndTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(10);
             buf.write("</");
-            buf.write(tag.qname);
+            buf.write(tag.getQname());
             buf.write('>');
             final char[] c = buf.toString().toCharArray();
-            tag.parent.handler.doBodyText(tag.parent, c, 0, c.length);
+            tag.getParent().getHandler().doBodyText(tag.getParent(), c, 0, c.length);
         }
         @Override
         public void doBodyText(final Tag tag, final char[] ch, final int start, final int length) throws SAXException {
-            tag.parent.handler.doBodyText(tag.parent, ch, start, length);
+            tag.getParent().getHandler().doBodyText(tag.getParent(), ch, start, length);
         }
     };
     private static TagLibrarySet instance;

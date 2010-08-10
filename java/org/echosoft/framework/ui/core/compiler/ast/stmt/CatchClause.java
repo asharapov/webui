@@ -21,6 +21,7 @@ package org.echosoft.framework.ui.core.compiler.ast.stmt;
 import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.echosoft.framework.ui.core.compiler.ast.Parameter;
 import org.echosoft.framework.ui.core.compiler.ast.VariablesContainer;
+import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -66,15 +67,41 @@ public final class CatchClause extends ASTNode implements VariablesContainer {
     public BlockStmt getCatchBlock() {
         return catchBlock;
     }
-    public void setCatchBlock(final BlockStmt catchBlock) {
+    public BlockStmt setCatchBlock(final BlockStmt catchBlock) {
         this.catchBlock = catchBlock;
         if (catchBlock!=null)
             catchBlock.setParent(this);
+        return catchBlock;
     }
 
     @Override
-    public boolean containsVariable(final String name) {
-        return param.getName().equals(name);
+    public boolean containsVariable(final String name, final boolean findInParents) {
+        if (param.getName().equals(name))
+            return true;
+        if (findInParents) {
+            for (ASTNode node=this.getParent(); (node instanceof VariablesContainer); node=node.getParent()) {
+                final VariablesContainer vh = (VariablesContainer)node;
+                if (vh.containsVariable(name, false)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+        if (param.getName().equals(name) && param.getType().equals(type))
+            return true;
+        if (findInParents) {
+            for (ASTNode node=this.getParent(); (node instanceof VariablesContainer); node=node.getParent()) {
+                final VariablesContainer vh = (VariablesContainer)node;
+                if (vh.containsVariable(name, type, false)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

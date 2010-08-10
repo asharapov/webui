@@ -41,28 +41,45 @@ public abstract class VariablesRegistryStmt extends Statement implements Variabl
     }
 
     @Override
-    public String findUnusedVariableName(final String expectedName) {
-        String name = StringUtil.isJavaIdentifier(expectedName) ? expectedName : "cmp";
+    public String findUnusedVariableName(String expectedName) {
+        if (!StringUtil.isJavaIdentifier(expectedName))
+            expectedName = "cmp";
+        String name = expectedName;
         int counter = 1;
-        while( variableExists(name) ) {
-            name += ++counter;
+        while( containsVariable(name,true) ) {
+            name = expectedName + (++counter);
         }
         return name;
     }
 
     @Override
-    public boolean containsVariable(final String name) {
-        return allocatedVars!=null && allocatedVars.containsKey(name);
+    public boolean containsVariable(final String name, final boolean findInParents) {
+        if (allocatedVars!=null && allocatedVars.containsKey(name))
+            return true;
+        if (findInParents) {
+            for (ASTNode node=this.getParent(); (node instanceof VariablesContainer); node=node.getParent()) {
+                final VariablesContainer vh = (VariablesContainer)node;
+                if (vh.containsVariable(name, false)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    private boolean variableExists(final String name) {
-        if (allocatedVars!=null && allocatedVars.containsKey(name)) {
-            return true;
-        }
-        for (ASTNode node=this.getParent(); (node instanceof VariablesContainer); node=node.getParent()) {
-            final VariablesContainer vh = (VariablesContainer)node;
-            if (vh.containsVariable(name)) {
+    @Override
+    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+        if (allocatedVars!=null) {
+            final Variable var = allocatedVars.get(name);
+            if (var.getType().equals(type))
                 return true;
+        }
+        if (findInParents) {
+            for (ASTNode node=this.getParent(); (node instanceof VariablesContainer); node=node.getParent()) {
+                final VariablesContainer vh = (VariablesContainer)node;
+                if (vh.containsVariable(name, type, false)) {
+                    return true;
+                }
             }
         }
         return false;

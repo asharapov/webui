@@ -50,28 +50,31 @@ public final class IfStmt extends VariablesRegistryStmt {
     public Expression getCondition() {
         return condition;
     }
-    public void setCondition(final Expression condition) {
+    public <T extends Expression> T setCondition(final T condition) {
         this.condition = condition;
         if (condition!=null)
             condition.setParent(this);
+        return condition;
     }
 
     public Statement getThenStmt() {
         return thenStmt;
     }
-    public void setThenStmt(final Statement thenStmt) {
+    public <T extends Statement> T setThenStmt(final T thenStmt) {
         this.thenStmt = thenStmt;
         if (thenStmt!=null)
             thenStmt.setParent(this);
+        return thenStmt;
     }
 
     public Statement getElseStmt() {
         return elseStmt;
     }
-    public void setElseStmt(final Statement elseStmt) {
+    public <T extends Statement> T setElseStmt(final T elseStmt) {
         this.elseStmt = elseStmt;
         if (elseStmt!=null)
             elseStmt.setParent(this);
+        return elseStmt;
     }
 
     @Override

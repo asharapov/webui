@@ -40,11 +40,4 @@ public interface VariablesRegistry extends VariablesContainer {
      */
     public String findUnusedVariableName(String expectedName);
 
-    /**
-     * Возвращает <code>true</code> если данный блок содержит переменную с указанным именем (любого типа).
-     * @param name  некоторое имя переменной.
-     * @return <code>true</code> если данный блок содержит переменную с указанным именем (любого типа).
-     */
-    public boolean containsVariable(String name);
-
 }

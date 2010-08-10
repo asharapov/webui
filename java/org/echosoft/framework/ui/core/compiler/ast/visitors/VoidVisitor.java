@@ -19,7 +19,6 @@
 package org.echosoft.framework.ui.core.compiler.ast.visitors;
 
 import org.echosoft.framework.ui.core.compiler.ast.CompilationUnit;
-import org.echosoft.framework.ui.core.compiler.ast.ImportDeclaration;
 import org.echosoft.framework.ui.core.compiler.ast.PackageDecl;
 import org.echosoft.framework.ui.core.compiler.ast.Parameter;
 import org.echosoft.framework.ui.core.compiler.ast.VariableDecl;
@@ -74,8 +73,6 @@ public interface VoidVisitor<A> {
     public void visit (CompilationUnit node, A arg);
 
     public void visit (PackageDecl node, A arg);
-
-    public void visit (ImportDeclaration node, A arg);
 
     public void visit (LineComment node, A arg);
 

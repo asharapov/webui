@@ -19,7 +19,6 @@
 package org.echosoft.framework.ui.core.compiler.ast.visitors;
 
 import org.echosoft.framework.ui.core.compiler.ast.CompilationUnit;
-import org.echosoft.framework.ui.core.compiler.ast.ImportDeclaration;
 import org.echosoft.framework.ui.core.compiler.ast.PackageDecl;
 import org.echosoft.framework.ui.core.compiler.ast.Parameter;
 import org.echosoft.framework.ui.core.compiler.ast.VariableDecl;
@@ -73,8 +72,6 @@ public interface GenericVisitor<R, A> {
     public R visit(CompilationUnit node, A arg);
 
     public R visit(PackageDecl node, A arg);
-
-    public R visit(ImportDeclaration node, A arg);
 
     public R visit(LineComment node, A arg);
 

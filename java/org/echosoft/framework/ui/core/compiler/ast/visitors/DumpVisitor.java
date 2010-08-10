@@ -24,7 +24,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.echosoft.framework.ui.core.compiler.ast.CompilationUnit;
-import org.echosoft.framework.ui.core.compiler.ast.ImportDeclaration;
 import org.echosoft.framework.ui.core.compiler.ast.Mods;
 import org.echosoft.framework.ui.core.compiler.ast.PackageDecl;
 import org.echosoft.framework.ui.core.compiler.ast.Parameter;
@@ -283,18 +282,6 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(node.getName());
         printer.printLn(";");
         printer.printLn();
-    }
-
-    public void visit(final ImportDeclaration node, final Object arg) {
-        printer.print("import ");
-        if (node.isStatic()) {
-            printer.print("static ");
-        }
-        node.getName().accept(this, arg);
-        if (node.isAsterisk()) {
-            printer.print(".*");
-        }
-        printer.printLn(";");
     }
 
     public void visit(final RefType node, final Object arg) {

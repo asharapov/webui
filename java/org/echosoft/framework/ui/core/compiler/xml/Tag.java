@@ -3,8 +3,8 @@ package org.echosoft.framework.ui.core.compiler.xml;
 import java.io.Serializable;
 
 import org.echosoft.common.model.Predicate;
-import org.echosoft.framework.ui.core.compiler.Variable;
-import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
+import org.echosoft.framework.ui.core.compiler.ast.Variable;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
 import org.xml.sax.Attributes;
 
 /**
@@ -40,11 +40,11 @@ public class Tag implements Serializable {
     /**
      * Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие данному xml тегу.
      */
-    public final ASTNode container;
+    public final BlockStmt container;
     /**
      * Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие дочерним xml тегам.
      */
-    public ASTNode childrenContainer;
+    public BlockStmt childrenContainer;
     /**
      * Результатом работы абсолютного большинства обработчиков тегов является конструирование какого-либо одного объекта
      * некоторого класса и последующая установка его свойств:
@@ -82,7 +82,7 @@ public class Tag implements Serializable {
         this.handler = handler;
     }
 
-    public Tag(final ASTNode rootContainer, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
+    public Tag(final BlockStmt rootContainer, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
         this.parent = null;
         this.container = rootContainer;
         this.uri = uri;

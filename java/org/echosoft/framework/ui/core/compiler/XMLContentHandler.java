@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
 import org.echosoft.framework.ui.core.compiler.xml.Tag;
 import org.echosoft.framework.ui.core.compiler.xml.TagHandler;
 import org.echosoft.framework.ui.core.compiler.xml.TagLibrarySet;
@@ -22,11 +22,11 @@ public class XMLContentHandler extends DefaultHandler {
 
     private final TagLibrarySet definitions;
     private final Map<String, Deque<String>> aliasses;  // mapping:  alias -> stack of uri
-    private ASTNode rootNode;
+    private BlockStmt rootNode;
     private Tag current;
     private Locator locator;
 
-    public XMLContentHandler(final TagLibrarySet taglibs, final ASTNode rootNode) {
+    public XMLContentHandler(final TagLibrarySet taglibs, final BlockStmt rootNode) {
         this.definitions = taglibs;
         this.aliasses = new HashMap<String, Deque<String>>();
         this.rootNode = rootNode;
@@ -68,7 +68,7 @@ public class XMLContentHandler extends DefaultHandler {
         current = current==null
                 ? new Tag(rootNode, uri, qName, localName, attrs, handler)
                 : new Tag(current, uri, qName, localName, attrs, handler);
-        final ASTNode node = current.handler.doStartTag(current);
+        final BlockStmt node = current.handler.doStartTag(current);
         current.childrenContainer = node!=null ? node : current.container;
     }
 

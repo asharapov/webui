@@ -47,10 +47,11 @@ public final class SwitchStmt extends Statement {
     public Expression getSelector() {
         return selector;
     }
-    public void setSelector(final Expression selector) {
+    public <T extends Expression> T setSelector(final T selector) {
         this.selector = selector;
         if (selector!=null)
             selector.setParent(this);
+        return selector;
     }
 
     public Iterable<SwitchEntryStmt> getEntries() {

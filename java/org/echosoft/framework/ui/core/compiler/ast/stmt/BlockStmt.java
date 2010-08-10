@@ -33,7 +33,11 @@ public final class BlockStmt extends VariablesRegistryStmt {
 
     private List<Statement> stmts;
 
-    public Iterable<Statement> getStmts() {
+    public boolean hasStatements() {
+        return stmts!=null && stmts.size()>0;
+    }
+
+    public Iterable<Statement> getStatements() {
         return stmts!=null ? stmts : Collections.<Statement>emptyList();
     }
 

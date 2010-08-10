@@ -30,7 +30,7 @@
       <fileset dir="." excludes="**/.svn/**/*.*">
         <include name="themes/**/*.*" />
       </fileset>
-      <metainf file="web/WEB-INF/*.tld"/>
+      <metainf dir="java/META-INF"/>
       <manifest>
         <attribute name="Built-By" value="${built.by}"/>
         <attribute name="Built-Date" value="${built.date}"/>
@@ -227,7 +227,7 @@ Implementation-Version: ${built.revision}
           <include name="org/echosoft/framework/ui/**/*.*"/>
           <include name="org/echosoft/common/ui/**/*.*"/>
         </fileset>
-        <metainf file="web/WEB-INF/webui-*.tld"/>
+        <metainf dir="java/META-INF"/>
         <manifest>
           <attribute name="Built-By" value="${built.by}"/>
           <attribute name="Built-Date" value="${built.date}"/>

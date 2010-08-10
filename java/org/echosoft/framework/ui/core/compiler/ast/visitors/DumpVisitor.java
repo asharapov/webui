@@ -580,7 +580,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     public void visit(final BlockStmt node, final Object arg) {
         printer.printLn("{");
         printer.indent();
-        for (Statement s : node.getStmts()) {
+        for (Statement s : node.getStatements()) {
             s.accept(this, arg);
             printer.printLn();
         }
@@ -950,8 +950,12 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(final MethodCallExpr node, final Object arg) {
-        if (node.getScope() != null) {
-            node.getScope().accept(this, arg);
+        if (node.getScopeExpr() != null) {
+            node.getScopeExpr().accept(this, arg);
+            printer.print(".");
+        } else
+        if (node.getScopeType() != null) {
+            node.getScopeType().accept(this, arg);
             printer.print(".");
         }
         printTypeArgs(node.getTypeArgs(), arg);
@@ -984,16 +988,16 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(final ThisExpr node, final Object arg) {
-        if (node.getClassExpr() != null) {
-            node.getClassExpr().accept(this, arg);
+        if (node.getType() != null) {
+            node.getType().accept(this, arg);
             printer.print(".");
         }
         printer.print("this");
     }
 
     public void visit(final SuperExpr node, final Object arg) {
-        if (node.getClassExpr() != null) {
-            node.getClassExpr().accept(this, arg);
+        if (node.getType() != null) {
+            node.getType().accept(this, arg);
             printer.print(".");
         }
         printer.print("super");

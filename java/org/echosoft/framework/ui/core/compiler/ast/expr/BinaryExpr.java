@@ -76,10 +76,11 @@ public final class BinaryExpr extends Expression {
     public Expression getLeft() {
         return left;
     }
-    public void setLeft(final Expression left) {
+    public <T extends Expression> T setLeft(final T left) {
         this.left = left;
         if (left!=null)
             left.setParent(this);
+        return left;
     }
 
     public Operator getOperator() {
@@ -92,10 +93,11 @@ public final class BinaryExpr extends Expression {
     public Expression getRight() {
         return right;
     }
-    public void setRight(final Expression right) {
+    public <T extends Expression> T setRight(final T right) {
         this.right = right;
         if (right!=null)
             right.setParent(this);
+        return right;
     }
 
     @Override

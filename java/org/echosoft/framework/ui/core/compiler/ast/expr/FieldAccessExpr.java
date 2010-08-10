@@ -43,10 +43,11 @@ public final class FieldAccessExpr extends Expression {
     public Expression getScope() {
         return scope;
     }
-    public void setScope(final Expression scope) {
+    public <T extends Expression> T setScope(final T scope) {
         this.scope = scope;
         if (scope!=null)
             scope.setParent(this);
+        return scope;
     }
 
     public String getField() {

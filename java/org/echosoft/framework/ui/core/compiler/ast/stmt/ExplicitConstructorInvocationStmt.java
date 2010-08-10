@@ -57,10 +57,11 @@ public final class ExplicitConstructorInvocationStmt extends Statement {
     public Expression getClassExpr() {
         return classExpr;
     }
-    public void setClassExpr(final Expression classExpr) {
+    public <T extends Expression> T setClassExpr(final T classExpr) {
         this.classExpr = classExpr;
         if (classExpr !=null)
             classExpr.setParent(this);
+        return classExpr;
     }
 
     public Iterable<Expression> getArguments() {

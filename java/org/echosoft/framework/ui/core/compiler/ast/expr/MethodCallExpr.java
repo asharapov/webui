@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -32,7 +33,8 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class MethodCallExpr extends Expression {
 
-    private Expression scope;
+    private Expression scopeExpr;
+    private RefType scopeType;
     private List<Type> typeArgs;
     private String name;
     private List<Expression> args;
@@ -40,20 +42,45 @@ public final class MethodCallExpr extends Expression {
     public MethodCallExpr() {
     }
 
+    public MethodCallExpr(final String name) {
+        this.name = name;
+    }
+
     public MethodCallExpr(final Expression scope, final String name) {
-        this.scope = scope;
+        this.scopeExpr = scope;
         this.name = name;
         if (scope!=null)
             scope.setParent(this);
     }
 
-    public Expression getScope() {
-        return scope;
-    }
-    public void setScope(final Expression scope) {
-        this.scope = scope;
+    public MethodCallExpr(final RefType scope, final String name) {
+        this.scopeType = scope;
+        this.name = name;
         if (scope!=null)
             scope.setParent(this);
+    }
+
+    public Expression getScopeExpr() {
+        return scopeExpr;
+    }
+    public <T extends Expression> T setScopeExpr(final T scope) {
+        this.scopeExpr = scope;
+        if (scope!=null) {
+            scope.setParent(this);
+            scopeType = null;
+        }
+        return scope;
+    }
+
+    public RefType getScopeType() {
+        return scopeType;
+    }
+    public void setScopeType(final RefType scope) {
+        this.scopeType = scope;
+        if (scope!=null) {
+            scope.setParent(this);
+            scopeExpr = null;
+        }
     }
 
     public Iterable<Type> getTypeArgs() {

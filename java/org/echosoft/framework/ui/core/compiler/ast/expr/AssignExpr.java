@@ -73,10 +73,11 @@ public final class AssignExpr extends Expression {
     public Expression getTarget() {
         return target;
     }
-    public void setTarget(final Expression target) {
+    public <T extends Expression> T setTarget(final T target) {
         this.target = target;
         if (target!=null)
             target.setParent(this);
+        return target;
     }
 
     public Operator getOperator() {
@@ -89,10 +90,11 @@ public final class AssignExpr extends Expression {
     public Expression getValue() {
         return value;
     }
-    public void setValue(final Expression value) {
+    public <T extends Expression> T setValue(final T value) {
         this.value = value;
         if (value!=null)
             value.setParent(this);
+        return value;
     }
 
     @Override

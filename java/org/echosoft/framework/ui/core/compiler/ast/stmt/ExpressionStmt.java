@@ -42,10 +42,11 @@ public final class ExpressionStmt extends Statement {
     public Expression getExpression() {
         return expr;
     }
-    public void setExpression(final Expression expr) {
+    public <T extends Expression> T setExpression(final T expr) {
         this.expr = expr;
         if (expr!=null)
             expr.setParent(this);
+        return expr;
     }
 
     @Override

@@ -39,10 +39,11 @@ public final class SingleMemberAnnotationExpr extends AnnotationExpr {
     public Expression getMemberValue() {
         return memberValue;
     }
-    public void setMemberValue(final Expression memberValue) {
+    public <T extends Expression> T setMemberValue(final T memberValue) {
         this.memberValue = memberValue;
         if (memberValue!=null)
             memberValue.setParent(this);
+        return memberValue;
     }
 
     @Override

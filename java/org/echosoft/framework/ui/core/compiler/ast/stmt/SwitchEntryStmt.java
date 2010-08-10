@@ -47,10 +47,11 @@ public final class SwitchEntryStmt extends Statement {
     public Expression getLabel() {
         return label;
     }
-    public void setLabel(final Expression label) {
+    public <T extends Expression> T setLabel(final T label) {
         this.label = label;
         if (label!=null)
             label.setParent(this);
+        return label;
     }
 
     public Iterable<Statement> getStatements() {

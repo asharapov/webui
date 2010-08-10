@@ -49,28 +49,31 @@ public final class ConditionalExpr extends Expression {
     public Expression getCondition() {
         return condition;
     }
-    public void setCondition(final Expression condition) {
+    public <T extends Expression> T setCondition(final T condition) {
         this.condition = condition;
         if (condition!=null)
             condition.setParent(this);
+        return condition;
     }
 
     public Expression getThenExpr() {
         return thenExpr;
     }
-    public void setThenExpr(final Expression thenExpr) {
+    public <T extends Expression> T setThenExpr(final T thenExpr) {
         this.thenExpr = thenExpr;
         if (thenExpr!=null)
             thenExpr.setParent(this);
+        return thenExpr;
     }
 
     public Expression getElseExpr() {
         return elseExpr;
     }
-    public void setElseExpr(final Expression elseExpr) {
+    public <T extends Expression> T setElseExpr(final T elseExpr) {
         this.elseExpr = elseExpr;
         if (elseExpr!=null)
             elseExpr.setParent(this);
+        return elseExpr;
     }
 
     @Override

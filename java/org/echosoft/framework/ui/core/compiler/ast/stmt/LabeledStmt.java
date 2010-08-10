@@ -55,10 +55,11 @@ public final class LabeledStmt extends Statement {
     public Statement getStmt() {
         return stmt;
     }
-    public void setStmt(final Statement stmt) {
+    public <T extends Statement> T setStmt(final T stmt) {
         this.stmt = stmt;
         if (stmt!=null)
             stmt.setParent(this);
+        return stmt;
     }
 
     @Override

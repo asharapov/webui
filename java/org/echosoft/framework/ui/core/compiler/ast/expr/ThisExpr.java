@@ -18,6 +18,7 @@
  */
 package org.echosoft.framework.ui.core.compiler.ast.expr;
 
+import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -27,24 +28,24 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class ThisExpr extends Expression {
 
-    private Expression classExpr;
+    private RefType type;
 
     public ThisExpr() {
     }
 
-    public ThisExpr(final Expression classExpr) {
-        this.classExpr = classExpr;
-        if (classExpr!=null)
-            classExpr.setParent(this);
+    public ThisExpr(final RefType type) {
+        this.type = type;
+        if (type !=null)
+            type.setParent(this);
     }
 
-    public Expression getClassExpr() {
-        return classExpr;
+    public RefType getType() {
+        return type;
     }
-    public void setClassExpr(final Expression classExpr) {
-        this.classExpr = classExpr;
-        if (classExpr!=null)
-            classExpr.setParent(this);
+    public void setType(final RefType type) {
+        this.type = type;
+        if (type !=null)
+            type.setParent(this);
     }
 
     @Override

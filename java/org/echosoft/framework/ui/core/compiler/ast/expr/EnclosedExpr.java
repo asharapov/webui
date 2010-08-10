@@ -41,10 +41,11 @@ public final class EnclosedExpr extends Expression {
     public Expression getInner() {
         return inner;
     }
-    public void setInner(final Expression inner) {
+    public <T extends Expression> T setInner(final T inner) {
         this.inner = inner;
         if (inner!=null)
             inner.setParent(this);
+        return inner;
     }
 
     @Override

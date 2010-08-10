@@ -42,10 +42,11 @@ public final class TypeDeclarationStmt extends Statement {
     public TypeDeclaration getTypeDeclaration() {
         return typeDecl;
     }
-    public void setTypeDeclaration(final TypeDeclaration typeDecl) {
+    public TypeDeclaration setTypeDeclaration(final TypeDeclaration typeDecl) {
         this.typeDecl = typeDecl;
         if (typeDecl!=null)
             typeDecl.setParent(this);
+        return typeDecl;
     }
 
     @Override

@@ -52,19 +52,21 @@ public final class AssertStmt extends Statement {
     public Expression getCheck() {
         return check;
     }
-    public void setCheck(final Expression check) {
+    public <T extends Expression> T setCheck(final T check) {
         this.check = check;
         if (check!=null)
             check.setParent(this);
+        return check;
     }
 
     public Expression getMessage() {
         return msg;
     }
-    public void setMessage(final Expression msg) {
+    public <T extends Expression> T setMessage(final T msg) {
         this.msg = msg;
         if (msg!=null)
             msg.setParent(this);
+        return msg;
     }
 
     @Override

@@ -42,10 +42,11 @@ public final class ThrowStmt extends Statement {
     public Expression getExpr() {
         return expr;
     }
-    public void setExpr(final Expression expr) {
+    public <T extends Expression> T setExpr(final T expr) {
         this.expr = expr;
         if (expr!=null)
             expr.setParent(this);
+        return expr;
     }
 
     @Override

@@ -19,11 +19,20 @@
 package org.echosoft.framework.ui.core.compiler.ast.stmt;
 
 import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
+import org.echosoft.framework.ui.core.compiler.ast.body.MethodDecl;
 
 /**
  * @author Julio Vilmar Gesser
  * @author Anton Sharapov
  */
 public abstract class Statement extends ASTNode {
+
+    public MethodDecl findEnclosingMethod() {
+        ASTNode node = getParent();
+        while ( node!=null && !(node instanceof MethodDecl) ) {
+            node = node.getParent();
+        }
+        return (MethodDecl)node;
+    }
 
 }

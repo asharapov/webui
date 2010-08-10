@@ -48,6 +48,19 @@ public final class VariableDeclExpr extends Expression {
             type.setParent(this);
     }
 
+    public VariableDeclExpr(final int modifiers, final Type type, final String name) {
+        this.modifiers = modifiers;
+        this.type = type;
+        if (type!=null)
+            type.setParent(this);
+        if (name!=null) {
+            final VariableDecl var = new VariableDecl(name,null);
+            var.setParent(this);
+            vars = new ArrayList<VariableDecl>(1);
+            vars.add(var);
+        }
+    }
+
     public VariableDeclExpr(final int modifiers, final Type type, final String name, final Expression initValue) {
         this.modifiers = modifiers;
         this.type = type;
@@ -58,7 +71,7 @@ public final class VariableDeclExpr extends Expression {
             var.setParent(this);
             if (initValue!=null)
                 initValue.setParent(var);
-            vars = new ArrayList<VariableDecl>(2);
+            vars = new ArrayList<VariableDecl>(1);
             vars.add(var);
         }
     }

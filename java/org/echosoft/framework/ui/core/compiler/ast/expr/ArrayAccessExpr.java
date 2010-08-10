@@ -45,19 +45,21 @@ public final class ArrayAccessExpr extends Expression {
     public Expression getName() {
         return name;
     }
-    public void setName(final Expression name) {
+    public <T extends Expression> T setName(final T name) {
         this.name = name;
         if (name!=null)
             name.setParent(this);
+        return name;
     }
 
     public Expression getIndex() {
         return index;
     }
-    public void setIndex(final Expression index) {
+    public <T extends Expression> T setIndex(final T index) {
         this.index = index;
         if (index!=null)
             index.setParent(this);
+        return index;
     }
 
     @Override

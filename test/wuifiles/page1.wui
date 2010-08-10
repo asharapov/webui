@@ -12,22 +12,27 @@
                                http://echosoft.org/webui/0.8/taglib/cor file://w:/webui/design/wui-core.xsd"
   -->
 
+  <!--
   <core:event type="javascript" xml:lang="en">
     test
     <test xsi:type="Length">10</test>
     bla bla bla
   </core:event>
+  -->
   
   <!--<core:section>ccc</core:section>-->
 
+  <!--
   <xi:include href="inclusion.xml">
     <xi:fallback>failed</xi:fallback>
   </xi:include>
+  -->
 
+  <!--
   <core:event type="javascript" xml:lang="en">
     <test>xxx</test>
     fuck fuck fuck
   </core:event>
-  <!--<xi:fuck />-->
+  -->
 
 </core:page>

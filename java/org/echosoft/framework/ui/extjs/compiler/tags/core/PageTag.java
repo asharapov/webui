@@ -3,6 +3,7 @@ package org.echosoft.framework.ui.extjs.compiler.tags.core;
 import javax.servlet.ServletException;
 
 import org.echosoft.framework.ui.core.Application;
+import org.echosoft.framework.ui.core.ComponentContext;
 import org.echosoft.framework.ui.core.UIContext;
 import org.echosoft.framework.ui.core.compiler.ast.Mods;
 import org.echosoft.framework.ui.core.compiler.ast.Parameter;
@@ -42,38 +43,53 @@ public class PageTag implements TagHandler {
 //            throw new IllegalStateException("No 'request' argument defined");
 //        if (!container.containsVariable("response", new RefType(HttpServletResponse.class), true))
 //            throw new IllegalStateException("No 'response' argument defined");
-        final TryStmt tr1 = container.addStatement( new TryStmt() );
-        // содержимое блока 'try' ...
-        final BlockStmt tryBlock = tr1.setTryBlock( new BlockStmt() );
+        final TryStmt trs = container.addStatement( new TryStmt() );
+        // try {
+        final BlockStmt tryBlock = trs.setTryBlock( new BlockStmt() );
+        //     final UIContext uctx = Application.makeContext(request, response, getServletConfig());
         final Variable uctx = tryBlock.defineVariable(new RefType(UIContext.class), "uctx", false);
-        final MethodCallExpr mce1 = new MethodCallExpr(new RefType(Application.class),"makeContext");
-        mce1.addArgument( new NameExpr("request") );
-        mce1.addArgument( new NameExpr("response") );
-        mce1.addArgument( new MethodCallExpr("getServletConfig") );
-        final VariableDeclExpr vde1 = new VariableDeclExpr(Mods.FINAL, uctx.getType(), uctx.getName(), mce1);
-        tryBlock.addStatement( new ExpressionStmt(vde1) );
-        // содержимое блока 'catch' ...
+        MethodCallExpr mce = new MethodCallExpr(new RefType(Application.class),"makeContext");
+        mce.addArgument( new NameExpr("request") );
+        mce.addArgument( new NameExpr("response") );
+        mce.addArgument( new MethodCallExpr("getServletConfig") );
+        VariableDeclExpr vde = new VariableDeclExpr(Mods.FINAL, uctx.getType(), uctx.getName(), mce);
+        tryBlock.addStatement( new ExpressionStmt(vde) );
+        //     renderPage(uctx);
+        mce = new MethodCallExpr("renderPage");
+        mce.addArgument( new NameExpr(uctx.getName()) );
+        tryBlock.addStatement( new ExpressionStmt(mce) );
+        // } catch (Exception e) {
         final String e = container.findUnusedVariableName("e");
-        final CatchClause catchClause = tr1.addCatch( new CatchClause() );
+        final CatchClause catchClause = trs.addCatch( new CatchClause() );
         final BlockStmt catchBlock = catchClause.setCatchBlock( new BlockStmt() );
         catchClause.setParam( new Parameter(Mods.FINAL, new RefType(Exception.class), e) );
+        //     throw new ServletException(e.getMessage(), e);
         final ThrowStmt ts1 = catchBlock.addStatement( new ThrowStmt() );
         final ObjectCreationExpr oce1 = ts1.setExpr( new ObjectCreationExpr(new RefType(ServletException.class)) );
         oce1.addArgument(new RawExpr(e+".getMessage()"));
         oce1.addArgument(new NameExpr(e));
-        // заголовок метода 'renderPage' ...
+        // }
+        // public void renderPage(final UIContext uctx) throws Exception {
         final ClassDecl cdecl = (ClassDecl)container.findEnclosingMethod().getParent();
         final String name = cdecl.findUnusedMethodName("renderPage");
         final MethodDecl mdecl = cdecl.addMember( new MethodDecl(Mods.PUBLIC, new RefType(void.class), name) );
         mdecl.addParameter( new Parameter(Mods.FINAL, new RefType(UIContext.class), "uctx") );
         mdecl.addThrowable( new RefType(Exception.class) );
         final BlockStmt body = mdecl.setBody( new BlockStmt() );
-        // создание бина ExtJSPage ...
+        //     ExtJSPage page = new ExtJSPage(uctx);
         final Variable page = body.defineVariable(new RefType(ExtJSPage.class), "page", false);
         final ObjectCreationExpr oce2 = new ObjectCreationExpr( new RefType(ExtJSPage.class) );
         oce2.addArgument( new NameExpr("uctx") );
         final VariableDeclExpr vde2 = new VariableDeclExpr(Mods.FINAL, page.getType(), page.getName(), oce2);
         body.addStatement( new ExpressionStmt(vde2) );
+        tag.setBean( page );
+        //     final ComponentContext ctx = page.getContext();
+        final Variable ctx = body.defineVariable(new RefType(ComponentContext.class), "ctx", false);
+        final VariableDeclExpr vde3 = new VariableDeclExpr(Mods.FINAL, ctx.getType(), ctx.getName(),
+                                        new MethodCallExpr(new NameExpr(page.getName()), "getContext")
+                                    );
+        body.addStatement( new ExpressionStmt(vde3) );
+        tag.setContext( ctx );
         // инициализация его свойств ...
         final Attributes attrs = tag.getAttrs();
         String value;
@@ -104,8 +120,6 @@ public class PageTag implements TagHandler {
             mce3.addArgument( mce3a );
             body.addStatement( new ExpressionStmt(mce3) );
         }
-
-        tag.setBean( page );
         return body;
     }
 

@@ -22,16 +22,18 @@ public class Tag implements Serializable {
     private final BlockStmt container;
     private BlockStmt childrenContainer;
     private Variable bean;
+    private Variable context;
     private Object data;
 
     public Tag(final Tag parent, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
         this.parent = parent;
-        this.container = parent.childrenContainer;
         this.uri = uri;
         this.qname = qname;
         this.name = name;
         this.attrs = attrs;
         this.handler = handler;
+        this.container = parent.childrenContainer;
+        this.context = parent.context;
     }
 
     public Tag(final BlockStmt rootContainer, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
@@ -158,6 +160,18 @@ public class Tag implements Serializable {
     }
     public void setBean(final Variable bean) {
         this.bean = bean;
+    }
+
+    /**
+     * Ссылка на переменную в java коде, в которой хранится контекст родительского компонента.</br>
+     * Именно от этого котекста наследуются контексты все дочерних компонент.
+     * @return описывает имя переменной, содержащей контекст родительского компонента.
+     */
+    public Variable getContext() {
+        return context;
+    }
+    public void setContext(final Variable context) {
+        this.context = context;
     }
 
     /**

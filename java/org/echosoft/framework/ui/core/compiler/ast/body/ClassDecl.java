@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.echosoft.common.utils.StringUtil;
+import org.echosoft.framework.ui.core.compiler.ast.VariableDecl;
 import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
@@ -96,11 +97,29 @@ public final class ClassDecl extends TypeDeclaration {
 
 
     public String findUnusedMethodName(String expectedName) {
-        if (!StringUtil.isJavaIdentifier(expectedName))
+        String name;
+        if (!StringUtil.isJavaIdentifier(expectedName)) {
             expectedName = "method";
-        String name = expectedName;
+            name = "method1";
+        } else {
+            name = expectedName;
+        }
         int cnt = 1;
         while (methodExists(name)) {
+            name = expectedName + (++cnt);
+        }
+        return name;
+    }
+    public String findUnusedFieldName(String expectedName) {
+        String name;
+        if (!StringUtil.isJavaIdentifier(expectedName)) {
+            expectedName = "field";
+            name = "field1";
+        } else {
+            name = expectedName;
+        }
+        int cnt = 1;
+        while (fieldExists(name)) {
             name = expectedName + (++cnt);
         }
         return name;
@@ -111,6 +130,18 @@ public final class ClassDecl extends TypeDeclaration {
                 final MethodDecl method = (MethodDecl)member;
                 if (method.getName().equals(name))
                     return true;
+            }
+        }
+        return false;
+    }
+    private boolean fieldExists(final String name) {
+        for (BodyDeclaration member : getMembers()) {
+            if (member instanceof FieldDecl) {
+                final FieldDecl fields = (FieldDecl)member;
+                for (VariableDecl var : fields.getVariables()) {
+                    if (var.getName().equals(name))
+                        return true;
+                }
             }
         }
         return false;

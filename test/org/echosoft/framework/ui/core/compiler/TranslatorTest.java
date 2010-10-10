@@ -10,6 +10,7 @@ import java.util.Map;
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.mock.MockHttpServletRequest;
 import org.echosoft.framework.ui.core.mock.MockHttpServletResponse;
+import org.echosoft.framework.ui.core.mock.MockServletConfig;
 import org.echosoft.framework.ui.core.web.wui.Options;
 import org.echosoft.framework.ui.core.web.wui.Resource;
 import org.echosoft.framework.ui.core.web.wui.RuntimeContext;
@@ -26,19 +27,24 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class TranslatorTest {
 
+    private static final File PROJECT_ROOT = new File("w:/echosoft/webui");
+    private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+    private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+
     @Test
     public void testTranslate() throws Exception {
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
+        final MockServletConfig config = new MockServletConfig(new File(PROJECT_ROOT,"web"),"/",null);
         final Map<String,String> env = new HashMap<String,String>();
-        env.put("src-dir", "w:/webui/test");
-        env.put("dst-dir", "w:/webui/build");
+        env.put("src-dir", new File(PROJECT_ROOT,"web").getPath());
+        env.put("dst-dir", new File(PROJECT_ROOT,"build").getPath());
         env.put("target-package", "");
         env.put("classpath", "");
         env.put("mode", "development");
         final Options opts = new Options(env);
-        final RuntimeContext rctx = new RuntimeContext(opts, null);
-        final Resource resource = rctx.getResource("/wuifiles/page1.wui");
+        final RuntimeContext rctx = new RuntimeContext(opts, config);
+        final Resource resource = rctx.getResource("/wui/page1.wui");
         resource.service(request, response);
         System.out.println("*** servlet response: ***");
         System.err.println(response.getEnclosingWriter().toString());
@@ -46,7 +52,7 @@ public class TranslatorTest {
 
     @Test
     public void testParse() throws Exception {
-        final File file = new File("w:/webui/test/wuifiles/page1.wui");
+        final File file = new File(PROJECT_ROOT,"web/wui/page2.wui");
         final DefaultHandler handler =
                 new DefaultHandler() {
                     Locator locator = null;
@@ -118,7 +124,4 @@ public class TranslatorTest {
             t.printStackTrace();
         }
     }
-
-    static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-    static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 }

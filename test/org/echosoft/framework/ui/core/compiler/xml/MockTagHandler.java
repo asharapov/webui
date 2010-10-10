@@ -1,6 +1,6 @@
 package org.echosoft.framework.ui.core.compiler.xml;
 
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
 import org.xml.sax.SAXException;
 
 /**
@@ -9,7 +9,7 @@ import org.xml.sax.SAXException;
 public class MockTagHandler implements TagHandler {
 
     @Override
-    public BlockStmt doStartTag(Tag tag) throws SAXException {
+    public ASTBlockStmt doStartTag(Tag tag) throws SAXException {
         return null;
     }
 

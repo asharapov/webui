@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<core:page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xi="http://www.w3.org/2001/XInclude"
+           xmlns="http://www.w3.org/1999/xhtml"
+           xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
+           xsi:schemaLocation="http://www.w3.org/2001/XInclude  http://www.w3.org/2001/XInclude.xsd
+                               http://echosoft.org/webui/0.8/taglib/core file://w:/echosoft/webui/design/wui-core.xsd"
+           title="My first page"
+           viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
+
+  <xi:include href="inclusion.xml">
+    <xi:fallback>failed</xi:fallback>
+  </xi:include>
+
+</core:page>

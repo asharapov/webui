@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.echosoft.framework.ui.core.compiler.ast.body.MethodDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.TypeDeclaration;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTPackageDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTTypeDecl;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -37,32 +38,33 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class CompilationUnit extends ASTNode {
 
-    private final PackageDecl pkg;
-    private List<TypeDeclaration> types;
+    private final ASTPackageDecl pkg;
+    private List<ASTTypeDecl> types;
     private File dstFile;
-    private MethodDecl mainMethod;
+    private ASTBlockStmt mainBlockNode;
+    private Variable uictx;
 
     /**
      * @param pkgName  название пакета в котором находится данный файл. Может быть пустой строкой или <code>null</code>.
      */
     public CompilationUnit(final String pkgName) {
-        pkg = new PackageDecl(pkgName);
+        pkg = new ASTPackageDecl(pkgName);
         pkg.setParent(this);
     }
 
     /**
      * @return  декларация пакета. Никогда не возвращает <code>null</code>.
-     *  Для описания пустого пакета следует установить свойство {@link PackageDecl#setName(String)} в <code>null</code>.
+     *  Для описания пустого пакета следует установить свойство {@link org.echosoft.framework.ui.core.compiler.ast.body.ASTPackageDecl#setName(String)} в <code>null</code>.
      */
-    public PackageDecl getPackage() {
+    public ASTPackageDecl getPackage() {
         return pkg;
     }
 
     /**
      * @return итератор по описаниям всех классов определенным в данном файле. Никода не возвращает <code>null</code>.
      */
-    public Iterable<TypeDeclaration> getTypes() {
-        return types!=null ? types : Collections.<TypeDeclaration>emptyList();
+    public Iterable<ASTTypeDecl> getTypes() {
+        return types!=null ? types : Collections.<ASTTypeDecl>emptyList();
     }
 
     /**
@@ -70,9 +72,9 @@ public final class CompilationUnit extends ASTNode {
      * @param typeDecl заголовок описания нового класса.
      * @return то же значение что было указано в аргументе метода.
      */
-    public <T extends TypeDeclaration> T addType(final T typeDecl) {
+    public <T extends ASTTypeDecl> T addType(final T typeDecl) {
         if (types==null)
-            types = new ArrayList<TypeDeclaration>(2);
+            types = new ArrayList<ASTTypeDecl>(2);
         typeDecl.setParent( this );
         types.add( typeDecl );
         return typeDecl;
@@ -89,14 +91,25 @@ public final class CompilationUnit extends ASTNode {
     }
 
     /**
-     * Возвращает ссылку на нижележащий узел в данном дереве, который соответствует главному методу основного класса.
-     * @return  ссылка на метод, с которого начинается вызов данного класса.
+     * Возвращает ссылку на узел в дереве, под которым начнется создание узлов, соответствующих тегам в .wui файле (т.е. основной его контент).
+     * @return  ссылка на инициализированный блок кода с которого начнется генерация основного контента.
      */
-    public MethodDecl getMainMethod() {
-        return mainMethod;
+    public ASTBlockStmt getMainBlockNode() {
+        return mainBlockNode;
     }
-    public void setMainMethod(final MethodDecl method) {
-        this.mainMethod = method;
+    public void setMainBlockNode(final ASTBlockStmt blockNode) {
+        this.mainBlockNode = blockNode;
+    }
+
+    /**
+     * Возвращает ссылку на имя переменной в которой хранится экземпляр объекта {@link org.echosoft.framework.ui.core.UIContext} используемый для инициализации фреймворка.
+     * @return  ссылка на переменную.
+     */
+    public Variable getUIContextVar() {
+        return uictx;
+    }
+    public void setUIContextVar(final Variable uictx) {
+        this.uictx = uictx;
     }
 
     @Override

@@ -23,50 +23,50 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.echosoft.framework.ui.core.compiler.ast.ASTParameter;
+import org.echosoft.framework.ui.core.compiler.ast.ASTVariableDecl;
 import org.echosoft.framework.ui.core.compiler.ast.CompilationUnit;
 import org.echosoft.framework.ui.core.compiler.ast.Mods;
-import org.echosoft.framework.ui.core.compiler.ast.PackageDecl;
-import org.echosoft.framework.ui.core.compiler.ast.Parameter;
-import org.echosoft.framework.ui.core.compiler.ast.VariableDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.AnnotationDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.AnnotationMemberDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.BodyDeclaration;
-import org.echosoft.framework.ui.core.compiler.ast.body.ClassDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.ConstructorDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.EnumConstantDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.EnumDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.FieldDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.InitializerDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.InterfaceDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.MethodDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.TypeDeclaration;
-import org.echosoft.framework.ui.core.compiler.ast.comments.BlockComment;
-import org.echosoft.framework.ui.core.compiler.ast.comments.Comment;
-import org.echosoft.framework.ui.core.compiler.ast.comments.JavadocComment;
-import org.echosoft.framework.ui.core.compiler.ast.comments.LineComment;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTAnnotationDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTAnnotationMemberDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTBodyDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTClassDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTConstructorDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTEnumConstantDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTEnumDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTFieldDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTInitializerDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTInterfaceDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTMethodDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTPackageDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTTypeDecl;
+import org.echosoft.framework.ui.core.compiler.ast.comments.ASTBlockComment;
+import org.echosoft.framework.ui.core.compiler.ast.comments.ASTComment;
+import org.echosoft.framework.ui.core.compiler.ast.comments.ASTJavadocComment;
+import org.echosoft.framework.ui.core.compiler.ast.comments.ASTLineComment;
 import org.echosoft.framework.ui.core.compiler.ast.expr.*;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.AssertStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BreakStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.CatchClause;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ContinueStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.DoStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.EmptyStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ExplicitConstructorInvocationStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ExpressionStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ForStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ForeachStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.IfStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.LabeledStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ReturnStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.Statement;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.SwitchEntryStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.SwitchStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.SynchronizedStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ThrowStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.TryStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.TypeDeclarationStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.WhileStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTAssertStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBreakStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTCatchClause;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTContinueStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTDoStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTEmptyStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTExplicitConstructorInvocationStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTExpressionStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTForStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTForeachStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTIfStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTLabeledStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTReturnStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTStatement;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTSwitchEntryStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTSwitchStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTSynchronizedStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTypeDeclarationStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTWhileStmt;
 import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
@@ -161,23 +161,23 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    private void printMembers(final Iterable<BodyDeclaration> members, final Object arg) {
-        for (BodyDeclaration member : members) {
+    private void printMembers(final Iterable<ASTBodyDecl> members, final Object arg) {
+        for (ASTBodyDecl member : members) {
             printer.printLn();
             member.accept(this, arg);
             printer.printLn();
         }
     }
 
-    private void printMemberAnnotations(final Iterable<AnnotationExpr> annotations, final Object arg) {
-        for (AnnotationExpr a : annotations) {
+    private void printMemberAnnotations(final Iterable<ASTAnnotationExpr> annotations, final Object arg) {
+        for (ASTAnnotationExpr a : annotations) {
             a.accept(this, arg);
             printer.printLn();
         }
     }
 
-    private void printAnnotations(final Iterable<AnnotationExpr> annotations, final Object arg) {
-        for (AnnotationExpr a : annotations) {
+    private void printAnnotations(final Iterable<ASTAnnotationExpr> annotations, final Object arg) {
+        for (ASTAnnotationExpr a : annotations) {
             a.accept(this, arg);
             printer.print(" ");
         }
@@ -213,10 +213,10 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(">");
     }
 
-    private void printArguments(final Iterable<Expression> args, final Object arg) {
+    private void printArguments(final Iterable<ASTExpression> args, final Object arg) {
         printer.print("(");
-        for (Iterator<Expression> it = args.iterator(); it.hasNext();) {
-            final Expression e = it.next();
+        for (Iterator<ASTExpression> it = args.iterator(); it.hasNext();) {
+            final ASTExpression e = it.next();
             e.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
@@ -225,24 +225,24 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(")");
     }
 
-    private void printJavadoc(final JavadocComment javadoc, final Object arg) {
+    private void printJavadoc(final ASTJavadocComment javadoc, final Object arg) {
         if (javadoc != null) {
             javadoc.accept(this, arg);
         }
     }
 
-    public void visit(final LineComment node, final Object arg) {
+    public void visit(final ASTLineComment node, final Object arg) {
         printer.print("//");
         printer.printLn(node.getContent());
     }
 
-    public void visit(final BlockComment node, final Object arg) {
+    public void visit(final ASTBlockComment node, final Object arg) {
         printer.print("/*");
         printer.print(node.getContent());
         printer.printLn("*/");
     }
 
-    public void visit(final JavadocComment node, final Object arg) {
+    public void visit(final ASTJavadocComment node, final Object arg) {
         printer.print("/**");
         printer.print(node.getContent());
         printer.printLn("*/");
@@ -255,7 +255,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         final SourcePrinter originalPrinter = this.printer;
 
         this.printer = new SourcePrinter();
-        for (Iterator<TypeDeclaration> it = node.getTypes().iterator(); it.hasNext();) {
+        for (Iterator<ASTTypeDecl> it = node.getTypes().iterator(); it.hasNext();) {
             it.next().accept(this, arg);
             printer.printLn();
             if (it.hasNext()) {
@@ -273,8 +273,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         this.printer = originalPrinter;
     }
 
-    public void visit(final PackageDecl node, final Object arg) {
-        for (Comment comment : node.getComments()) {
+    public void visit(final ASTPackageDecl node, final Object arg) {
+        for (ASTComment comment : node.getComments()) {
             comment.accept(this, arg);
         }
         printAnnotations(node.getAnnotations(), arg);
@@ -320,7 +320,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final VariableDecl node, final Object arg) {
+    public void visit(final ASTVariableDecl node, final Object arg) {
         printer.print(node.getName());
         for (int i=node.getArrayDimension()-1; i>=0; i--) {
             printer.print("[]");
@@ -331,7 +331,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final Parameter node, final Object arg) {
+    public void visit(final ASTParameter node, final Object arg) {
         printAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);
@@ -343,7 +343,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
 
-    public void visit(final AnnotationDecl node, final Object arg) {
+    public void visit(final ASTAnnotationDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -358,7 +358,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("}");
     }
 
-    public void visit(final AnnotationMemberDecl node, final Object arg) {
+    public void visit(final ASTAnnotationMemberDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -373,7 +373,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final ClassDecl node, final Object arg) {
+    public void visit(final ASTClassDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -402,7 +402,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("}");
     }
 
-    public void visit(final InterfaceDecl node, final Object arg) {
+    public void visit(final ASTInterfaceDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -427,7 +427,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("}");
     }
 
-    public void visit(final EnumDecl node, final Object arg) {
+    public void visit(final ASTEnumDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -447,8 +447,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.printLn(" {");
         printer.indent();
         printer.printLn();
-        for (Iterator<EnumConstantDecl> it = node.getEntries().iterator(); it.hasNext();) {
-            final EnumConstantDecl e = it.next();
+        for (Iterator<ASTEnumConstantDecl> it = node.getEntries().iterator(); it.hasNext();) {
+            final ASTEnumConstantDecl e = it.next();
             e.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
@@ -466,7 +466,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("}");
     }
 
-    public void visit(final EnumConstantDecl node, final Object arg) {
+    public void visit(final ASTEnumConstantDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printer.print(node.getName());
@@ -480,14 +480,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final FieldDecl node, final Object arg) {
+    public void visit(final ASTFieldDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);
         printer.print(" ");
-        for (Iterator<VariableDecl> i = node.getVariables().iterator(); i.hasNext();) {
-            final VariableDecl var = i.next();
+        for (Iterator<ASTVariableDecl> i = node.getVariables().iterator(); i.hasNext();) {
+            final ASTVariableDecl var = i.next();
             var.accept(this, arg);
             if (i.hasNext()) {
                 printer.print(", ");
@@ -496,7 +496,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final InitializerDecl node, final Object arg) {
+    public void visit(final ASTInitializerDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         if (node.isStatic()) {
             printer.print("static ");
@@ -504,7 +504,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getBlock().accept(this, arg);
     }
 
-    public void visit(final ConstructorDecl node, final Object arg) {
+    public void visit(final ASTConstructorDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -514,8 +514,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
         printer.print(node.getName());
         printer.print("(");
-        for (Iterator<Parameter> it=node.getParameters().iterator(); it.hasNext(); ) {
-            final Parameter p = it.next();
+        for (Iterator<ASTParameter> it=node.getParameters().iterator(); it.hasNext(); ) {
+            final ASTParameter p = it.next();
             p.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
@@ -537,7 +537,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getBody().accept(this, arg);
     }
 
-    public void visit(final MethodDecl node, final Object arg) {
+    public void visit(final ASTMethodDecl node, final Object arg) {
         printJavadoc(node.getJavaDoc(), arg);
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
@@ -549,8 +549,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(" ");
         printer.print(node.getName());
         printer.print("(");
-        for (Iterator<Parameter> it=node.getParameters().iterator(); it.hasNext(); ) {
-            final Parameter p = it.next();
+        for (Iterator<ASTParameter> it=node.getParameters().iterator(); it.hasNext(); ) {
+            final ASTParameter p = it.next();
             p.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
@@ -577,10 +577,10 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
 
-    public void visit(final BlockStmt node, final Object arg) {
+    public void visit(final ASTBlockStmt node, final Object arg) {
         printer.printLn("{");
         printer.indent();
-        for (Statement s : node.getStatements()) {
+        for (ASTStatement s : node.getStatements()) {
             s.accept(this, arg);
             printer.printLn();
         }
@@ -588,14 +588,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("}");
     }
 
-    public void visit(final SynchronizedStmt node, final Object arg) {
+    public void visit(final ASTSynchronizedStmt node, final Object arg) {
         printer.print("synchronized (");
         node.getExpr().accept(this, arg);
         printer.print(") ");
         node.getBlock().accept(this, arg);
     }
 
-    public void visit(final IfStmt node, final Object arg) {
+    public void visit(final ASTIfStmt node, final Object arg) {
         printer.print("if (");
         node.getCondition().accept(this, arg);
         printer.print(") ");
@@ -606,10 +606,10 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final ForStmt node, final Object arg) {
+    public void visit(final ASTForStmt node, final Object arg) {
         printer.print("for (");
-        for (Iterator<Expression> it = node.getInit().iterator(); it.hasNext();) {
-            final Expression expr = it.next();
+        for (Iterator<ASTExpression> it = node.getInit().iterator(); it.hasNext();) {
+            final ASTExpression expr = it.next();
             expr.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
@@ -620,8 +620,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             node.getCompare().accept(this, arg);
         }
         printer.print("; ");
-        for (Iterator<Expression> it = node.getUpdate().iterator(); it.hasNext();) {
-            final Expression expr = it.next();
+        for (Iterator<ASTExpression> it = node.getUpdate().iterator(); it.hasNext();) {
+            final ASTExpression expr = it.next();
             expr.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
@@ -631,7 +631,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getBody().accept(this, arg);
     }
 
-    public void visit(final ForeachStmt node, final Object arg) {
+    public void visit(final ASTForeachStmt node, final Object arg) {
         printer.print("for (");
         node.getVariable().accept(this, arg);
         printer.print(" : ");
@@ -640,14 +640,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getBody().accept(this, arg);
     }
 
-    public void visit(final WhileStmt node, final Object arg) {
+    public void visit(final ASTWhileStmt node, final Object arg) {
         printer.print("while (");
         node.getCondition().accept(this, arg);
         printer.print(") ");
         node.getBody().accept(this, arg);
     }
 
-    public void visit(final DoStmt node, final Object arg) {
+    public void visit(final ASTDoStmt node, final Object arg) {
         printer.print("do ");
         node.getBody().accept(this, arg);
         printer.print(" while (");
@@ -655,19 +655,19 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(");");
     }
 
-    public void visit(final SwitchStmt node, final Object arg) {
+    public void visit(final ASTSwitchStmt node, final Object arg) {
         printer.print("switch(");
         node.getSelector().accept(this, arg);
         printer.printLn(") {");
         printer.indent();
-        for (SwitchEntryStmt entry : node.getEntries()) {
+        for (ASTSwitchEntryStmt entry : node.getEntries()) {
             entry.accept(this, arg);
         }
         printer.unindent();
         printer.print("}");
     }
 
-    public void visit(final SwitchEntryStmt node, final Object arg) {
+    public void visit(final ASTSwitchEntryStmt node, final Object arg) {
         if (node.getLabel() != null) {
             printer.print("case ");
             node.getLabel().accept(this, arg);
@@ -677,17 +677,17 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
         printer.printLn();
         printer.indent();
-        for (Statement stmt : node.getStatements()) {
+        for (ASTStatement stmt : node.getStatements()) {
             stmt.accept(this, arg);
             printer.printLn();
         }
         printer.unindent();
     }
 
-    public void visit(final TryStmt node, final Object arg) {
+    public void visit(final ASTTryStmt node, final Object arg) {
         printer.print("try ");
         node.getTryBlock().accept(this, arg);
-        for (CatchClause cc : node.getCatchs()) {
+        for (ASTCatchClause cc : node.getCatchs()) {
             cc.accept(this, arg);
         }
         if (node.getFinallyBlock() != null) {
@@ -696,14 +696,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final CatchClause node, final Object arg) {
+    public void visit(final ASTCatchClause node, final Object arg) {
         printer.print(" catch (");
         node.getParam().accept(this, arg);
         printer.print(") ");
         node.getCatchBlock().accept(this, arg);
     }
 
-    public void visit(final AssertStmt node, final Object arg) {
+    public void visit(final ASTAssertStmt node, final Object arg) {
         printer.print("assert ");
         node.getCheck().accept(this, arg);
         if (node.getMessage() != null) {
@@ -713,7 +713,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final BreakStmt node, final Object arg) {
+    public void visit(final ASTBreakStmt node, final Object arg) {
         printer.print("break");
         if (node.getId() != null) {
             printer.print(" ");
@@ -722,7 +722,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final ContinueStmt node, final Object arg) {
+    public void visit(final ASTContinueStmt node, final Object arg) {
         printer.print("continue");
         if (node.getId() != null) {
             printer.print(" ");
@@ -731,7 +731,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final ReturnStmt node, final Object arg) {
+    public void visit(final ASTReturnStmt node, final Object arg) {
         printer.print("return");
         if (node.getExpr() != null) {
             printer.print(" ");
@@ -740,13 +740,13 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final ThrowStmt node, final Object arg) {
+    public void visit(final ASTThrowStmt node, final Object arg) {
         printer.print("throw ");
         node.getExpr().accept(this, arg);
         printer.print(";");
     }
 
-    public void visit(final ExplicitConstructorInvocationStmt node, final Object arg) {
+    public void visit(final ASTExplicitConstructorInvocationStmt node, final Object arg) {
         if (node.isThis()) {
             printer.print("this");
         } else {
@@ -760,34 +760,34 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(";");
     }
 
-    public void visit(final EmptyStmt node, final Object arg) {
+    public void visit(final ASTEmptyStmt node, final Object arg) {
         printer.print(";");
     }
 
-    public void visit(final ExpressionStmt node, final Object arg) {
+    public void visit(final ASTExpressionStmt node, final Object arg) {
         node.getExpression().accept(this, arg);
         printer.print(";");
     }
 
-    public void visit(final LabeledStmt node, final Object arg) {
+    public void visit(final ASTLabeledStmt node, final Object arg) {
         printer.print(node.getLabel());
         printer.print(": ");
         node.getStmt().accept(this, arg);
     }
 
-    public void visit(final TypeDeclarationStmt node, final Object arg) {
+    public void visit(final ASTTypeDeclarationStmt node, final Object arg) {
         node.getTypeDeclaration().accept(this, arg);
     }
 
 
 
 
-    public void visit(final MarkerAnnotationExpr node, Object arg) {
+    public void visit(final ASTMarkerAnnotationExpr node, Object arg) {
         printer.print("@");
         printer.print(node.getName());
     }
 
-    public void visit(final SingleMemberAnnotationExpr node, final Object arg) {
+    public void visit(final ASTSingleMemberAnnotationExpr node, final Object arg) {
         printer.print("@");
         printer.print(node.getName());
         printer.print("(");
@@ -795,13 +795,13 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(")");
     }
 
-    public void visit(final NormalAnnotationExpr node, final Object arg) {
+    public void visit(final ASTNormalAnnotationExpr node, final Object arg) {
         printer.print("@");
         printer.print(node.getName());
         printer.print("(");
         for (Iterator<String> it=node.getParams().keySet().iterator(); it.hasNext(); ) {
             final String name = it.next();
-            final Expression value = node.getParams().get(name);
+            final ASTExpression value = node.getParams().get(name);
             printer.print(name);
             printer.print(" = ");
             value.accept(this, arg);
@@ -812,7 +812,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(")");
     }
 
-    public void visit(final AssignExpr node, final Object arg) {
+    public void visit(final ASTAssignExpr node, final Object arg) {
         node.getTarget().accept(this, arg);
         printer.print(" ");
         printer.print( node.getOperator().getCode() );
@@ -820,13 +820,13 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getValue().accept(this, arg);
     }
 
-    public void visit(final VariableDeclExpr node, final Object arg) {
+    public void visit(final ASTVariableDeclExpr node, final Object arg) {
         printAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);
         printer.print(" ");
-        for (Iterator<VariableDecl> i = node.getVariables().iterator(); i.hasNext();) {
-            final VariableDecl var = i.next();
+        for (Iterator<ASTVariableDecl> i = node.getVariables().iterator(); i.hasNext();) {
+            final ASTVariableDecl var = i.next();
             var.accept(this, arg);
             if (i.hasNext()) {
                 printer.print(", ");
@@ -834,7 +834,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final ObjectCreationExpr node, final Object arg) {
+    public void visit(final ASTObjectCreationExpr node, final Object arg) {
         if (node.getScope() != null) {
             node.getScope().accept(this, arg);
             printer.print(".");
@@ -851,7 +851,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final UnaryExpr node, final Object arg) {
+    public void visit(final ASTUnaryExpr node, final Object arg) {
         switch (node.getOperator()) {
             case POSITIVE:
                 printer.print("+");
@@ -888,7 +888,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
 
-    public void visit(final BinaryExpr node, final Object arg) {
+    public void visit(final ASTBinaryExpr node, final Object arg) {
         node.getLeft().accept(this, arg);
         printer.print(" ");
         printer.print( node.getOperator().getCode() );
@@ -896,7 +896,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getRight().accept(this, arg);
     }
 
-    public void visit(final ConditionalExpr node, final Object arg) {
+    public void visit(final ASTConditionalExpr node, final Object arg) {
         node.getCondition().accept(this, arg);
         printer.print(" ? ");
         node.getThenExpr().accept(this, arg);
@@ -904,19 +904,19 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         node.getElseExpr().accept(this, arg);
     }
 
-    public void visit(final ArrayAccessExpr node, final Object arg) {
+    public void visit(final ASTArrayAccessExpr node, final Object arg) {
         node.getName().accept(this, arg);
         printer.print("[");
         node.getIndex().accept(this, arg);
         printer.print("]");
     }
 
-    public void visit(final ArrayCreationExpr node, final Object arg) {
+    public void visit(final ASTArrayCreationExpr node, final Object arg) {
         printer.print("new ");
         node.getType().accept(this, arg);
 
         if (node.hasDimensions()) {
-            for (Expression dim : node.getDimensions()) {
+            for (ASTExpression dim : node.getDimensions()) {
                 printer.print("[");
                 dim.accept(this, arg);
                 printer.print("]");
@@ -929,8 +929,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printer.print(" {");
             if (node.getValues() != null) {
                 printer.print(" ");
-                for (Iterator<Expression> i = node.getValues().iterator(); i.hasNext();) {
-                    Expression expr = i.next();
+                for (Iterator<ASTExpression> i = node.getValues().iterator(); i.hasNext();) {
+                    ASTExpression expr = i.next();
                     expr.accept(this, arg);
                     if (i.hasNext()) {
                         printer.print(", ");
@@ -943,13 +943,13 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
 
-    public void visit(final FieldAccessExpr node, final Object arg) {
+    public void visit(final ASTFieldAccessExpr node, final Object arg) {
         node.getScope().accept(this, arg);
         printer.print(".");
         printer.print(node.getField());
     }
 
-    public void visit(final MethodCallExpr node, final Object arg) {
+    public void visit(final ASTMethodCallExpr node, final Object arg) {
         if (node.getScopeExpr() != null) {
             node.getScopeExpr().accept(this, arg);
             printer.print(".");
@@ -963,31 +963,31 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printArguments(node.getArguments(), arg);
     }
 
-    public void visit(final CastExpr node, final Object arg) {
+    public void visit(final ASTCastExpr node, final Object arg) {
         printer.print("(");
         node.getType().accept(this, arg);
         printer.print(") ");
         node.getExpr().accept(this, arg);
     }
 
-    public void visit(final InstanceOfExpr node, final Object arg) {
+    public void visit(final ASTInstanceOfExpr node, final Object arg) {
         node.getExpression().accept(this, arg);
         printer.print(" instanceof ");
         node.getType().accept(this, arg);
     }
 
-    public void visit(final EnclosedExpr node, final Object arg) {
+    public void visit(final ASTEnclosedExpr node, final Object arg) {
         printer.print("(");
         node.getInner().accept(this, arg);
         printer.print(")");
     }
 
-    public void visit(final ClassExpr node, final Object arg) {
+    public void visit(final ASTClassExpr node, final Object arg) {
         node.getType().accept(this, arg);
         printer.print(".class");
     }
 
-    public void visit(final ThisExpr node, final Object arg) {
+    public void visit(final ASTThisExpr node, final Object arg) {
         if (node.getType() != null) {
             node.getType().accept(this, arg);
             printer.print(".");
@@ -995,7 +995,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("this");
     }
 
-    public void visit(final SuperExpr node, final Object arg) {
+    public void visit(final ASTSuperExpr node, final Object arg) {
         if (node.getType() != null) {
             node.getType().accept(this, arg);
             printer.print(".");
@@ -1003,49 +1003,49 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("super");
     }
 
-    public void visit(final NameExpr node, final Object arg) {
+    public void visit(final ASTNameExpr node, final Object arg) {
         printer.print(node.getName());
     }
 
-    public void visit(final QualifiedNameExpr node, final Object arg) {
+    public void visit(final ASTQualifiedNameExpr node, final Object arg) {
         node.getQualifier().accept(this, arg);
         printer.print(".");
         printer.print(node.getName());
     }
 
-    public void visit(final NullLiteralExpr node, final Object arg) {
+    public void visit(final ASTNullLiteralExpr node, final Object arg) {
         printer.print("null");
     }
 
-    public void visit(final StringLiteralExpr node, final Object arg) {
+    public void visit(final ASTStringLiteralExpr node, final Object arg) {
         printer.print("\"");
         printer.print(node.getValue());
         printer.print("\"");
     }
 
-    public void visit(final CharLiteralExpr node, final Object arg) {
+    public void visit(final ASTCharLiteralExpr node, final Object arg) {
         printer.print("'");
         printer.print( String.valueOf(node.getValue()) );
         printer.print("'");
     }
 
-    public void visit(final BooleanLiteralExpr node, final Object arg) {
+    public void visit(final ASTBooleanLiteralExpr node, final Object arg) {
         printer.print( String.valueOf(node.getValue()) );
     }
 
-    public void visit(final IntegerLiteralExpr node, final Object arg) {
-        printer.print( Integer.toString(node.getValue()) );
-    }
-
-    public void visit(final LongLiteralExpr node, final Object arg) {
-        printer.print( Long.toString(node.getValue()) );
-    }
-
-    public void visit(final DoubleLiteralExpr node, final Object arg) {
+    public void visit(final ASTIntegerLiteralExpr node, final Object arg) {
         printer.print( node.getValue() );
     }
 
-    public void visit(final RawExpr node, final Object arg) {
+    public void visit(final ASTLongLiteralExpr node, final Object arg) {
+        printer.print( node.getValue() );
+    }
+
+    public void visit(final ASTDoubleLiteralExpr node, final Object arg) {
+        printer.print( node.getValue() );
+    }
+
+    public void visit(final ASTRawExpr node, final Object arg) {
         printer.print(node.getText());
     }
 

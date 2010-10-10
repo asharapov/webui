@@ -5,13 +5,13 @@ import java.util.ArrayList;
 
 import org.echosoft.common.utils.BeanUtil;
 import org.echosoft.common.utils.StringUtil;
-import org.echosoft.framework.ui.core.ComponentContext;
+import org.echosoft.framework.ui.core.RequestContext;
 import org.echosoft.framework.ui.core.Scope;
 
 /**
- * @author Anton
+ * @author Anton Sharapov
  */
-public final class SimpleExpression implements Expression {
+public class SimpleExpression implements ValueExpression {
 
     /**
      * Оригинальный текст вычисляемого выражения.
@@ -21,34 +21,53 @@ public final class SimpleExpression implements Expression {
     /**
      * Разобранная версия выражения.
      */
-    private final Chunk[] chunks;
+    private final Choice[] choices;
 
-    private static final class Chunk {
+    /**
+     * Если в процессе разбора выражения ошибки возникла ошибка то сохраняем информацию о ней
+     * с тем, чтобы бросить ее наверх при первом обращении к методу {@link #evaluate(RequestContext)}.
+     * Такая отложенная реакция на ошибки используется для того чтобы мы могли спокойно создавать определения любых выражений где-нибудь в объявлениях статических полей класса
+     * без риска в тот же момент свалиться по ошибке.
+     */
+    private Exception parseException;
+
+    private static final class Choice {
         private final Scope scope;
         private final String attr;
         private final String property;
-        public Chunk(final Scope scope, final String attr, final String property) {
+        public Choice(final Scope scope, final String attr, final String property) {
             if (scope==null || attr==null)
                 throw new IllegalArgumentException("Scope and attribute in scope must be specified");
             this.scope = scope;
             this.attr = attr;
             this.property = property;
         }
+        public String toString() {
+            return "[Choice{scope:"+scope+", attr:"+attr+", property:"+property+"}]";
+        }
     }
 
     public SimpleExpression(final String expr) {
         this.expr = expr;
-        this.chunks = parseExpression(expr);
+        Choice[] choices;
+        try {
+            choices = parseExpression(expr);
+        } catch (Exception e) {
+            this.parseException = e;
+            choices = null;
+        }
+        this.choices = choices;
     }
 
     @Override
-    public Object evaluate(final ComponentContext ctx) throws Exception {
-        if (chunks==null)
-            throw new ParseException("Illegal expression: "+expr,0);
-        for (final Chunk chunk : chunks) {
-            Object result = ctx.getAttribute(chunk.attr, chunk.scope);
-            if (chunk.property!=null)
-                result = BeanUtil.getProperty(result, chunk.property);
+    public Object evaluate(final RequestContext ctx) throws Exception {
+        if (choices == null) {
+            throw parseException!=null ? parseException : new ParseException("Illegal expression: @{"+expr+"}",0);
+        }
+        for (final Choice choice : choices) {
+            Object result = ctx.getAttribute(choice.attr, choice.scope);
+            if (choice.property!=null)
+                result = BeanUtil.getProperty(result, choice.property);
             if (result!=null)
                 return result;
         }
@@ -61,34 +80,35 @@ public final class SimpleExpression implements Expression {
     }
 
 
-    private static Chunk[] parseExpression(final String expr) {
-        try {
-            final ArrayList<Chunk> result = new ArrayList<Chunk>(4);
+    private static Choice[] parseExpression(String expr) throws Exception {
+        final ArrayList<Choice> result = new ArrayList<Choice>(4);
+        if (expr!=null) {
+            if (expr.startsWith("@{") && expr.endsWith("}")) {
+                expr = expr.substring(2,expr.length()-1);
+            }
             int s = 0, e=expr.length()-1;
-            Chunk chunk;
+            Choice choice;
             for (int d=expr.indexOf("|",s);  d>=s && d<e;  d=expr.indexOf('|',s)) {
                 if (d>s) {
-                    chunk = parseChunk(expr.substring(s,d));
-                    if (chunk!=null)
-                        result.add( chunk );
+                    choice = parseChunk(expr.substring(s,d));
+                    if (choice !=null)
+                        result.add(choice);
                 }
                 s = d+1;
             }
             if (s<e) {
-                chunk = parseChunk( expr.substring(s,e) );
-                if (chunk!=null)
-                    result.add( chunk );
+                choice = parseChunk( expr.substring(s) );
+                if (choice !=null)
+                    result.add(choice);
             }
-            return result.toArray(new Chunk[result.size()]);
-        } catch (Exception e) {
-            return null;
         }
+        return result.toArray(new Choice[result.size()]);
     }
-    private static Chunk parseChunk(final String expr) throws Exception {
+    private static Choice parseChunk(final String expr) throws Exception {
         final int ss = expr.indexOf(':');
         final Scope scope;
         if (ss>=0) {
-            scope = Scope.valueOf( expr.substring(0,ss).trim() );
+            scope = Scope.valueOf( expr.substring(0,ss).trim().toUpperCase() );
         } else {
             scope = Scope.REQUEST;  // пространство имен по умолчанию.
         }
@@ -105,7 +125,7 @@ public final class SimpleExpression implements Expression {
                 }
             }
         }
-        return new Chunk(scope, name, property);
+        return new Choice(scope, name, property);
     }
 
 

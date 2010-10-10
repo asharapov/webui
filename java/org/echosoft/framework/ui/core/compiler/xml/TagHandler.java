@@ -1,6 +1,6 @@
 package org.echosoft.framework.ui.core.compiler.xml;
 
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
 import org.xml.sax.SAXException;
 
 /**
@@ -15,7 +15,7 @@ public interface TagHandler {
      * @return  узел синтаксического дерева, под которым будут создаваться узлы, генерируемые на основе дочених тегов исходного файла.
      * @throws SAXException  в случае каких-либо проблем.
      */
-    public BlockStmt doStartTag(Tag tag) throws SAXException;
+    public ASTBlockStmt doStartTag(Tag tag) throws SAXException;
 
     /**
      * Вызывается при обработке закрывающего тега.

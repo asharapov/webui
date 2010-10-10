@@ -1,17 +1,18 @@
 package org.echosoft.framework.ui.core.compiler.xml;
 
-import java.io.Serializable;
-
 import org.echosoft.common.model.Predicate;
+import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.echosoft.framework.ui.core.compiler.ast.Variable;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTClassDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTMethodDecl;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
 import org.xml.sax.Attributes;
 
 /**
  * Содержит всю информацию используемую при обработке отдельного xml тега из исходного .wui файла.
  * @author Anton Sharapov
  */
-public class Tag implements Serializable {
+public class Tag {
 
     private final Tag parent;
     private final String uri;
@@ -19,11 +20,13 @@ public class Tag implements Serializable {
     private final String name;
     private final Attributes attrs;
     private final TagHandler handler;
-    private final BlockStmt container;
-    private BlockStmt childrenContainer;
+    private final ASTBlockStmt container;
+    private ASTBlockStmt childrenContainer;
     private Variable bean;
     private Variable context;
     private Object data;
+    private transient ASTClassDecl classDecl;
+    private transient ASTMethodDecl methodDecl;
 
     public Tag(final Tag parent, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
         this.parent = parent;
@@ -36,14 +39,15 @@ public class Tag implements Serializable {
         this.context = parent.context;
     }
 
-    public Tag(final BlockStmt rootContainer, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
+    public Tag(final ASTBlockStmt rootContainer, final Variable rootContext, final String uri, final String qname, final String name, final Attributes attrs, final TagHandler handler) {
         this.parent = null;
-        this.container = rootContainer;
         this.uri = uri;
-        this.qname = name;
+        this.qname = qname;
         this.name = name;
         this.attrs = attrs;
         this.handler = handler;
+        this.container = rootContainer;
+        this.context = rootContext;
     }
 
     /**
@@ -112,19 +116,19 @@ public class Tag implements Serializable {
      * Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие данному xml тегу.
      * @return Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие данному xml тегу.
      */
-    public BlockStmt getContainer() {
+    public ASTBlockStmt getContainer() {
         return container;
     }
 
     /**
      * Узел синтаксического дерева, под которым будут добавляться узлы, соответствующие дочерним xml тегам.
-     * @return экземпляр {@link BlockStmt} под которым будут расположены узлы,
+     * @return экземпляр {@link org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt} под которым будут расположены узлы,
      *      соответствующие выражениям транслированным на основе дочерних xml тегов.
      */
-    public BlockStmt getChildrenContainer() {
+    public ASTBlockStmt getChildrenContainer() {
         return childrenContainer;
     }
-    public void setChildrenContainer(final BlockStmt childrenContainer) {
+    public void setChildrenContainer(final ASTBlockStmt childrenContainer) {
         this.childrenContainer = childrenContainer;
     }
 
@@ -185,4 +189,26 @@ public class Tag implements Serializable {
     public void setData(final Object data) {
         this.data = data;
     }
+
+
+    public ASTClassDecl getEnclosingClass() {
+        if (classDecl==null) {
+            ASTNode node = this.container.getParent();
+            while (node!=null && !(node instanceof ASTClassDecl))
+                node = node.getParent();
+            classDecl = (ASTClassDecl)node;
+        }
+        return classDecl;
+    }
+
+    public ASTMethodDecl getEnclosingMethod() {
+        if (methodDecl==null) {
+            ASTNode node = this.container.getParent();
+            while (node!=null && !(node instanceof ASTMethodDecl))
+                node = node.getParent();
+            methodDecl = (ASTMethodDecl)node;
+        }
+        return methodDecl;
+    }
+
 }

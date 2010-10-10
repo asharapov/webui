@@ -11,17 +11,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.echosoft.common.io.FastStringWriter;
+import org.echosoft.framework.ui.core.Application;
+import org.echosoft.framework.ui.core.UIContext;
+import org.echosoft.framework.ui.core.compiler.ast.ASTParameter;
 import org.echosoft.framework.ui.core.compiler.ast.CompilationUnit;
 import org.echosoft.framework.ui.core.compiler.ast.Mods;
-import org.echosoft.framework.ui.core.compiler.ast.Parameter;
-import org.echosoft.framework.ui.core.compiler.ast.body.ClassDecl;
-import org.echosoft.framework.ui.core.compiler.ast.body.MethodDecl;
-import org.echosoft.framework.ui.core.compiler.ast.expr.MarkerAnnotationExpr;
-import org.echosoft.framework.ui.core.compiler.ast.expr.MethodCallExpr;
-import org.echosoft.framework.ui.core.compiler.ast.expr.NameExpr;
-import org.echosoft.framework.ui.core.compiler.ast.expr.StringLiteralExpr;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ExpressionStmt;
+import org.echosoft.framework.ui.core.compiler.ast.Variable;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTClassDecl;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTMethodDecl;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTMarkerAnnotationExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTMethodCallExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTNameExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTObjectCreationExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTRawExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTStringLiteralExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTVariableDeclExpr;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTCatchClause;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTExpressionStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
 import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.DumpVisitor;
 import org.echosoft.framework.ui.core.compiler.xml.Tag;
@@ -36,9 +45,13 @@ import org.xml.sax.SAXException;
  */
 public class Translator {
 
+    /**
+     * Обработчик по умолчанию для всех тегов в .wui файлах, для которых не было найдено специальных инструкций по их обработке.
+     * Как правило, данный обработчик используется для обработки фрагментов html кода.
+     */
     private static final TagHandler DEFAULT_HTML_TAG_HANDLER = new TagHandler() {
         @Override
-        public BlockStmt doStartTag(final Tag tag) throws SAXException {
+        public ASTBlockStmt doStartTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(64);
             buf.write('<');
             buf.write(tag.getQname());
@@ -82,7 +95,7 @@ public class Translator {
     }
 
     /**
-     * Выполняет трансляцию .wui Файла в соответствующий ему .java файл.
+     * Выполняет трансляцию .wui файла в соответствующий ему .java файл (класс, унаследованный от {@link HttpServlet}).
      * @param uri  относительный путь до данного ресурса на сервере. Декодируется в имя класса и пакет java.
      * @param options  конфигурационные параметры.
      * @return  путь к сгенерированному .java классу.
@@ -92,7 +105,7 @@ public class Translator {
         final File srcFile = new File(options.rootSrcDir, uri);
         final CompilationUnit cu = makeCompilationUnit(uri, options);
         final TagLibrarySet taglibs = Translator.getTagLibraries();
-        final XMLContentHandler handler = new XMLContentHandler(taglibs, cu.getMainMethod().getBody());
+        final XMLContentHandler handler = new XMLContentHandler(taglibs, cu.getMainBlockNode(), cu.getUIContextVar());
 
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
@@ -119,6 +132,13 @@ public class Translator {
     }
 
 
+    /**
+     * Подготавливаем корневой узел AST-дерева узлы которого в последствии будут сериализованы в соответствующие элементы будущего .java файла.
+     * @param uri  относительный путь до данного ресурса на сервере. Декодируется в имя класса и пакет java.
+     * @param options  конфигурационные параметры.
+     * @return  инициализированный экземпляр класса CompilationUnit, с описанием заголовка будущего сервлета и его
+     *          стартового метода <code>service(HttpServletRequest,HttpServletResponse)</code>.
+     */
     private static CompilationUnit makeCompilationUnit(final String uri, final Options options) {
         int p;
         String path = (p=uri.lastIndexOf('.')) >= 0 ? uri.substring(0,p) : uri; // убрали расширение исходного файла
@@ -134,30 +154,54 @@ public class Translator {
             clsName = path.substring(1);
         }
         final CompilationUnit result = new CompilationUnit(pkgName);
-        final ClassDecl cd = result.addType( new ClassDecl(Mods.PUBLIC|Mods.FINAL, clsName, new RefType(HttpServlet.class)) );
-        final MethodDecl md = cd.addMember( new MethodDecl(Mods.PUBLIC, new RefType(void.class), "service") );
-        md.addAnnotation( new MarkerAnnotationExpr("Override") );
-        md.addParameter( new Parameter(Mods.FINAL, new RefType(HttpServletRequest.class), "request") );
-        md.addParameter( new Parameter(Mods.FINAL, new RefType(HttpServletResponse.class), "response") );
-        md.addThrowable( new RefType(ServletException.class) );
-        md.addThrowable( new RefType(IOException.class) );
-        final BlockStmt body = new BlockStmt();
-        md.setBody(body);
-        final String charset = options.charset;
-        if (charset!=null) {
-            final MethodCallExpr mce1 = new MethodCallExpr(new NameExpr("request"), "setCharacterEncoding");
-            mce1.addArgument( new StringLiteralExpr(charset) );
-            body.addStatement( new ExpressionStmt(mce1) );
-            final MethodCallExpr mce2 = new MethodCallExpr(new NameExpr("response"), "setContentType");
-            mce2.addArgument( new StringLiteralExpr("text/html; charset="+charset) );
-            body.addStatement( new ExpressionStmt(mce2) );
+        final ASTClassDecl classNode = result.addType( new ASTClassDecl(Mods.PUBLIC|Mods.FINAL, clsName, new RefType(HttpServlet.class)) );
+        final ASTMethodDecl methodNode = classNode.addMember( new ASTMethodDecl(Mods.PUBLIC, new RefType(void.class), "service") );
+        methodNode.addAnnotation( new ASTMarkerAnnotationExpr("Override") );
+        methodNode.addParameter( new ASTParameter(Mods.FINAL, new RefType(HttpServletRequest.class), "request") );
+        methodNode.addParameter( new ASTParameter(Mods.FINAL, new RefType(HttpServletResponse.class), "response") );
+        methodNode.addThrowable( new RefType(ServletException.class) );
+        methodNode.addThrowable( new RefType(IOException.class) );
+        final ASTBlockStmt body = methodNode.setBody( new ASTBlockStmt() );
+        if (options.charset!=null) {
+            final ASTMethodCallExpr mce1 = new ASTMethodCallExpr(new ASTNameExpr("request"), "setCharacterEncoding");
+            mce1.addArgument( new ASTStringLiteralExpr(options.charset) );
+            body.addStatement( new ASTExpressionStmt(mce1) );
+            final ASTMethodCallExpr mce2 = new ASTMethodCallExpr(new ASTNameExpr("response"), "setContentType");
+            mce2.addArgument( new ASTStringLiteralExpr("text/html; charset="+options.charset) );
+            body.addStatement( new ASTExpressionStmt(mce2) );
         } else {
-            final MethodCallExpr mce2 = new MethodCallExpr(new NameExpr("response"), "setContentType");
-            mce2.addArgument( new StringLiteralExpr("text/html") );
-            body.addStatement( new ExpressionStmt(mce2) );
+            final ASTMethodCallExpr mce2 = new ASTMethodCallExpr(new ASTNameExpr("response"), "setContentType");
+            mce2.addArgument( new ASTStringLiteralExpr("text/html") );
+            body.addStatement( new ASTExpressionStmt(mce2) );
         }
+
+        // try {
+        final ASTTryStmt trs = body.addStatement( new ASTTryStmt() );
+        final ASTBlockStmt tryBlock = trs.setTryBlock( new ASTBlockStmt() );
+        //     final UIContext uctx = Application.makeContext(request, response, getServletConfig());
+        final Variable uctx = tryBlock.defineVariable(new RefType(UIContext.class), "uctx", false);
+        ASTMethodCallExpr mce = new ASTMethodCallExpr(new RefType(Application.class),"makeContext");
+        mce.addArgument( new ASTNameExpr("request") );
+        mce.addArgument( new ASTNameExpr("response") );
+        mce.addArgument( new ASTMethodCallExpr("getServletConfig") );
+        ASTVariableDeclExpr vde = new ASTVariableDeclExpr(Mods.FINAL, uctx.getType(), uctx.getName(), mce);
+        tryBlock.addStatement( new ASTExpressionStmt(vde) );
+        // ... ... ...
+        // } catch (Exception e) {
+        final String e = body.findUnusedVariableName("e");
+        final ASTCatchClause catchClause = trs.addCatch( new ASTCatchClause() );
+        final ASTBlockStmt catchBlock = catchClause.setCatchBlock( new ASTBlockStmt() );
+        catchClause.setParam( new ASTParameter(Mods.FINAL, new RefType(Exception.class), e) );
+        //     throw new ServletException(e.getMessage(), e);
+        final ASTThrowStmt ts1 = catchBlock.addStatement( new ASTThrowStmt() );
+        final ASTObjectCreationExpr oce1 = ts1.setExpr( new ASTObjectCreationExpr(new RefType(ServletException.class)) );
+        oce1.addArgument(new ASTRawExpr(e+".getMessage()"));
+        oce1.addArgument(new ASTNameExpr(e));
+        // }
+
         result.setDstFile( new File( options.rootDstDir, path+".java" ) );
-        result.setMainMethod( md );
+        result.setMainBlockNode( tryBlock );
+        result.setUIContextVar( uctx );
         return result;
     }
 }

@@ -5,12 +5,8 @@
            xmlns:core="http://echosoft.org/webui/0.8/taglib/core"
            xsi:schemaLocation="http://www.w3.org/2001/XInclude  http://www.w3.org/2001/XInclude.xsd
                                http://echosoft.org/webui/0.8/taglib/core file://w:/echosoft/webui/design/wui-core.xsd"
-           title="My first page"
-           viewId="list" viewRank="1" cleanStrategy="rank" layout="border">
-  <!--
-           xsi:schemaLocation="http://www.w3.org/2001/XInclude  http://www.w3.org/2001/XInclude.xsd
-                               http://echosoft.org/webui/0.8/taglib/cor file://w:/webui/design/wui-core.xsd"
-  -->
+           title="My @{request:env.count} page"
+           viewId="list" viewRank="@{request:rank}" cleanStrategy="rank" layout="border">
 
   <!--
   <xi:include href="inclusion.xml">

@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.Variable;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
 import org.echosoft.framework.ui.core.compiler.xml.Tag;
 import org.echosoft.framework.ui.core.compiler.xml.TagHandler;
 import org.echosoft.framework.ui.core.compiler.xml.TagLibrarySet;
@@ -22,20 +23,23 @@ public class XMLContentHandler extends DefaultHandler {
 
     private final TagLibrarySet definitions;
     private final Map<String, Deque<String>> aliasses;  // mapping:  alias -> stack of uri
-    private BlockStmt rootNode;
+    private ASTBlockStmt rootNode;
+    private Variable rootctx;
     private Tag current;
     private Locator locator;
 
-    public XMLContentHandler(final TagLibrarySet taglibs, final BlockStmt rootNode) {
+    public XMLContentHandler(final TagLibrarySet taglibs, final ASTBlockStmt rootNode, final Variable rootctx) {
         this.definitions = taglibs;
         this.aliasses = new HashMap<String, Deque<String>>();
         this.rootNode = rootNode;
+        this.rootctx = rootctx;
     }
 
     @Override
     public void setDocumentLocator(Locator locator) {
         this.locator = locator;
     }
+
     @Override
     public void startPrefixMapping(final String alias, final String uri) throws SAXException {
         Deque<String> stack = aliasses.get(alias);
@@ -66,9 +70,9 @@ public class XMLContentHandler extends DefaultHandler {
             throw new SAXException("Unknown tag: "+qName);
         }
         current = current==null
-                ? new Tag(rootNode, uri, qName, localName, attrs, handler)
+                ? new Tag(rootNode, rootctx, uri, qName, localName, attrs, handler)
                 : new Tag(current, uri, qName, localName, attrs, handler);
-        final BlockStmt node = current.getHandler().doStartTag(current);
+        final ASTBlockStmt node = current.getHandler().doStartTag(current);
         current.setChildrenContainer(node!=null ? node : current.getContainer());
     }
 

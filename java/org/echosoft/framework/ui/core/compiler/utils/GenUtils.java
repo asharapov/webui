@@ -1,12 +1,12 @@
 package org.echosoft.framework.ui.core.compiler.utils;
 
 import org.echosoft.framework.ui.core.compiler.ast.Variable;
-import org.echosoft.framework.ui.core.compiler.ast.expr.Expression;
-import org.echosoft.framework.ui.core.compiler.ast.expr.MethodCallExpr;
-import org.echosoft.framework.ui.core.compiler.ast.expr.NameExpr;
-import org.echosoft.framework.ui.core.compiler.ast.expr.StringLiteralExpr;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.BlockStmt;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ExpressionStmt;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTExpression;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTMethodCallExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTNameExpr;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTStringLiteralExpr;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTExpressionStmt;
 
 /**
  * @author Anton Sharapov
@@ -15,28 +15,28 @@ public final class GenUtils {
 
     private GenUtils() {}
 
-    public static void setStringProperty(final BlockStmt place, final Variable bean, final String methodName, final String exprValue) {
-        final Expression arg;
+    public static void setStringProperty(final ASTBlockStmt place, final Variable bean, final String methodName, final String exprValue) {
+        final ASTExpression arg;
         if (isDynamicExpression(exprValue)) {
-            arg = new NameExpr(null);   // TODO: implement expression handling.
+            arg = new ASTNameExpr(null);   // TODO: implement expression handling.
         } else {
-            arg = new StringLiteralExpr(exprValue);
+            arg = new ASTStringLiteralExpr(exprValue);
         }
-        final MethodCallExpr mce = new MethodCallExpr(new NameExpr(bean.getName()), methodName);
+        final ASTMethodCallExpr mce = new ASTMethodCallExpr(new ASTNameExpr(bean.getName()), methodName);
         mce.addArgument( arg );
-        place.addStatement( new ExpressionStmt(mce) );
+        place.addStatement( new ASTExpressionStmt(mce) );
     }
 
-    public static void setIntProperty(final BlockStmt place, final Variable bean, final String methodName, final String exprValue) {
+    public static void setIntProperty(final ASTBlockStmt place, final Variable bean, final String methodName, final String exprValue) {
     }
 
-    public static void setLongProperty(final BlockStmt place, final Variable bean, final String methodName, final String exprValue) {
+    public static void setLongProperty(final ASTBlockStmt place, final Variable bean, final String methodName, final String exprValue) {
     }
 
-    public static void setDoubleProperty(final BlockStmt place, final Variable bean, final String methodName, final String exprValue) {
+    public static void setDoubleProperty(final ASTBlockStmt place, final Variable bean, final String methodName, final String exprValue) {
     }
 
-    public static void setProperty(final BlockStmt place, final Variable bean, final String methodName, final String exprValue, final Class cls) {
+    public static void setProperty(final ASTBlockStmt place, final Variable bean, final String methodName, final String exprValue, final Class cls) {
     }
 
 

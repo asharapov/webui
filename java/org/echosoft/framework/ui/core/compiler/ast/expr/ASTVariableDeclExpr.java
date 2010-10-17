@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.echosoft.framework.ui.core.compiler.ast.ASTVariableDecl;
+import org.echosoft.framework.ui.core.compiler.ast.Variable;
 import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -43,38 +44,43 @@ public final class ASTVariableDeclExpr extends ASTExpression {
 
     public ASTVariableDeclExpr(final int modifiers, final Type type) {
         this.modifiers = modifiers;
-        this.type = type;
-        if (type!=null)
-            type.setParent(this);
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent(this);
+        }
     }
 
     public ASTVariableDeclExpr(final int modifiers, final Type type, final String name) {
         this.modifiers = modifiers;
-        this.type = type;
-        if (type!=null)
-            type.setParent(this);
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent(this);
+        }
         if (name!=null) {
-            final ASTVariableDecl var = new ASTVariableDecl(name,null);
-            var.setParent(this);
-            vars = new ArrayList<ASTVariableDecl>(1);
-            vars.add(var);
+            this.addVariable( new ASTVariableDecl(name) );
         }
     }
 
     public ASTVariableDeclExpr(final int modifiers, final Type type, final String name, final ASTExpression initValue) {
         this.modifiers = modifiers;
-        this.type = type;
-        if (type!=null)
-            type.setParent(this);
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent(this);
+        }
         if (name!=null) {
-            final ASTVariableDecl var = new ASTVariableDecl(name,initValue);
-            var.setParent(this);
-            if (initValue!=null)
-                initValue.setParent(var);
-            vars = new ArrayList<ASTVariableDecl>(1);
-            vars.add(var);
+            this.addVariable( new ASTVariableDecl(name,initValue) );
         }
     }
+
+    public ASTVariableDeclExpr(final int modifiers, final Variable var, final ASTExpression initValue) {
+        this.modifiers = modifiers;
+        if (var!=null) {
+            this.type = var.getType();
+            this.type.setParent(this);
+            this.addVariable( new ASTVariableDecl(var.getName(),initValue) );
+        }
+    }
+
 
     public Iterable<ASTAnnotationExpr> getAnnotations() {
         return annotations!=null ? annotations : Collections.<ASTAnnotationExpr>emptyList();

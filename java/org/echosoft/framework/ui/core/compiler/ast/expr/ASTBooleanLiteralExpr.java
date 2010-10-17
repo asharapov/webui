@@ -27,21 +27,12 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class ASTBooleanLiteralExpr extends ASTLiteralExpr {
 
-    private boolean value;
-
     public ASTBooleanLiteralExpr(final boolean value) {
-        this.value = value;
+        this.setValue( String.valueOf(value) );
     }
 
     public ASTBooleanLiteralExpr(final String value) {
-        this.value = Boolean.valueOf(value);
-    }
-
-    public boolean getValue() {
-        return value;
-    }
-    public void setValue(final boolean value) {
-        this.value = value;
+        this.setValue( String.valueOf(Boolean.valueOf(value)) );
     }
 
     @Override

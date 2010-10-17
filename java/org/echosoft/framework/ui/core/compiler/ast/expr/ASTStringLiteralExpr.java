@@ -27,17 +27,8 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class ASTStringLiteralExpr extends ASTLiteralExpr {
 
-    private String value;
-
     public ASTStringLiteralExpr(final String value) {
-        this.value = value;
-    }
-
-    public final String getValue() {
-        return value;
-    }
-    public final void setValue(final String value) {
-        this.value = value;
+        this.setValue( value );
     }
 
     @Override

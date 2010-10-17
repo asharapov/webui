@@ -179,7 +179,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     private void printAnnotations(final Iterable<ASTAnnotationExpr> annotations, final Object arg) {
         for (ASTAnnotationExpr a : annotations) {
             a.accept(this, arg);
-            printer.print(" ");
+            printer.print(' ');
         }
     }
 
@@ -187,7 +187,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         final Iterator<TypeParameter> it = args.iterator();
         if (!it.hasNext())
             return;
-        printer.print("<");
+        printer.print('<');
         while ( it.hasNext() ) {
             final TypeParameter t = it.next();
             t.accept(this, arg);
@@ -195,14 +195,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(">");
+        printer.print('>');
     }
 
     private void printTypeArgs(final Iterable<Type> args, final Object arg) {
         final Iterator<Type> it = args.iterator();
         if (!it.hasNext())
             return;
-        printer.print("<");
+        printer.print('<');
         while ( it.hasNext() ) {
             final Type t = it.next();
             t.accept(this, arg);
@@ -210,11 +210,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(">");
+        printer.print('>');
     }
 
     private void printArguments(final Iterable<ASTExpression> args, final Object arg) {
-        printer.print("(");
+        printer.print('(');
         for (Iterator<ASTExpression> it = args.iterator(); it.hasNext();) {
             final ASTExpression e = it.next();
             e.accept(this, arg);
@@ -222,7 +222,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(")");
+        printer.print(')');
     }
 
     private void printJavadoc(final ASTJavadocComment javadoc, final Object arg) {
@@ -294,7 +294,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(final WildcardType node, final Object arg) {
-        printer.print("?");
+        printer.print('?');
         if (node.getExtends() != null) {
             printer.print(" extends ");
             node.getExtends().accept(this, arg);
@@ -338,7 +338,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         if (node.isVarArgs()) {
             printer.print("...");
         }
-        printer.print(" ");
+        printer.print(' ');
         printer.print(node.getName());
     }
 
@@ -355,7 +355,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printMembers(node.getMembers(), arg);
         }
         printer.unindent();
-        printer.print("}");
+        printer.print('}');
     }
 
     public void visit(final ASTAnnotationMemberDecl node, final Object arg) {
@@ -363,14 +363,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);
-        printer.print(" ");
+        printer.print(' ');
         printer.print(node.getName());
         printer.print("()");
         if (node.getDefaultValue() != null) {
             printer.print(" default ");
             node.getDefaultValue().accept(this, arg);
         }
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTClassDecl node, final Object arg) {
@@ -399,7 +399,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.indent();
         printMembers(node.getMembers(), arg);
         printer.unindent();
-        printer.print("}");
+        printer.print('}');
     }
 
     public void visit(final ASTInterfaceDecl node, final Object arg) {
@@ -424,7 +424,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.indent();
         printMembers(node.getMembers(), arg);
         printer.unindent();
-        printer.print("}");
+        printer.print('}');
     }
 
     public void visit(final ASTEnumDecl node, final Object arg) {
@@ -463,7 +463,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             }
         }
         printer.unindent();
-        printer.print("}");
+        printer.print('}');
     }
 
     public void visit(final ASTEnumConstantDecl node, final Object arg) {
@@ -485,7 +485,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printMemberAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);
-        printer.print(" ");
+        printer.print(' ');
         for (Iterator<ASTVariableDecl> i = node.getVariables().iterator(); i.hasNext();) {
             final ASTVariableDecl var = i.next();
             var.accept(this, arg);
@@ -493,7 +493,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTInitializerDecl node, final Object arg) {
@@ -510,10 +510,10 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printModifiers(node.getModifiers());
         printTypeParameters(node.getTypeParameters(), arg);
         if (node.hasTypeParameters()) {
-            printer.print(" ");
+            printer.print(' ');
         }
         printer.print(node.getName());
-        printer.print("(");
+        printer.print('(');
         for (Iterator<ASTParameter> it=node.getParameters().iterator(); it.hasNext(); ) {
             final ASTParameter p = it.next();
             p.accept(this, arg);
@@ -521,7 +521,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(")");
+        printer.print(')');
         final Iterator<RefType> throwables = node.getThrowables().iterator();
         if (throwables.hasNext()) {
             printer.print(" throws ");
@@ -533,7 +533,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 }
             }
         }
-        printer.print(" ");
+        printer.print(' ');
         node.getBody().accept(this, arg);
     }
 
@@ -543,12 +543,12 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printModifiers(node.getModifiers());
         printTypeParameters(node.getTypeParameters(), arg);
         if (node.getTypeParameters() != null) {
-            printer.print(" ");
+            printer.print(' ');
         }
         node.getType().accept(this, arg);
-        printer.print(" ");
+        printer.print(' ');
         printer.print(node.getName());
-        printer.print("(");
+        printer.print('(');
         for (Iterator<ASTParameter> it=node.getParameters().iterator(); it.hasNext(); ) {
             final ASTParameter p = it.next();
             p.accept(this, arg);
@@ -556,7 +556,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(")");
+        printer.print(')');
         final Iterator<RefType> throwables = node.getThrowables().iterator();
         if (throwables.hasNext()) {
             printer.print(" throws ");
@@ -569,9 +569,9 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             }
         }
         if (node.getBody() == null) {
-            printer.print(";");
+            printer.print(';');
         } else {
-            printer.print(" ");
+            printer.print(' ');
             node.getBody().accept(this, arg);
         }
     }
@@ -585,7 +585,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printer.printLn();
         }
         printer.unindent();
-        printer.print("}");
+        printer.print('}');
     }
 
     public void visit(final ASTSynchronizedStmt node, final Object arg) {
@@ -664,7 +664,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             entry.accept(this, arg);
         }
         printer.unindent();
-        printer.print("}");
+        printer.print('}');
     }
 
     public void visit(final ASTSwitchEntryStmt node, final Object arg) {
@@ -710,40 +710,40 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printer.print(" : ");
             node.getMessage().accept(this, arg);
         }
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTBreakStmt node, final Object arg) {
         printer.print("break");
         if (node.getId() != null) {
-            printer.print(" ");
+            printer.print(' ');
             printer.print(node.getId());
         }
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTContinueStmt node, final Object arg) {
         printer.print("continue");
         if (node.getId() != null) {
-            printer.print(" ");
+            printer.print(' ');
             printer.print(node.getId());
         }
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTReturnStmt node, final Object arg) {
         printer.print("return");
         if (node.getExpr() != null) {
-            printer.print(" ");
+            printer.print(' ');
             node.getExpr().accept(this, arg);
         }
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTThrowStmt node, final Object arg) {
         printer.print("throw ");
         node.getExpr().accept(this, arg);
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTExplicitConstructorInvocationStmt node, final Object arg) {
@@ -752,21 +752,21 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         } else {
             if (node.getClassExpr() != null) {
                 node.getClassExpr().accept(this, arg);
-                printer.print(".");
+                printer.print('.');
             }
             printer.print("super");
         }
         printArguments(node.getArguments(), arg);
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTEmptyStmt node, final Object arg) {
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTExpressionStmt node, final Object arg) {
         node.getExpression().accept(this, arg);
-        printer.print(";");
+        printer.print(';');
     }
 
     public void visit(final ASTLabeledStmt node, final Object arg) {
@@ -783,22 +783,22 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
 
     public void visit(final ASTMarkerAnnotationExpr node, Object arg) {
-        printer.print("@");
+        printer.print('@');
         printer.print(node.getName());
     }
 
     public void visit(final ASTSingleMemberAnnotationExpr node, final Object arg) {
-        printer.print("@");
+        printer.print('@');
         printer.print(node.getName());
-        printer.print("(");
+        printer.print('(');
         node.getMemberValue().accept(this, arg);
-        printer.print(")");
+        printer.print(')');
     }
 
     public void visit(final ASTNormalAnnotationExpr node, final Object arg) {
-        printer.print("@");
+        printer.print('@');
         printer.print(node.getName());
-        printer.print("(");
+        printer.print('(');
         for (Iterator<String> it=node.getParams().keySet().iterator(); it.hasNext(); ) {
             final String name = it.next();
             final ASTExpression value = node.getParams().get(name);
@@ -809,14 +809,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                 printer.print(", ");
             }
         }
-        printer.print(")");
+        printer.print(')');
     }
 
     public void visit(final ASTAssignExpr node, final Object arg) {
         node.getTarget().accept(this, arg);
-        printer.print(" ");
+        printer.print(' ');
         printer.print( node.getOperator().getCode() );
-        printer.print(" ");
+        printer.print(' ');
         node.getValue().accept(this, arg);
     }
 
@@ -824,7 +824,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printAnnotations(node.getAnnotations(), arg);
         printModifiers(node.getModifiers());
         node.getType().accept(this, arg);
-        printer.print(" ");
+        printer.print(' ');
         for (Iterator<ASTVariableDecl> i = node.getVariables().iterator(); i.hasNext();) {
             final ASTVariableDecl var = i.next();
             var.accept(this, arg);
@@ -837,7 +837,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     public void visit(final ASTObjectCreationExpr node, final Object arg) {
         if (node.getScope() != null) {
             node.getScope().accept(this, arg);
-            printer.print(".");
+            printer.print('.');
         }
         printer.print("new ");
         node.getType().accept(this, arg);
@@ -847,26 +847,26 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printer.indent();
             printMembers(node.getAnonymousClassItems(), arg);
             printer.unindent();
-            printer.print("}");
+            printer.print('}');
         }
     }
 
     public void visit(final ASTUnaryExpr node, final Object arg) {
         switch (node.getOperator()) {
             case POSITIVE:
-                printer.print("+");
+                printer.print('+');
                 node.getExpr().accept(this, arg);
                 break;
             case NEGATIVE:
-                printer.print("-");
+                printer.print('-');
                 node.getExpr().accept(this, arg);
                 break;
             case INVERSE:
-                printer.print("~");
+                printer.print('~');
                 node.getExpr().accept(this, arg);
                 break;
             case NOT:
-                printer.print("!");
+                printer.print('!');
                 node.getExpr().accept(this, arg);
                 break;
             case PRE_INCREMENT:
@@ -890,9 +890,9 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
     public void visit(final ASTBinaryExpr node, final Object arg) {
         node.getLeft().accept(this, arg);
-        printer.print(" ");
+        printer.print(' ');
         printer.print( node.getOperator().getCode() );
-        printer.print(" ");
+        printer.print(' ');
         node.getRight().accept(this, arg);
     }
 
@@ -906,9 +906,9 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
     public void visit(final ASTArrayAccessExpr node, final Object arg) {
         node.getName().accept(this, arg);
-        printer.print("[");
+        printer.print('[');
         node.getIndex().accept(this, arg);
-        printer.print("]");
+        printer.print(']');
     }
 
     public void visit(final ASTArrayCreationExpr node, final Object arg) {
@@ -917,9 +917,9 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
         if (node.hasDimensions()) {
             for (ASTExpression dim : node.getDimensions()) {
-                printer.print("[");
+                printer.print('[');
                 dim.accept(this, arg);
-                printer.print("]");
+                printer.print(']');
             }
         }
         for (int i = node.getArrayDimension(); i>0; i--) {
@@ -928,7 +928,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         if (node.hasValues()) {
             printer.print(" {");
             if (node.getValues() != null) {
-                printer.print(" ");
+                printer.print(' ');
                 for (Iterator<ASTExpression> i = node.getValues().iterator(); i.hasNext();) {
                     ASTExpression expr = i.next();
                     expr.accept(this, arg);
@@ -936,27 +936,27 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                         printer.print(", ");
                     }
                 }
-                printer.print(" ");
+                printer.print(' ');
             }
-            printer.print("}");
+            printer.print('}');
         }
     }
 
 
     public void visit(final ASTFieldAccessExpr node, final Object arg) {
         node.getScope().accept(this, arg);
-        printer.print(".");
+        printer.print('.');
         printer.print(node.getField());
     }
 
     public void visit(final ASTMethodCallExpr node, final Object arg) {
         if (node.getScopeExpr() != null) {
             node.getScopeExpr().accept(this, arg);
-            printer.print(".");
+            printer.print('.');
         } else
         if (node.getScopeType() != null) {
             node.getScopeType().accept(this, arg);
-            printer.print(".");
+            printer.print('.');
         }
         printTypeArgs(node.getTypeArgs(), arg);
         printer.print(node.getName());
@@ -964,7 +964,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(final ASTCastExpr node, final Object arg) {
-        printer.print("(");
+        printer.print('(');
         node.getType().accept(this, arg);
         printer.print(") ");
         node.getExpr().accept(this, arg);
@@ -977,9 +977,9 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(final ASTEnclosedExpr node, final Object arg) {
-        printer.print("(");
+        printer.print('(');
         node.getInner().accept(this, arg);
-        printer.print(")");
+        printer.print(')');
     }
 
     public void visit(final ASTClassExpr node, final Object arg) {
@@ -990,7 +990,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     public void visit(final ASTThisExpr node, final Object arg) {
         if (node.getType() != null) {
             node.getType().accept(this, arg);
-            printer.print(".");
+            printer.print('.');
         }
         printer.print("this");
     }
@@ -998,7 +998,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     public void visit(final ASTSuperExpr node, final Object arg) {
         if (node.getType() != null) {
             node.getType().accept(this, arg);
-            printer.print(".");
+            printer.print('.');
         }
         printer.print("super");
     }
@@ -1009,7 +1009,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
     public void visit(final ASTQualifiedNameExpr node, final Object arg) {
         node.getQualifier().accept(this, arg);
-        printer.print(".");
+        printer.print('.');
         printer.print(node.getName());
     }
 

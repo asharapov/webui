@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTExpression;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -47,6 +48,10 @@ public final class ASTBlockStmt extends ASTVariablesRegistryStmt {
         stmt.setParent( this );
         stmts.add( stmt );
         return stmt;
+    }
+
+    public void addExpressionStmt(final ASTExpression expr) {
+        this.addStatement( new ASTExpressionStmt(expr) );
     }
 
     @Override

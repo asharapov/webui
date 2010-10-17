@@ -103,6 +103,9 @@ public final class ASTConstructorDecl extends ASTBodyDecl implements VariablesCo
         throwables.add( type );
         return type;
     }
+    public RefType addThrowable(final Class<? extends Throwable> type) {
+        return addThrowable( new RefType(type) );
+    }
 
     public ASTBlockStmt getBody() {
         return body;

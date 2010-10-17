@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.echosoft.framework.ui.core.compiler.ast.ASTVariableDecl;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTExpression;
 import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -41,29 +42,65 @@ public final class ASTFieldDecl extends ASTBodyDecl {
 
     public ASTFieldDecl(final int modifiers, final RefType type, final String name) {
         this.modifiers = modifiers;
-        this.type = type;
-        if (type!=null)
-            type.setParent( this );
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent( this );
+        }
         if (name!=null && name.length()>0) {
-            final ASTVariableDecl var = new ASTVariableDecl(name);
-            var.setParent( this );
-            this.variables = new ArrayList<ASTVariableDecl>(2);
-            this.variables.add( var );
+            this.addVariable( new ASTVariableDecl(name) );
+        }
+    }
+    public ASTFieldDecl(final int modifiers, final RefType type, final String name, final ASTExpression initValue) {
+        this.modifiers = modifiers;
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent( this );
+        }
+        if (name!=null && name.length()>0) {
+            this.addVariable( new ASTVariableDecl(name,initValue) );
         }
     }
     public ASTFieldDecl(final int modifiers, final RefType type, final ASTVariableDecl... variables) {
         this.modifiers = modifiers;
-        this.type = type;
-        if (type!=null)
-            type.setParent( this );
-        if (variables.length>0) {
-            this.variables = new ArrayList<ASTVariableDecl>(variables.length);
-            for (ASTVariableDecl var : variables) {
-                if (var!=null) {
-                    var.setParent(this);
-                    this.variables.add( var );
-                }
-            }
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent( this );
+        }
+        for (ASTVariableDecl var : variables) {
+            if (var!=null)
+                this.addVariable(var);
+        }
+    }
+
+    public ASTFieldDecl(final int modifiers, final Class type, final String name) {
+        this.modifiers = modifiers;
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent( this );
+        }
+        if (name!=null && name.length()>0) {
+            this.addVariable( new ASTVariableDecl(name) );
+        }
+    }
+    public ASTFieldDecl(final int modifiers, final Class type, final String name, final ASTExpression initValue) {
+        this.modifiers = modifiers;
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent( this );
+        }
+        if (name!=null && name.length()>0) {
+            this.addVariable( new ASTVariableDecl(name,initValue) );
+        }
+    }
+    public ASTFieldDecl(final int modifiers, final Class type, final ASTVariableDecl... variables) {
+        this.modifiers = modifiers;
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent( this );
+        }
+        for (ASTVariableDecl var : variables) {
+            if (var!=null)
+                this.addVariable(var);
         }
     }
 

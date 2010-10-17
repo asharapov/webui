@@ -1,11 +1,11 @@
-package org.echosoft.framework.ui.core.compiler.binding;
+package org.echosoft.framework.ui.core.compiler.utils;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 import org.echosoft.common.utils.StringUtil;
-import org.echosoft.framework.ui.core.compiler.ast.ASTVariableDecl;
 import org.echosoft.framework.ui.core.compiler.ast.Mods;
+import org.echosoft.framework.ui.core.compiler.ast.Variable;
 import org.echosoft.framework.ui.core.compiler.ast.body.ASTClassDecl;
 import org.echosoft.framework.ui.core.compiler.ast.body.ASTFieldDecl;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTBooleanLiteralExpr;
@@ -19,21 +19,20 @@ import org.echosoft.framework.ui.core.compiler.ast.expr.ASTNameExpr;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTNullLiteralExpr;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTObjectCreationExpr;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTStringLiteralExpr;
-import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTExpressionStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
-import org.echosoft.framework.ui.core.compiler.xml.Tag;
+import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
+import org.echosoft.framework.ui.core.compiler.binding.CompoundExpression;
+import org.echosoft.framework.ui.core.compiler.binding.SimpleExpression;
+import org.echosoft.framework.ui.core.compiler.binding.ValueExpression;
 
 /**
  * Содержит вспомогательные методы для облегчения обработки динамически вычисляемых выражений.
  *
  * @author Anton Sharapov
  */
-public class ExpressionUtils {
+public final class ExpressionUtils {
 
-    public static void setBeanProperty(final Tag tag, final String methodName, final ASTExpression expr) {
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr(new ASTNameExpr(tag.getBean().getName()), methodName);
-        mce.addArgument( expr );
-        tag.getContainer().addStatement( new ASTExpressionStmt(mce) );
+    public static void invoke(final ASTBlockStmt container, final Variable bean, final String methodName, final ASTExpression... exprs) {
+        container.addExpressionStmt( new ASTMethodCallExpr(new ASTNameExpr(bean), methodName, exprs) );
     }
 
     /**
@@ -73,22 +72,20 @@ public class ExpressionUtils {
      *  ...
      *  expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть объект произвольного класса. 
      */
-    public static ASTExpression makeExpression(final Tag tag, final String text) {
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 : return new ASTStringLiteralExpr(text);
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+    public static ASTExpression makeExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTStringLiteralExpr(text);
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return mce;
     }
 
     /**
@@ -101,24 +98,21 @@ public class ExpressionUtils {
      *  ...
      *  StringUtil.valueOf(expr1.evaluate(ctx));
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только строка. 
      */
-    public static ASTExpression makeStringExpression(final Tag tag, final String text) {
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 : return new ASTStringLiteralExpr(text);
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+    public static ASTExpression makeStringExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTStringLiteralExpr(text);
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            final ASTMethodCallExpr mce = new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx));
+            return new ASTMethodCallExpr(StringUtil.class, "valueOf", mce);
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce1 = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce1.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        final ASTMethodCallExpr mce2 = new ASTMethodCallExpr(new RefType(StringUtil.class), "valueOf");
-        mce2.addArgument(mce1);
-        return mce2;
     }
 
     /**
@@ -131,24 +125,22 @@ public class ExpressionUtils {
      *  ...
      *  (Boolean)expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только строка.
      */
-    public static ASTExpression makeBooleanExpression(final Tag tag, final String text) {
+    public static ASTExpression makeBooleanExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
         if (text==null || text.isEmpty())
             return new ASTNullLiteralExpr();
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 : return new ASTBooleanLiteralExpr(text);
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTBooleanLiteralExpr(text);
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTCastExpr(Boolean.class, new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx)));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return new ASTCastExpr(new RefType(Boolean.class), mce);
     }
 
     /**
@@ -161,24 +153,22 @@ public class ExpressionUtils {
      *  ...
      *  (Integer)expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только объект класса Integer либо производного от него класса. 
      */
-    public static ASTExpression makeIntegerExpression(final Tag tag, final String text) {
+    public static ASTExpression makeIntegerExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
         if (text==null || text.isEmpty())
             return new ASTNullLiteralExpr();
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 : return new ASTIntegerLiteralExpr(text);
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTIntegerLiteralExpr(text);
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTCastExpr(Integer.class, new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx)));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return new ASTCastExpr(new RefType(Integer.class), mce);
     }
 
     /**
@@ -191,24 +181,22 @@ public class ExpressionUtils {
      *  ...
      *  (Long)expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только объект класса Long либо производного от него класса.
      */
-    public static ASTExpression makeLongExpression(final Tag tag, final String text) {
+    public static ASTExpression makeLongExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
         if (text==null || text.isEmpty())
             return new ASTNullLiteralExpr();
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 : return new ASTLongLiteralExpr(text);
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTLongLiteralExpr(text);
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTCastExpr(Long.class, new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx)));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return new ASTCastExpr(new RefType(Long.class), mce);
     }
 
     /**
@@ -221,24 +209,22 @@ public class ExpressionUtils {
      *  ...
      *  (Double)expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только объект класса Double либо производного от него класса.
      */
-    public static ASTExpression makeDoubleExpression(final Tag tag, final String text) {
+    public static ASTExpression makeDoubleExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
         if (text==null || text.isEmpty())
             return new ASTNullLiteralExpr();
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 : return new ASTDoubleLiteralExpr(text);
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTDoubleLiteralExpr(text);
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTCastExpr(Double.class, new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx)));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return new ASTCastExpr(new RefType(Double.class), mce);
     }
 
     /**
@@ -251,27 +237,22 @@ public class ExpressionUtils {
      *  ...
      *  (BigDecimal)expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только объект класса BigDecimal либо производного от него класса.
      */
-    public static ASTExpression makeBigDecimalExpression(final Tag tag, final String text) {
+    public static ASTExpression makeBigDecimalExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
         if (text==null || text.isEmpty())
             return new ASTNullLiteralExpr();
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 :
-                final ASTObjectCreationExpr expr = new ASTObjectCreationExpr(new RefType(BigDecimal.class));
-                expr.addArgument( new ASTDoubleLiteralExpr(text) );
-                return expr;
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+                return new ASTObjectCreationExpr(BigDecimal.class, new ASTDoubleLiteralExpr(text));
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTCastExpr(BigDecimal.class, new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx)));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return new ASTCastExpr(new RefType(BigDecimal.class), mce);
     }
 
     /**
@@ -284,28 +265,26 @@ public class ExpressionUtils {
      *  ...
      *  (Date)expr1.evaluate(ctx);
      * </pre>
-     * @param tag описание xml тега в исходном .wui файле. Оттуда извлекается информация об экземпляре текущего обрабатываемого компонента в .java файле.
+     * @param classNode  описание класса, в котором происходит генерация данного выражения.
+     *          Используется для генерации приватного статического поля с определением вычисляемого выражения (если это потребуется).
+     * @param ctx   информация о переменной со ссылкой на контекст компонента для которого будет происходить вычисление выражения.
      * @param text  текст который может оказаться как статическим так и динамическим выражением.
      * @return AST-выражение соответствующее указанной в аргументе метода строке. Результатом вычисления данного выражения может быть только объект класса Date либо производного от него класса.
      */
-    public static ASTExpression makeDateExpression(final Tag tag, final String text) {
+    public static ASTExpression makeDateExpression(final ASTClassDecl classNode, final Variable ctx, final String text) {
         if (text==null || text.isEmpty())
             return new ASTNullLiteralExpr();
-        final Class exprClass;
-        switch (containsExpression(text)) {
-            case 0 :
-                final ASTMethodCallExpr mce = new ASTMethodCallExpr(new RefType(StringUtil.class), "parseDate");
-                mce.addArgument( new ASTStringLiteralExpr(text) );
-                return mce;
-            case 1 : exprClass = SimpleExpression.class; break;
-            case 2 :
-            default : exprClass = CompoundExpression.class; break;
+        final Class<? extends ValueExpression> exprClass = getExpressionClass(text);
+        if (exprClass==null) {
+            return new ASTMethodCallExpr(StringUtil.class, "parseDate", new ASTStringLiteralExpr(text));
+        } else {
+            final String fieldName = defineExpression(classNode, exprClass, text);
+            return new ASTCastExpr(Date.class, new ASTMethodCallExpr(new ASTNameExpr(fieldName), "evaluate", new ASTNameExpr(ctx)));
         }
-        final String fieldName = defineExpression(tag.getEnclosingClass(), exprClass, text);
-        final ASTMethodCallExpr mce = new ASTMethodCallExpr( new ASTNameExpr(fieldName), "evaluate");
-        mce.addArgument( new ASTNameExpr(tag.getContext().getName()) );
-        return new ASTCastExpr(new RefType(Date.class), mce);
     }
+
+
+
 
     /**
      * Создает статическое поле в классе с объявлением динамически вычисляемого выражения.<br/>
@@ -314,19 +293,30 @@ public class ExpressionUtils {
      *  private static final ValueExpression expr1 = new CompoundExpression("<i>Hello, @{request:user.name}!</i>");
      * </pre>
      * @param classNode  Узел AST-дерева, с описанием класса.
-     * @param expressionClass  класс динамически вычисляемого выражения. Обязательно должен реализовывать интерфейс {@link ValueExpression}.
-     * @param expression  текст динамически вычисляемого выражения.
+     * @param exprClass  класс динамически вычисляемого выражения. Обязательно должен реализовывать интерфейс {@link ValueExpression}.
+     * @param expr  текст динамически вычисляемого выражения.
      * @return  имя созданного в AST-дереве приватного неизменяемого статического поля в классе ссылающегося на описание данного динамического выражения.<br/>
-     *      Для вышеприведенного примера это будет строка <code>"expr1"</code>. 
+     *      Для вышеприведенного примера это будет строка <code>"EXPR1"</code>. 
      */
-    public static String defineExpression(final ASTClassDecl classNode, final Class expressionClass, final String expression) {
-        final ASTObjectCreationExpr exprNode = new ASTObjectCreationExpr( new RefType(expressionClass) );
-        exprNode.addArgument( new ASTStringLiteralExpr(expression) );
+    private static String defineExpression(final ASTClassDecl classNode, final Class<? extends ValueExpression> exprClass, final String expr) {
+        final ASTObjectCreationExpr exprNode = new ASTObjectCreationExpr(exprClass, new ASTStringLiteralExpr(expr));
         final String fieldName = classNode.findUnusedFieldName("EXPR");
-        final RefType type = new RefType(ValueExpression.class);
-        final ASTVariableDecl varDecl = new ASTVariableDecl(fieldName, exprNode);
-        classNode.addMember( new ASTFieldDecl(Mods.PRIVATE|Mods.STATIC|Mods.FINAL, type, varDecl) );
+        classNode.addMember( new ASTFieldDecl(Mods.PRIVATE|Mods.STATIC|Mods.FINAL, ValueExpression.class, fieldName, exprNode) );
         return classNode.getName()+'.'+ fieldName;
+    }
+
+    /**
+     * Определяет класс вычисляемого выражения для переданной аргументе строки.
+     * @param text  строка, которую требуется проверить на наличие вычисляемых выражений.
+     * @return Возвращает ссылку на класс вычисляемого выражения или <code>null</code> если в строке вычисляемых выражений не было обнаружено.
+     */
+    private static Class<? extends ValueExpression> getExpressionClass(final String text) {
+        switch (containsExpression(text)) {
+            case 0 : return null;
+            case 1 : return SimpleExpression.class;
+            case 2 :
+            default : return CompoundExpression.class;
+        }
     }
 
 }

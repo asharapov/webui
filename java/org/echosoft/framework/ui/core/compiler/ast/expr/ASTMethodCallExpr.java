@@ -39,26 +39,75 @@ public final class ASTMethodCallExpr extends ASTExpression {
     private String name;
     private List<ASTExpression> args;
 
-    public ASTMethodCallExpr() {
-    }
-
     public ASTMethodCallExpr(final String name) {
         this.name = name;
     }
 
-    public ASTMethodCallExpr(final ASTExpression scope, final String name) {
-        this.scopeExpr = scope;
+    public ASTMethodCallExpr(final String name, final ASTExpression... args) {
         this.name = name;
-        if (scope!=null)
-            scope.setParent(this);
+        for (ASTExpression expr : args) {
+            this.addArgument(expr);
+        }
+    }
+
+    public ASTMethodCallExpr(final ASTExpression scope, final String name) {
+        if (scope!=null) {
+            this.scopeExpr = scope;
+            this.scopeExpr.setParent(this);
+        }
+        this.name = name;
+    }
+
+    public ASTMethodCallExpr(final ASTExpression scope, final String name, final ASTExpression... args) {
+        if (scope!=null) {
+            this.scopeExpr = scope;
+            this.scopeExpr.setParent(this);
+        }
+        this.name = name;
+        for (ASTExpression expr : args) {
+            this.addArgument(expr);
+        }
     }
 
     public ASTMethodCallExpr(final RefType scope, final String name) {
-        this.scopeType = scope;
+        if (scope!=null) {
+            this.scopeType = scope;
+            this.scopeType.setParent(this);
+        }
         this.name = name;
-        if (scope!=null)
-            scope.setParent(this);
     }
+
+    public ASTMethodCallExpr(final RefType scope, final String name, final ASTExpression... args) {
+        if (scope!=null) {
+            this.scopeType = scope;
+            this.scopeType.setParent(this);
+        }
+        this.name = name;
+        for (ASTExpression expr : args) {
+            this.addArgument(expr);
+        }
+    }
+
+    public ASTMethodCallExpr(final Class scope, final String name) {
+        if (scope!=null) {
+            this.scopeType = new RefType(scope);
+            this.scopeType.setParent(this);
+        }
+        this.name = name;
+    }
+
+    public ASTMethodCallExpr(final Class scope, final String name, final ASTExpression... exprs) {
+        if (scope!=null) {
+            this.scopeType = new RefType(scope);
+            this.scopeType.setParent(this);
+        }
+        this.name = name;
+        for (ASTExpression expr : exprs) {
+            this.addArgument(expr);
+        }
+    }
+
+
 
     public ASTExpression getScopeExpr() {
         return scopeExpr;
@@ -66,7 +115,7 @@ public final class ASTMethodCallExpr extends ASTExpression {
     public <T extends ASTExpression> T setScopeExpr(final T scope) {
         this.scopeExpr = scope;
         if (scope!=null) {
-            scope.setParent(this);
+            scopeExpr.setParent(this);
             scopeType = null;
         }
         return scope;
@@ -78,7 +127,7 @@ public final class ASTMethodCallExpr extends ASTExpression {
     public void setScopeType(final RefType scope) {
         this.scopeType = scope;
         if (scope!=null) {
-            scope.setParent(this);
+            scopeType.setParent(this);
             scopeExpr = null;
         }
     }

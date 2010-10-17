@@ -19,6 +19,7 @@
 package org.echosoft.framework.ui.core.compiler.ast.stmt;
 
 import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
+import org.echosoft.framework.ui.core.compiler.ast.body.ASTClassDecl;
 import org.echosoft.framework.ui.core.compiler.ast.body.ASTMethodDecl;
 
 /**
@@ -33,6 +34,14 @@ public abstract class ASTStatement extends ASTNode {
             node = node.getParent();
         }
         return (ASTMethodDecl)node;
+    }
+
+    public ASTClassDecl findEnclosingClass() {
+        ASTNode node = getParent();
+        while ( node!=null && !(node instanceof ASTClassDecl) ) {
+            node = node.getParent();
+        }
+        return (ASTClassDecl)node;
     }
 
 }

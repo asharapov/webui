@@ -42,10 +42,39 @@ public final class ASTObjectCreationExpr extends ASTExpression {
     }
 
     public ASTObjectCreationExpr(final RefType type) {
-        this.type = type;
-        if (type!=null)
-            type.setParent(this);
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent(this);
+        }
     }
+
+    public ASTObjectCreationExpr(final RefType type, final ASTExpression... args) {
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent(this);
+        }
+        for (ASTExpression arg : args) {
+            addArgument( arg );
+        }
+    }
+
+    public ASTObjectCreationExpr(final Class type) {
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent(this);
+        }
+    }
+
+    public ASTObjectCreationExpr(final Class type, final ASTExpression... args) {
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent(this);
+        }
+        for (ASTExpression arg : args) {
+            addArgument( arg );
+        }
+    }
+
 
     public ASTExpression getScope() {
         return scope;

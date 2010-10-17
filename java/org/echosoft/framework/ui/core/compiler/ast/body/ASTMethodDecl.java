@@ -48,9 +48,19 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
 
     public ASTMethodDecl(final int modifiers, final RefType type, final String name) {
         this.modifiers = modifiers;
-        this.type = type;
-        if (type!=null)
-            type.setParent( this );
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent( this );
+        }
+        this.name = name;
+    }
+
+    public ASTMethodDecl(final int modifiers, final Class type, final String name) {
+        this.modifiers = modifiers;
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent(this);
+        }
         this.name = name;
     }
 
@@ -124,6 +134,9 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
         type.setParent( this );
         throwables.add( type );
         return type;
+    }
+    public RefType addThrowable(final Class<? extends Throwable> type) {
+        return addThrowable( new RefType(type) );
     }
 
     @Override

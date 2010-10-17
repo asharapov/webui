@@ -5,7 +5,7 @@ import org.echosoft.framework.ui.core.RequestContext;
 /**
  * @author Anton Sharapov
  */
-public final class StaticExpression implements ValueExpression {
+public class StaticExpression implements ValueExpression {
 
     private final String expr;
 

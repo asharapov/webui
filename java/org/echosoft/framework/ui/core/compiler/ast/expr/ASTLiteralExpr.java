@@ -24,4 +24,13 @@ package org.echosoft.framework.ui.core.compiler.ast.expr;
  */
 public abstract class ASTLiteralExpr extends ASTExpression {
 
+    private String value;
+
+    public final String getValue() {
+        return value;
+    }
+    public final void setValue(final String value) {
+        this.value = value;
+    }
+
 }

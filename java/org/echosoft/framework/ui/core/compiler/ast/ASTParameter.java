@@ -42,13 +42,28 @@ public final class ASTParameter extends ASTNode {
     private List<ASTAnnotationExpr> annotations;
 
     public ASTParameter(final RefType type, final String name) {
-        this.type = type;
-        this.name = name;
+        this(0, type, name);
     }
 
     public ASTParameter(final int modifiers, final RefType type, final String name) {
         this.modifiers = modifiers;
-        this.type = type;
+        if (type!=null) {
+            this.type = type;
+            this.type.setParent(this);
+        }
+        this.name = name;
+    }
+
+    public ASTParameter(final Class type, final String name) {
+        this(0, type, name);
+    }
+
+    public ASTParameter(final int modifiers, final Class type, final String name) {
+        this.modifiers = modifiers;
+        if (type!=null) {
+            this.type = new RefType(type);
+            this.type.setParent(this);
+        }
         this.name = name;
     }
 

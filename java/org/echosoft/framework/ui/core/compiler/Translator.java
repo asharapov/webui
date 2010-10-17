@@ -19,6 +19,7 @@ import org.echosoft.framework.ui.core.compiler.ast.Mods;
 import org.echosoft.framework.ui.core.compiler.ast.Variable;
 import org.echosoft.framework.ui.core.compiler.ast.body.ASTClassDecl;
 import org.echosoft.framework.ui.core.compiler.ast.body.ASTMethodDecl;
+import org.echosoft.framework.ui.core.compiler.ast.expr.ASTExpression;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTMarkerAnnotationExpr;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTMethodCallExpr;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTNameExpr;
@@ -33,6 +34,7 @@ import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
 import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.DumpVisitor;
+import org.echosoft.framework.ui.core.compiler.xml.BaseTag;
 import org.echosoft.framework.ui.core.compiler.xml.Tag;
 import org.echosoft.framework.ui.core.compiler.xml.TagHandler;
 import org.echosoft.framework.ui.core.compiler.xml.TagLibrarySet;
@@ -51,10 +53,10 @@ public class Translator {
      */
     private static final TagHandler DEFAULT_HTML_TAG_HANDLER = new TagHandler() {
         @Override
-        public ASTBlockStmt doStartTag(final Tag tag) throws SAXException {
+        public void doStartTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(64);
             buf.write('<');
-            buf.write(tag.getQname());
+            buf.write(tag.getQName());
             for (int i=0,l= tag.getAttrs().getLength(); i<l; i++) {
                 buf.write(' ');
                 buf.write(tag.getAttrs().getQName(i));
@@ -65,13 +67,12 @@ public class Translator {
             buf.write('>');
             final char[] c = buf.toString().toCharArray();
             tag.getParent().getHandler().doBodyText(tag.getParent(), c, 0, c.length);
-            return null;
         }
         @Override
         public void doEndTag(final Tag tag) throws SAXException {
             final FastStringWriter buf = new FastStringWriter(10);
             buf.write("</");
-            buf.write(tag.getQname());
+            buf.write(tag.getQName());
             buf.write('>');
             final char[] c = buf.toString().toCharArray();
             tag.getParent().getHandler().doBodyText(tag.getParent(), c, 0, c.length);
@@ -105,7 +106,7 @@ public class Translator {
         final File srcFile = new File(options.rootSrcDir, uri);
         final CompilationUnit cu = makeCompilationUnit(uri, options);
         final TagLibrarySet taglibs = Translator.getTagLibraries();
-        final XMLContentHandler handler = new XMLContentHandler(taglibs, cu.getMainBlockNode(), cu.getUIContextVar());
+        final XMLContentHandler handler = new XMLContentHandler(taglibs, new BaseTag(cu.getMainBlockNode(), cu.getUIContextVar()) );
 
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
@@ -154,13 +155,13 @@ public class Translator {
             clsName = path.substring(1);
         }
         final CompilationUnit result = new CompilationUnit(pkgName);
-        final ASTClassDecl classNode = result.addType( new ASTClassDecl(Mods.PUBLIC|Mods.FINAL, clsName, new RefType(HttpServlet.class)) );
-        final ASTMethodDecl methodNode = classNode.addMember( new ASTMethodDecl(Mods.PUBLIC, new RefType(void.class), "service") );
+        final ASTClassDecl classNode = result.addType( new ASTClassDecl(Mods.PUBLIC|Mods.FINAL, clsName, HttpServlet.class) );
+        final ASTMethodDecl methodNode = classNode.addMember( new ASTMethodDecl(Mods.PUBLIC, void.class, "service") );
         methodNode.addAnnotation( new ASTMarkerAnnotationExpr("Override") );
-        methodNode.addParameter( new ASTParameter(Mods.FINAL, new RefType(HttpServletRequest.class), "request") );
-        methodNode.addParameter( new ASTParameter(Mods.FINAL, new RefType(HttpServletResponse.class), "response") );
-        methodNode.addThrowable( new RefType(ServletException.class) );
-        methodNode.addThrowable( new RefType(IOException.class) );
+        methodNode.addParameter( new ASTParameter(Mods.FINAL, HttpServletRequest.class, "request") );
+        methodNode.addParameter( new ASTParameter(Mods.FINAL, HttpServletResponse.class, "response") );
+        methodNode.addThrowable( ServletException.class );
+        methodNode.addThrowable( IOException.class );
         final ASTBlockStmt body = methodNode.setBody( new ASTBlockStmt() );
         if (options.charset!=null) {
             final ASTMethodCallExpr mce1 = new ASTMethodCallExpr(new ASTNameExpr("request"), "setCharacterEncoding");
@@ -179,13 +180,10 @@ public class Translator {
         final ASTTryStmt trs = body.addStatement( new ASTTryStmt() );
         final ASTBlockStmt tryBlock = trs.setTryBlock( new ASTBlockStmt() );
         //     final UIContext uctx = Application.makeContext(request, response, getServletConfig());
-        final Variable uctx = tryBlock.defineVariable(new RefType(UIContext.class), "uctx", false);
-        ASTMethodCallExpr mce = new ASTMethodCallExpr(new RefType(Application.class),"makeContext");
-        mce.addArgument( new ASTNameExpr("request") );
-        mce.addArgument( new ASTNameExpr("response") );
-        mce.addArgument( new ASTMethodCallExpr("getServletConfig") );
-        ASTVariableDeclExpr vde = new ASTVariableDeclExpr(Mods.FINAL, uctx.getType(), uctx.getName(), mce);
-        tryBlock.addStatement( new ASTExpressionStmt(vde) );
+        final Variable uctx = tryBlock.defineVariable(UIContext.class, "uctx", false);
+        final ASTMethodCallExpr mce = new ASTMethodCallExpr(Application.class, "makeContext",
+                                            new ASTNameExpr("request"), new ASTNameExpr("response"), new ASTMethodCallExpr("getServletConfig"));
+        tryBlock.addExpressionStmt( new ASTVariableDeclExpr(Mods.FINAL, uctx, mce) );
         // ... ... ...
         // } catch (Exception e) {
         final String e = body.findUnusedVariableName("e");
@@ -193,10 +191,8 @@ public class Translator {
         final ASTBlockStmt catchBlock = catchClause.setCatchBlock( new ASTBlockStmt() );
         catchClause.setParam( new ASTParameter(Mods.FINAL, new RefType(Exception.class), e) );
         //     throw new ServletException(e.getMessage(), e);
-        final ASTThrowStmt ts1 = catchBlock.addStatement( new ASTThrowStmt() );
-        final ASTObjectCreationExpr oce1 = ts1.setExpr( new ASTObjectCreationExpr(new RefType(ServletException.class)) );
-        oce1.addArgument(new ASTRawExpr(e+".getMessage()"));
-        oce1.addArgument(new ASTNameExpr(e));
+        final ASTExpression throwExpr = new ASTObjectCreationExpr(ServletException.class, new ASTRawExpr(e+".getMessage()"), new ASTNameExpr(e));
+        catchBlock.addStatement( new ASTThrowStmt(throwExpr) );
         // }
 
         result.setDstFile( new File( options.rootDstDir, path+".java" ) );

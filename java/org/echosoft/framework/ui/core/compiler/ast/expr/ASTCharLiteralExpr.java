@@ -27,21 +27,12 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class ASTCharLiteralExpr extends ASTLiteralExpr {
 
-    private char value;
-
     public ASTCharLiteralExpr(final char value) {
-        this.value = value;
+        this.setValue( String.valueOf(value) );
     }
 
     public ASTCharLiteralExpr(final String value) {
-        this.value = value!=null && value.length()>0 ? value.charAt(0) : (char)0;
-    }
-
-    public char getValue() {
-        return value;
-    }
-    public void setValue(final char value) {
-        this.value = value;
+        this.setValue( value!=null && value.length()>0 ? String.valueOf(value.charAt(0)) : "" );
     }
 
     @Override

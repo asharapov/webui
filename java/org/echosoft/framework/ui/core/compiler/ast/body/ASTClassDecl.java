@@ -43,9 +43,18 @@ public final class ASTClassDecl extends ASTTypeDecl {
 
     public ASTClassDecl(final int modifiers, final String name, final RefType superType) {
         super(modifiers, name);
-        this.superType = superType;
-        if (superType!=null)
-            superType.setParent( this );
+        if (superType!=null) {
+            this.superType = superType;
+            this.superType.setParent( this );
+        }
+    }
+
+    public ASTClassDecl(final int modifiers, final String name, final Class superType) {
+        super(modifiers, name);
+        if (superType!=null) {
+            this.superType = new RefType(superType);
+            this.superType.setParent(this);
+        }
     }
 
     /**
@@ -93,6 +102,11 @@ public final class ASTClassDecl extends ASTTypeDecl {
         type.setParent( this );
         implTypes.add( type );
         return type;
+    }
+    public RefType addImplementation(final Class type) {
+        if (!type.isInterface())
+            throw new IllegalArgumentException("Interface should be specified instead of "+type);
+        return addImplementation( new RefType(type) );
     }
 
 

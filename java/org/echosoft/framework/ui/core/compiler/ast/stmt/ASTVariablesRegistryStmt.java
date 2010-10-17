@@ -30,6 +30,11 @@ public abstract class ASTVariablesRegistryStmt extends ASTStatement implements V
     }
 
     @Override
+    public Variable defineVariable(final Class type, final String expectedName, final boolean reusable) {
+        return defineVariable(new RefType(type), expectedName, reusable);
+    }
+
+    @Override
     public Variable findUnusedVariable(final RefType type) {
         if (allocatedVars!=null) {
             for (Variable v : allocatedVars.values()) {
@@ -38,6 +43,11 @@ public abstract class ASTVariablesRegistryStmt extends ASTStatement implements V
             }
         }
         return null;
+    }
+
+    @Override
+    public Variable findUnusedVariable(final Class type) {
+        return findUnusedVariable( new RefType(type) );
     }
 
     @Override

@@ -18,6 +18,7 @@
  */
 package org.echosoft.framework.ui.core.compiler.ast.expr;
 
+import org.echosoft.framework.ui.core.compiler.ast.Variable;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -32,6 +33,10 @@ public class ASTNameExpr extends ASTExpression {
 
     public ASTNameExpr(final String name) {
         this.name = name;
+    }
+
+    public ASTNameExpr(final Variable var) {
+        this.name = var.getName();
     }
 
     public String getName() {

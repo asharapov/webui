@@ -31,7 +31,7 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  * Данный класс описывает объявление параметра типа.</br>
  * Конструируется используя следующий синтаксис:<br/>
  * <code style="white-space:nowrap">
- *  TypeParameter ::= &lt;IDENTIFIER ( "extends" {@link RefType} ( "&" {@link RefType} )* )? &gt;
+ *  TypeParameter ::= &lt;IDENTIFIER ( "extends" {@link Type} ( "&" {@link Type} )* )? &gt;
  * <code>
  *
  * @author Julio Vilmar Gesser
@@ -40,7 +40,7 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class TypeParameter extends ASTNode {
 
     private String name;
-    private List<RefType> typeBounds;
+    private List<Type> typeBounds;
 
     public TypeParameter(final String name) {
         this.name = name;
@@ -48,15 +48,8 @@ public final class TypeParameter extends ASTNode {
 
     public TypeParameter(final String name, final String... bounds) {
         this.name = name;
-        if (bounds.length>0) {
-            typeBounds = new ArrayList<RefType>(bounds.length);
-            for (String tb : bounds) {
-                if (tb!=null) {
-                    final RefType rt = new RefType(tb);
-                    rt.setParent(this);
-                    typeBounds.add( rt );
-                }
-            }
+        for (String bound : bounds) {
+            this.addTypeBound( new Type(bound) );
         }
     }
 
@@ -75,19 +68,27 @@ public final class TypeParameter extends ASTNode {
 
 
     /**
+     * @return <code>true</code> если на значения параметра наложены ограничения.
+     */
+    public boolean hasTypeBounds() {
+        return typeBounds!=null && typeBounds.size()>0;
+    }
+    /**
      * @return Итератор по перечню типов (классов или интерфейсов), ограничивающих данный параметр.
      *  В отсутствии данных возвращает пустой список.
      */
-    public Iterable<RefType> getTypeBounds() {
-        return typeBounds !=null ? typeBounds : Collections.<RefType>emptyList();
+    public Iterable<Type> getTypeBounds() {
+        return typeBounds !=null ? typeBounds : Collections.<Type>emptyList();
     }
-
-    public RefType addTypeBound(final RefType bound) {
+    public Type addTypeBound(final Type bound) {
         if (typeBounds==null)
-            this.typeBounds = new ArrayList<RefType>(2);
+            this.typeBounds = new ArrayList<Type>(2);
         bound.setParent( this );
         typeBounds.add( bound );
         return bound;
+    }
+    public Type addTypeBound(final Class bound) {
+        return this.addTypeBound( new Type(bound) );
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -36,7 +36,7 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTInterfaceDecl extends ASTTypeDecl {
 
     private List<TypeParameter> typeParameters;
-    private List<RefType> extTypes;
+    private List<Type> extTypes;
 
     public ASTInterfaceDecl(final int modifiers, final String name) {
         super(modifiers, name);
@@ -53,12 +53,12 @@ public final class ASTInterfaceDecl extends ASTTypeDecl {
         return typeParam;
     }
 
-    public Iterable<RefType> getSuperTypes() {
-        return extTypes!=null ? extTypes : Collections.<RefType>emptyList();
+    public Iterable<Type> getSuperTypes() {
+        return extTypes!=null ? extTypes : Collections.<Type>emptyList();
     }
-    public RefType addSuperType(final RefType type) {
+    public Type addSuperType(final Type type) {
         if (extTypes==null)
-            extTypes = new ArrayList<RefType>(2);
+            extTypes = new ArrayList<Type>(2);
         type.setParent( this );
         extTypes.add( type );
         return type;

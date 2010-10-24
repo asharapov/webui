@@ -21,7 +21,7 @@ package org.echosoft.framework.ui.core.compiler.ast.stmt;
 import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.echosoft.framework.ui.core.compiler.ast.ASTParameter;
 import org.echosoft.framework.ui.core.compiler.ast.VariablesContainer;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -90,7 +90,7 @@ public final class ASTCatchClause extends ASTNode implements VariablesContainer 
     }
 
     @Override
-    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+    public boolean containsVariable(final String name, final Type type, final boolean findInParents) {
         if (param.getName().equals(name) && param.getType().equals(type))
             return true;
         if (findInParents) {

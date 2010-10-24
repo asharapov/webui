@@ -18,7 +18,6 @@
  */
 package org.echosoft.framework.ui.core.compiler.ast.expr;
 
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
 import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -48,7 +47,7 @@ public final class ASTCastExpr extends ASTExpression {
 
     public ASTCastExpr(final Class type, final ASTExpression expr) {
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent(this);
         }
         if (expr!=null) {
@@ -64,6 +63,14 @@ public final class ASTCastExpr extends ASTExpression {
         this.type = type;
         if (type!=null)
             type.setParent(this);
+    }
+    public void setType(final Class type) {
+        if (type!=null) {
+            this.type = new Type(type);
+            this.type.setParent(this);
+        } else {
+            this.type = null;
+        }
     }
 
     public ASTExpression getExpr() {

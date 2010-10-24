@@ -57,9 +57,10 @@ import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTypeDeclarationStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTWhileStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.SimpleTypeArgument;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
-import org.echosoft.framework.ui.core.compiler.ast.type.WildcardType;
+import org.echosoft.framework.ui.core.compiler.ast.type.WildcardTypeArgument;
 
 
 /**
@@ -80,9 +81,11 @@ public interface VoidVisitor<A> {
 
     public void visit (ASTJavadocComment node, A arg);
 
-    public void visit (RefType node, A arg);
+    public void visit (Type node, A arg);
 
-    public void visit (WildcardType node, A arg);
+    public void visit (SimpleTypeArgument node, A arg);
+
+    public void visit (WildcardTypeArgument node, A arg);
 
     public void visit (TypeParameter node, A arg);
 

@@ -67,10 +67,11 @@ import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTypeDeclarationStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTWhileStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.SimpleTypeArgument;
 import org.echosoft.framework.ui.core.compiler.ast.type.Type;
+import org.echosoft.framework.ui.core.compiler.ast.type.TypeArgument;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
-import org.echosoft.framework.ui.core.compiler.ast.type.WildcardType;
+import org.echosoft.framework.ui.core.compiler.ast.type.WildcardTypeArgument;
 
 /**
  * @author Julio Vilmar Gesser
@@ -78,25 +79,25 @@ import org.echosoft.framework.ui.core.compiler.ast.type.WildcardType;
  */
 public final class DumpVisitor implements VoidVisitor<Object> {
 
-    public static final Comparator<RefType> CLS_COMPARATOR =
-            new Comparator<RefType>() {
-                public int compare(final RefType t1, final RefType t2) {
+    public static final Comparator<Type> CLS_COMPARATOR =
+            new Comparator<Type>() {
+                public int compare(final Type t1, final Type t2) {
                     return t1.getQName().compareTo(t2.getQName());
                 }
             };
 
 
     private SourcePrinter printer;
-    private final SortedSet<RefType> imports;
+    private final SortedSet<Type> imports;
 
     public DumpVisitor() {
         this.printer = new SourcePrinter();
-        this.imports = new TreeSet<RefType>(CLS_COMPARATOR);
+        this.imports = new TreeSet<Type>(CLS_COMPARATOR);
     }
 
     public DumpVisitor(final SourcePrinter printer) {
         this.printer = printer;
-        this.imports = new TreeSet<RefType>(CLS_COMPARATOR);
+        this.imports = new TreeSet<Type>(CLS_COMPARATOR);
     }
 
     public SourcePrinter getPrinter() {
@@ -109,15 +110,15 @@ public final class DumpVisitor implements VoidVisitor<Object> {
      * @return  краткая форма записи если класс успешно занесен в секцию "import", в противном случае возвращает строку,
      *      соответствующую полной форме записи имени класса.
      */
-    private String ensureTypeImported(final RefType type) {
+    private String ensureTypeImported(final Type type) {
         if (!type.hasPackage())
             return type.getName();
-        final RefType normType = type.isArray() || type.hasTypeArguments()
-                ? new RefType(type.getQName())
+        final Type normType = type.isArray() || type.hasArguments()
+                ? new Type(type.getQName())
                 : type;
         if (imports.contains(normType))
             return normType.getName();
-        for (RefType t : imports) {
+        for (Type t : imports) {
             if (t.getName().equals(normType.getName()))
                 return normType.getQName();
         }
@@ -198,14 +199,14 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print('>');
     }
 
-    private void printTypeArgs(final Iterable<Type> args, final Object arg) {
-        final Iterator<Type> it = args.iterator();
+    private <T extends TypeArgument> void printTypeArgs(final Iterable<T> args, final Object arg) {
+        final Iterator<T> it = args.iterator();
         if (!it.hasNext())
             return;
         printer.print('<');
         while ( it.hasNext() ) {
-            final Type t = it.next();
-            t.accept(this, arg);
+            final TypeArgument targ = it.next();
+            targ.accept(this, arg);
             if (it.hasNext()) {
                 printer.print(", ");
             }
@@ -263,7 +264,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             }
         }
         originalPrinter.printLn();
-        for (RefType type : imports) {
+        for (Type type : imports) {
             originalPrinter.print("import ");
             originalPrinter.print(type.getQName());
             originalPrinter.printLn(";");
@@ -284,16 +285,20 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.printLn();
     }
 
-    public void visit(final RefType node, final Object arg) {
+    public void visit(final Type node, final Object arg) {
         final String name = ensureTypeImported(node);
         printer.print(name);
-        printTypeArgs(node.getTypeArguments(), arg);
+        printTypeArgs(node.getArguments(), arg);
         for (int i=node.getArrayDimension()-1; i>0; i--) {
             printer.print("[]");
         }
     }
 
-    public void visit(final WildcardType node, final Object arg) {
+    public void visit(final SimpleTypeArgument node, final Object arg) {
+        node.getType().accept(this, arg);
+    }
+
+    public void visit(final WildcardTypeArgument node, final Object arg) {
         printer.print('?');
         if (node.getExtends() != null) {
             printer.print(" extends ");
@@ -306,12 +311,12 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(final TypeParameter node, final Object arg) {
-        final Iterator<RefType> it = node.getTypeBounds().iterator();
+        final Iterator<Type> it = node.getTypeBounds().iterator();
         printer.print(node.getName());
         if (it.hasNext()) {
             printer.print(" extends ");
             while (it.hasNext()) {
-                final RefType type = it.next();
+                final Type type = it.next();
                 type.accept(this, arg);
                 if (it.hasNext()) {
                     printer.print(" & ");
@@ -384,11 +389,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printer.print(" extends ");
             node.getSuperType().accept(this, arg);
         }
-        final Iterator<RefType> it = node.getImplementations().iterator();
+        final Iterator<Type> it = node.getImplementations().iterator();
         if (it.hasNext()) {
             printer.print(" implements ");
             while (it.hasNext()) {
-                final RefType type = it.next();
+                final Type type = it.next();
                 type.accept(this, arg);
                 if (it.hasNext()) {
                     printer.print(", ");
@@ -409,11 +414,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print("class ");
         printer.print(node.getName());
         printTypeParameters(node.getTypeParameters(), arg);
-        final Iterator<RefType> it = node.getSuperTypes().iterator();
+        final Iterator<Type> it = node.getSuperTypes().iterator();
         if (it.hasNext()) {
             printer.print(" extends ");
             while (it.hasNext()) {
-                final RefType type = it.next();
+                final Type type = it.next();
                 type.accept(this, arg);
                 if (it.hasNext()) {
                     printer.print(", ");
@@ -433,11 +438,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printModifiers(node.getModifiers());
         printer.print("enum ");
         printer.print(node.getName());
-        final Iterator<RefType> impl_it = node.getImplementations().iterator();
+        final Iterator<Type> impl_it = node.getImplementations().iterator();
         if (impl_it.hasNext()) {
             printer.print(" implements ");
             while (impl_it.hasNext()) {
-                final RefType type = impl_it.next();
+                final Type type = impl_it.next();
                 type.accept(this, arg);
                 if (impl_it.hasNext()) {
                     printer.print(", ");
@@ -522,11 +527,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             }
         }
         printer.print(')');
-        final Iterator<RefType> throwables = node.getThrowables().iterator();
+        final Iterator<Type> throwables = node.getThrowables().iterator();
         if (throwables.hasNext()) {
             printer.print(" throws ");
             while (throwables.hasNext()) {
-                final RefType type = throwables.next();
+                final Type type = throwables.next();
                 type.accept(this, arg);
                 if (throwables.hasNext()) {
                     printer.print(", ");
@@ -557,11 +562,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             }
         }
         printer.print(')');
-        final Iterator<RefType> throwables = node.getThrowables().iterator();
+        final Iterator<Type> throwables = node.getThrowables().iterator();
         if (throwables.hasNext()) {
             printer.print(" throws ");
             while (throwables.hasNext()) {
-                final RefType type = throwables.next();
+                final Type type = throwables.next();
                 type.accept(this, arg);
                 if (throwables.hasNext()) {
                     printer.print(", ");
@@ -958,7 +963,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             node.getScopeType().accept(this, arg);
             printer.print('.');
         }
-        printTypeArgs(node.getTypeArgs(), arg);
+        printTypeArgs(node.getTypeArguments(), arg);
         printer.print(node.getName());
         printArguments(node.getArguments(), arg);
     }

@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.echosoft.framework.ui.core.compiler.ast.body.ASTBodyDecl;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -34,21 +34,21 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTObjectCreationExpr extends ASTExpression {
 
     private ASTExpression scope;
-    private RefType type;
+    private Type type;
     private List<ASTExpression> args;
     private List<ASTBodyDecl> anonymousClassBody;
 
     public ASTObjectCreationExpr() {
     }
 
-    public ASTObjectCreationExpr(final RefType type) {
+    public ASTObjectCreationExpr(final Type type) {
         if (type!=null) {
             this.type = type;
             this.type.setParent(this);
         }
     }
 
-    public ASTObjectCreationExpr(final RefType type, final ASTExpression... args) {
+    public ASTObjectCreationExpr(final Type type, final ASTExpression... args) {
         if (type!=null) {
             this.type = type;
             this.type.setParent(this);
@@ -60,14 +60,14 @@ public final class ASTObjectCreationExpr extends ASTExpression {
 
     public ASTObjectCreationExpr(final Class type) {
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent(this);
         }
     }
 
     public ASTObjectCreationExpr(final Class type, final ASTExpression... args) {
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent(this);
         }
         for (ASTExpression arg : args) {
@@ -86,10 +86,10 @@ public final class ASTObjectCreationExpr extends ASTExpression {
         return scope;
     }
 
-    public RefType getType() {
+    public Type getType() {
         return type;
     }
-    public void setType(final RefType type) {
+    public void setType(final Type type) {
         this.type = type;
         if (type!=null)
             type.setParent(this);

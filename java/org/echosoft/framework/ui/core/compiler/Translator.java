@@ -32,7 +32,7 @@ import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTCatchClause;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTExpressionStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.DumpVisitor;
 import org.echosoft.framework.ui.core.compiler.xml.BaseTag;
 import org.echosoft.framework.ui.core.compiler.xml.Tag;
@@ -189,7 +189,7 @@ public class Translator {
         final String e = body.findUnusedVariableName("e");
         final ASTCatchClause catchClause = trs.addCatch( new ASTCatchClause() );
         final ASTBlockStmt catchBlock = catchClause.setCatchBlock( new ASTBlockStmt() );
-        catchClause.setParam( new ASTParameter(Mods.FINAL, new RefType(Exception.class), e) );
+        catchClause.setParam( new ASTParameter(Mods.FINAL, new Type(Exception.class), e) );
         //     throw new ServletException(e.getMessage(), e);
         final ASTExpression throwExpr = new ASTObjectCreationExpr(ServletException.class, new ASTRawExpr(e+".getMessage()"), new ASTNameExpr(e));
         catchBlock.addStatement( new ASTThrowStmt(throwExpr) );

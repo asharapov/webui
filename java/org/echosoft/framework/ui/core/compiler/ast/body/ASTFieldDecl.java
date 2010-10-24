@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.echosoft.framework.ui.core.compiler.ast.ASTVariableDecl;
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTExpression;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -37,10 +37,10 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTFieldDecl extends ASTBodyDecl {
 
     private int modifiers;
-    private RefType type;
+    private Type type;
     private List<ASTVariableDecl> variables;
 
-    public ASTFieldDecl(final int modifiers, final RefType type, final String name) {
+    public ASTFieldDecl(final int modifiers, final Type type, final String name) {
         this.modifiers = modifiers;
         if (type!=null) {
             this.type = type;
@@ -50,7 +50,7 @@ public final class ASTFieldDecl extends ASTBodyDecl {
             this.addVariable( new ASTVariableDecl(name) );
         }
     }
-    public ASTFieldDecl(final int modifiers, final RefType type, final String name, final ASTExpression initValue) {
+    public ASTFieldDecl(final int modifiers, final Type type, final String name, final ASTExpression initValue) {
         this.modifiers = modifiers;
         if (type!=null) {
             this.type = type;
@@ -60,7 +60,7 @@ public final class ASTFieldDecl extends ASTBodyDecl {
             this.addVariable( new ASTVariableDecl(name,initValue) );
         }
     }
-    public ASTFieldDecl(final int modifiers, final RefType type, final ASTVariableDecl... variables) {
+    public ASTFieldDecl(final int modifiers, final Type type, final ASTVariableDecl... variables) {
         this.modifiers = modifiers;
         if (type!=null) {
             this.type = type;
@@ -75,7 +75,7 @@ public final class ASTFieldDecl extends ASTBodyDecl {
     public ASTFieldDecl(final int modifiers, final Class type, final String name) {
         this.modifiers = modifiers;
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent( this );
         }
         if (name!=null && name.length()>0) {
@@ -85,7 +85,7 @@ public final class ASTFieldDecl extends ASTBodyDecl {
     public ASTFieldDecl(final int modifiers, final Class type, final String name, final ASTExpression initValue) {
         this.modifiers = modifiers;
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent( this );
         }
         if (name!=null && name.length()>0) {
@@ -95,7 +95,7 @@ public final class ASTFieldDecl extends ASTBodyDecl {
     public ASTFieldDecl(final int modifiers, final Class type, final ASTVariableDecl... variables) {
         this.modifiers = modifiers;
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent( this );
         }
         for (ASTVariableDecl var : variables) {
@@ -115,10 +115,10 @@ public final class ASTFieldDecl extends ASTBodyDecl {
         this.modifiers = modifiers;
     }
 
-    public RefType getType() {
+    public Type getType() {
         return type;
     }
-    public void setType(final RefType type) {
+    public void setType(final Type type) {
         this.type = type;
         if (type!=null)
             type.setParent( this );

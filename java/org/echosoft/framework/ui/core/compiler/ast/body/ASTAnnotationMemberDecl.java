@@ -19,7 +19,7 @@
 package org.echosoft.framework.ui.core.compiler.ast.body;
 
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTExpression;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -32,15 +32,15 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTAnnotationMemberDecl extends ASTBodyDecl {
 
     private int modifiers;
-    private RefType type;
+    private Type type;
     private String name;
     private ASTExpression defaultValue;
 
-    public ASTAnnotationMemberDecl(final RefType type, final String name) {
+    public ASTAnnotationMemberDecl(final Type type, final String name) {
         this(0, type, name, null);
     }
 
-    public ASTAnnotationMemberDecl(final int modifiers, final RefType type, final String name, final ASTExpression defaultValue) {
+    public ASTAnnotationMemberDecl(final int modifiers, final Type type, final String name, final ASTExpression defaultValue) {
         this.modifiers = modifiers;
         this.type = type;
         this.name = name;
@@ -70,10 +70,10 @@ public final class ASTAnnotationMemberDecl extends ASTBodyDecl {
         this.name = name;
     }
 
-    public RefType getType() {
+    public Type getType() {
         return type;
     }
-    public void setType(final RefType type) {
+    public void setType(final Type type) {
         this.type = type;
         if (type!=null)
             type.setParent(this);

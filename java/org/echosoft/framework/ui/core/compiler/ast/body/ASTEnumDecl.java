@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.echosoft.framework.ui.core.compiler.ast.Mods;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -35,7 +35,7 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  */
 public final class ASTEnumDecl extends ASTTypeDecl {
 
-    private List<RefType> implTypes;
+    private List<Type> implTypes;
     private List<ASTEnumConstantDecl> entries;
 
     public ASTEnumDecl(final int modifiers, final String name) {
@@ -69,12 +69,12 @@ public final class ASTEnumDecl extends ASTTypeDecl {
         }
     }
 
-    public Iterable<RefType> getImplementations() {
-        return implTypes!=null ? implTypes : Collections.<RefType>emptyList();
+    public Iterable<Type> getImplementations() {
+        return implTypes!=null ? implTypes : Collections.<Type>emptyList();
     }
-    public RefType addImplementation(final RefType type) {
+    public Type addImplementation(final Type type) {
         if (implTypes==null)
-            implTypes = new ArrayList<RefType>(2);
+            implTypes = new ArrayList<Type>(2);
         type.setParent( this );
         implTypes.add( type );
         return type;

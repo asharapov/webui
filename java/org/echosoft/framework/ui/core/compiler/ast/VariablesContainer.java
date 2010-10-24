@@ -1,6 +1,6 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 
 /**
  * @author Anton Sharapov
@@ -22,6 +22,6 @@ public interface VariablesContainer {
      * @param findInParents  следует ли осуществлять поиск указанной переменной в родительских узлах дерева.
      * @return <code>true</code> если данный блок содержит переменную с указанным именем и типом.
      */
-    public boolean containsVariable(String name, RefType type, boolean findInParents);
+    public boolean containsVariable(String name, Type type, boolean findInParents);
 
 }

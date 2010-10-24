@@ -8,7 +8,7 @@ import org.echosoft.framework.ui.core.compiler.ast.ASTNode;
 import org.echosoft.framework.ui.core.compiler.ast.Variable;
 import org.echosoft.framework.ui.core.compiler.ast.VariablesContainer;
 import org.echosoft.framework.ui.core.compiler.ast.VariablesRegistry;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 
 /**
  * Базовый абстрактный класс для тех выражений java, которые могут содержать локальные переменные.
@@ -20,7 +20,7 @@ public abstract class ASTVariablesRegistryStmt extends ASTStatement implements V
     private Map<String, Variable> allocatedVars;
 
     @Override
-    public Variable defineVariable(final RefType type, final String expectedName, final boolean reusable) {
+    public Variable defineVariable(final Type type, final String expectedName, final boolean reusable) {
         final String name = findUnusedVariableName(expectedName);
         final Variable v = new Variable(type, name, reusable);
         if (allocatedVars==null)
@@ -31,11 +31,11 @@ public abstract class ASTVariablesRegistryStmt extends ASTStatement implements V
 
     @Override
     public Variable defineVariable(final Class type, final String expectedName, final boolean reusable) {
-        return defineVariable(new RefType(type), expectedName, reusable);
+        return defineVariable(new Type(type), expectedName, reusable);
     }
 
     @Override
-    public Variable findUnusedVariable(final RefType type) {
+    public Variable findUnusedVariable(final Type type) {
         if (allocatedVars!=null) {
             for (Variable v : allocatedVars.values()) {
                 if (!v.isUsed() && v.isReusable() && v.getType().equals(type))
@@ -47,7 +47,7 @@ public abstract class ASTVariablesRegistryStmt extends ASTStatement implements V
 
     @Override
     public Variable findUnusedVariable(final Class type) {
-        return findUnusedVariable( new RefType(type) );
+        return findUnusedVariable( new Type(type) );
     }
 
     @Override
@@ -78,7 +78,7 @@ public abstract class ASTVariablesRegistryStmt extends ASTStatement implements V
     }
 
     @Override
-    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+    public boolean containsVariable(final String name, final Type type, final boolean findInParents) {
         if (allocatedVars!=null) {
             final Variable var = allocatedVars.get(name);
             if (var.getType().equals(type))

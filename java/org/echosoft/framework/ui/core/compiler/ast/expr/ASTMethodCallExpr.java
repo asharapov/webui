@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.SimpleTypeArgument;
 import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -34,8 +34,8 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTMethodCallExpr extends ASTExpression {
 
     private ASTExpression scopeExpr;
-    private RefType scopeType;
-    private List<Type> typeArgs;
+    private Type scopeType;
+    private List<SimpleTypeArgument> typeArgs;
     private String name;
     private List<ASTExpression> args;
 
@@ -69,7 +69,7 @@ public final class ASTMethodCallExpr extends ASTExpression {
         }
     }
 
-    public ASTMethodCallExpr(final RefType scope, final String name) {
+    public ASTMethodCallExpr(final Type scope, final String name) {
         if (scope!=null) {
             this.scopeType = scope;
             this.scopeType.setParent(this);
@@ -77,7 +77,7 @@ public final class ASTMethodCallExpr extends ASTExpression {
         this.name = name;
     }
 
-    public ASTMethodCallExpr(final RefType scope, final String name, final ASTExpression... args) {
+    public ASTMethodCallExpr(final Type scope, final String name, final ASTExpression... args) {
         if (scope!=null) {
             this.scopeType = scope;
             this.scopeType.setParent(this);
@@ -90,7 +90,7 @@ public final class ASTMethodCallExpr extends ASTExpression {
 
     public ASTMethodCallExpr(final Class scope, final String name) {
         if (scope!=null) {
-            this.scopeType = new RefType(scope);
+            this.scopeType = new Type(scope);
             this.scopeType.setParent(this);
         }
         this.name = name;
@@ -98,7 +98,7 @@ public final class ASTMethodCallExpr extends ASTExpression {
 
     public ASTMethodCallExpr(final Class scope, final String name, final ASTExpression... exprs) {
         if (scope!=null) {
-            this.scopeType = new RefType(scope);
+            this.scopeType = new Type(scope);
             this.scopeType.setParent(this);
         }
         this.name = name;
@@ -121,10 +121,10 @@ public final class ASTMethodCallExpr extends ASTExpression {
         return scope;
     }
 
-    public RefType getScopeType() {
+    public Type getScopeType() {
         return scopeType;
     }
-    public void setScopeType(final RefType scope) {
+    public void setScopeType(final Type scope) {
         this.scopeType = scope;
         if (scope!=null) {
             scopeType.setParent(this);
@@ -132,16 +132,21 @@ public final class ASTMethodCallExpr extends ASTExpression {
         }
     }
 
-    public Iterable<Type> getTypeArgs() {
-        return typeArgs!=null ? typeArgs : Collections.<Type>emptyList();
+    public boolean hasTypeArguments() {
+        return typeArgs!=null && typeArgs.size()>0;
     }
-
-    public <T extends Type> T addTypeArgument(final T typeArg) {
+    public Iterable<SimpleTypeArgument> getTypeArguments() {
+        return typeArgs!=null ? typeArgs : Collections.<SimpleTypeArgument>emptyList();
+    }
+    public SimpleTypeArgument addTypeArgument(final SimpleTypeArgument typeArg) {
         if (typeArgs==null)
-            typeArgs = new ArrayList<Type>(2);
+            typeArgs = new ArrayList<SimpleTypeArgument>(2);
         typeArg.setParent(this);
         typeArgs.add(typeArg);
         return typeArg;
+    }
+    public SimpleTypeArgument addTypeArgument(final Class typeArg) {
+        return addTypeArgument( new SimpleTypeArgument(typeArg) );
     }
 
     public String getName() {
@@ -151,10 +156,13 @@ public final class ASTMethodCallExpr extends ASTExpression {
         this.name = name;
     }
 
+
+    public boolean hasArguments() {
+        return args!=null && args.size()>0;
+    }
     public Iterable<ASTExpression> getArguments() {
         return args!=null ? args : Collections.<ASTExpression>emptyList();
     }
-
     public <T extends ASTExpression> T addArgument(final T expr) {
         if (args==null)
             args = new ArrayList<ASTExpression>(2);

@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.echosoft.framework.ui.core.compiler.ast.expr.ASTAnnotationExpr;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 
@@ -36,16 +36,16 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTParameter extends ASTNode {
 
     private int modifiers;
-    private RefType type;
+    private Type type;
     private boolean isVarArgs;
     private String name;
     private List<ASTAnnotationExpr> annotations;
 
-    public ASTParameter(final RefType type, final String name) {
+    public ASTParameter(final Type type, final String name) {
         this(0, type, name);
     }
 
-    public ASTParameter(final int modifiers, final RefType type, final String name) {
+    public ASTParameter(final int modifiers, final Type type, final String name) {
         this.modifiers = modifiers;
         if (type!=null) {
             this.type = type;
@@ -61,7 +61,7 @@ public final class ASTParameter extends ASTNode {
     public ASTParameter(final int modifiers, final Class type, final String name) {
         this.modifiers = modifiers;
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent(this);
         }
         this.name = name;
@@ -86,13 +86,13 @@ public final class ASTParameter extends ASTNode {
     /**
      * @return тип данного параметра.
      */
-    public RefType getType() {
+    public Type getType() {
         return type;
     }
     /**
      * @param type  тип параметра.
      */
-    public void setType(final RefType type) {
+    public void setType(final Type type) {
         this.type = type;
         if (type!=null)
             type.setParent( this );

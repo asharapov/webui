@@ -32,42 +32,59 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
  * @author Julio Vilmar Gesser
  * @author Anton Sharapov
  */
-public final class WildcardType extends Type {
+public final class WildcardTypeArgument extends TypeArgument {
 
-    private RefType ext;
-    private RefType sup;
+    private Type ext;
+    private Type sup;
 
-    public WildcardType() {
+    public WildcardTypeArgument() {
+    }
+    public WildcardTypeArgument(final Type ext, final Type sup) {
+        this.setExtends(ext);
+        this.setSuper(sup);
+    }
+    public WildcardTypeArgument(final Class ext, final Class sup) {
+        this.setExtends(ext);
+        this.setSuper(sup);
     }
 
-    public WildcardType(final RefType ext) {
-        setExtends(ext);
-    }
-
-    public WildcardType(final RefType ext, final RefType sup) {
-        setExtends(ext);
-        setSuper(sup);
-    }
-
-    public RefType getExtends() {
+    public Type getExtends() {
         return ext;
     }
-    public void setExtends(final RefType ext) {
+    public void setExtends(final Type ext) {
         this.ext = ext;
         if (ext!=null) {
             ext.setParent(this);
             sup = null;
         }
     }
+    public void setExtends(final Class ext) {
+        if (ext!=null) {
+            this.ext = new Type(ext);
+            this.ext.setParent(this);
+            this.sup = null;
+        } else {
+            this.ext = null;
+        }
+    }
 
-    public RefType getSuper() {
+    public Type getSuper() {
         return sup;
     }
-    public void setSuper(final RefType sup) {
+    public void setSuper(final Type sup) {
         this.sup = sup;
         if (sup!=null) {
             ext = null;
             sup.setParent(this);
+        }
+    }
+    public void setSuper(final Class sup) {
+        if (sup!=null) {
+            this.ext = null;
+            this.sup = new Type(sup);
+            this.sup.setParent(this);
+        } else {
+            this.sup = null;
         }
     }
 

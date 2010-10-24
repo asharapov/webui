@@ -25,7 +25,7 @@ import java.util.List;
 import org.echosoft.framework.ui.core.compiler.ast.ASTParameter;
 import org.echosoft.framework.ui.core.compiler.ast.VariablesContainer;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -42,7 +42,7 @@ public final class ASTConstructorDecl extends ASTBodyDecl implements VariablesCo
     private List<TypeParameter> typeParameters;
     private String name;
     private List<ASTParameter> parameters;
-    private List<RefType> throwables;
+    private List<Type> throwables;
     private ASTBlockStmt body;
 
     public ASTConstructorDecl(final int modifiers, final String name) {
@@ -93,18 +93,18 @@ public final class ASTConstructorDecl extends ASTBodyDecl implements VariablesCo
         return param;
     }
 
-    public Iterable<RefType> getThrowables() {
-        return throwables!=null ? throwables : Collections.<RefType>emptyList();
+    public Iterable<Type> getThrowables() {
+        return throwables!=null ? throwables : Collections.<Type>emptyList();
     }
-    public RefType addThrowable(final RefType type) {
+    public Type addThrowable(final Type type) {
         if (throwables==null)
-            throwables = new ArrayList<RefType>(2);
+            throwables = new ArrayList<Type>(2);
         type.setParent( this );
         throwables.add( type );
         return type;
     }
-    public RefType addThrowable(final Class<? extends Throwable> type) {
-        return addThrowable( new RefType(type) );
+    public Type addThrowable(final Class<? extends Throwable> type) {
+        return addThrowable( new Type(type) );
     }
 
     public ASTBlockStmt getBody() {
@@ -127,7 +127,7 @@ public final class ASTConstructorDecl extends ASTBodyDecl implements VariablesCo
     }
 
     @Override
-    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+    public boolean containsVariable(final String name, final Type type, final boolean findInParents) {
         for (ASTParameter param : parameters) {
             if (param.getName().equals(name) && param.getType().equals(type))
                 return true;

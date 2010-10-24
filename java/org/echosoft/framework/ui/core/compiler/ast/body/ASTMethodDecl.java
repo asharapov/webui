@@ -25,7 +25,7 @@ import java.util.List;
 import org.echosoft.framework.ui.core.compiler.ast.ASTParameter;
 import org.echosoft.framework.ui.core.compiler.ast.VariablesContainer;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTBlockStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -40,13 +40,13 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
 
     private int modifiers;
     private List<TypeParameter> typeParameters;
-    private RefType type;
+    private Type type;
     private String name;
     private List<ASTParameter> parameters;
-    private List<RefType> throwables;
+    private List<Type> throwables;
     private ASTBlockStmt body;
 
-    public ASTMethodDecl(final int modifiers, final RefType type, final String name) {
+    public ASTMethodDecl(final int modifiers, final Type type, final String name) {
         this.modifiers = modifiers;
         if (type!=null) {
             this.type = type;
@@ -58,7 +58,7 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
     public ASTMethodDecl(final int modifiers, final Class type, final String name) {
         this.modifiers = modifiers;
         if (type!=null) {
-            this.type = new RefType(type);
+            this.type = new Type(type);
             this.type.setParent(this);
         }
         this.name = name;
@@ -77,10 +77,10 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
         this.modifiers = modifiers;
     }
 
-    public RefType getType() {
+    public Type getType() {
         return type;
     }
-    public void setType(final RefType type) {
+    public void setType(final Type type) {
         this.type = type;
         if (type!=null)
             type.setParent(this);
@@ -125,18 +125,18 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
         return param;
     }
 
-    public Iterable<RefType> getThrowables() {
-        return throwables!=null ? throwables : Collections.<RefType>emptyList();
+    public Iterable<Type> getThrowables() {
+        return throwables!=null ? throwables : Collections.<Type>emptyList();
     }
-    public RefType addThrowable(final RefType type) {
+    public Type addThrowable(final Type type) {
         if (throwables==null)
-            throwables = new ArrayList<RefType>(2);
+            throwables = new ArrayList<Type>(2);
         type.setParent( this );
         throwables.add( type );
         return type;
     }
-    public RefType addThrowable(final Class<? extends Throwable> type) {
-        return addThrowable( new RefType(type) );
+    public Type addThrowable(final Class<? extends Throwable> type) {
+        return addThrowable( new Type(type) );
     }
 
     @Override
@@ -149,7 +149,7 @@ public final class ASTMethodDecl extends ASTBodyDecl implements VariablesContain
     }
 
     @Override
-    public boolean containsVariable(final String name, final RefType type, final boolean findInParents) {
+    public boolean containsVariable(final String name, final Type type, final boolean findInParents) {
         for (ASTParameter param : parameters) {
             if (param.getName().equals(name) && param.getType().equals(type))
                 return true;

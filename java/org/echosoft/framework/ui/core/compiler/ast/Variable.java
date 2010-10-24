@@ -1,7 +1,7 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
 import org.echosoft.common.utils.StringUtil;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 
 /**
  * Внутренняя структура данных, описывающая информацию по отдельной переменной в методе транслируемого класса.
@@ -12,7 +12,7 @@ public class Variable {
     /**
      * Имя класса переменной.
      */
-    private final RefType type;
+    private final Type type;
     /**
      * Имя переменной в методе.
      */
@@ -27,10 +27,10 @@ public class Variable {
     private boolean used;
 
 
-    public Variable(final RefType type, final String name) {
+    public Variable(final Type type, final String name) {
         this(type, name, true);
     }
-    public Variable(final RefType type, final String name, final boolean reusable) {
+    public Variable(final Type type, final String name, final boolean reusable) {
         if (type==null || !StringUtil.isJavaIdentifier(name))
             throw new IllegalArgumentException("Invalid class or name of variable");
         this.type = type;
@@ -42,7 +42,7 @@ public class Variable {
     /**
      * @return  Тип данной переменной.
      */
-    public RefType getType() {
+    public Type getType() {
         return type;
     }
 

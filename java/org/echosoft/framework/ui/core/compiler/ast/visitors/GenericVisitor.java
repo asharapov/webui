@@ -57,9 +57,10 @@ import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTThrowStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTryStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTTypeDeclarationStmt;
 import org.echosoft.framework.ui.core.compiler.ast.stmt.ASTWhileStmt;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.SimpleTypeArgument;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
-import org.echosoft.framework.ui.core.compiler.ast.type.WildcardType;
+import org.echosoft.framework.ui.core.compiler.ast.type.WildcardTypeArgument;
 
 /**
  * @author Julio Vilmar Gesser
@@ -79,9 +80,11 @@ public interface GenericVisitor<R, A> {
 
     public R visit(ASTJavadocComment node, A arg);
 
-    public R visit(RefType node, A arg);
+    public R visit(Type node, A arg);
 
-    public R visit(WildcardType node, A arg);
+    public R visit(SimpleTypeArgument node, A arg);
+
+    public R visit(WildcardTypeArgument node, A arg);
 
     public R visit(TypeParameter node, A arg);
 

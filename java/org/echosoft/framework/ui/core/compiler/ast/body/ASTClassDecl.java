@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.echosoft.common.utils.StringUtil;
 import org.echosoft.framework.ui.core.compiler.ast.ASTVariableDecl;
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 import org.echosoft.framework.ui.core.compiler.ast.type.TypeParameter;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.GenericVisitor;
 import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
@@ -38,10 +38,10 @@ import org.echosoft.framework.ui.core.compiler.ast.visitors.VoidVisitor;
 public final class ASTClassDecl extends ASTTypeDecl {
 
     private List<TypeParameter> typeParameters;
-    private RefType superType;
-    private List<RefType> implTypes;
+    private Type superType;
+    private List<Type> implTypes;
 
-    public ASTClassDecl(final int modifiers, final String name, final RefType superType) {
+    public ASTClassDecl(final int modifiers, final String name, final Type superType) {
         super(modifiers, name);
         if (superType!=null) {
             this.superType = superType;
@@ -52,7 +52,7 @@ public final class ASTClassDecl extends ASTTypeDecl {
     public ASTClassDecl(final int modifiers, final String name, final Class superType) {
         super(modifiers, name);
         if (superType!=null) {
-            this.superType = new RefType(superType);
+            this.superType = new Type(superType);
             this.superType.setParent(this);
         }
     }
@@ -81,10 +81,10 @@ public final class ASTClassDecl extends ASTTypeDecl {
     /**
      * @return  класс, от которого данный класс наследуется.
      */
-    public RefType getSuperType() {
+    public Type getSuperType() {
         return superType;
     }
-    public void setSuperType(final RefType type) {
+    public void setSuperType(final Type type) {
         this.superType = type;
         if (type!=null)
             type.setParent( this );
@@ -93,20 +93,20 @@ public final class ASTClassDecl extends ASTTypeDecl {
     /**
      * @return Перечисление интерфейсов, которые реализует данный класc.
      */
-    public Iterable<RefType> getImplementations() {
-        return implTypes!=null ? implTypes : Collections.<RefType>emptyList();
+    public Iterable<Type> getImplementations() {
+        return implTypes!=null ? implTypes : Collections.<Type>emptyList();
     }
-    public RefType addImplementation(final RefType type) {
+    public Type addImplementation(final Type type) {
         if (implTypes==null)
-            implTypes = new ArrayList<RefType>(2);
+            implTypes = new ArrayList<Type>(2);
         type.setParent( this );
         implTypes.add( type );
         return type;
     }
-    public RefType addImplementation(final Class type) {
+    public Type addImplementation(final Class type) {
         if (!type.isInterface())
             throw new IllegalArgumentException("Interface should be specified instead of "+type);
-        return addImplementation( new RefType(type) );
+        return addImplementation( new Type(type) );
     }
 
 

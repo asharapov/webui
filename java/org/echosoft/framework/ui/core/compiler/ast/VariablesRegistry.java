@@ -1,6 +1,6 @@
 package org.echosoft.framework.ui.core.compiler.ast;
 
-import org.echosoft.framework.ui.core.compiler.ast.type.RefType;
+import org.echosoft.framework.ui.core.compiler.ast.type.Type;
 
 /**
  * Внутри любого блока кода могут быть объявлены переменные с соответствующей областью видимости.
@@ -22,7 +22,7 @@ public interface VariablesRegistry extends VariablesContainer {
      * @return  информация о зарегистрированной в блоке переменной.
      * @throws IllegalArgumentException  в случае если переменная с указанным именем уже доступна в блоке.
      */
-    public Variable defineVariable(RefType type, String expectedName, boolean reusable);
+    public Variable defineVariable(Type type, String expectedName, boolean reusable);
 
     /**
      * Регистрирует в данном блоке кода новую переменную.
@@ -44,7 +44,7 @@ public interface VariablesRegistry extends VariablesContainer {
      * @param type  класс искомой переменной.
      * @return  информация о найденной переменной или <code>null</code>.
      */
-    public Variable findUnusedVariable(RefType type);
+    public Variable findUnusedVariable(Type type);
 
     /**
      * Находит неиспользуемую локальную переменную требуемого типа в данном блоке.
